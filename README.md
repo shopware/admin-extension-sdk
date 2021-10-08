@@ -17,7 +17,7 @@ send('redirect', {
 })
 ```
 
-[![E2E Tests](https://github.com/jleifeld/postmessage-api-concept/actions/workflows/cypress.yml/badge.svg)](https://github.com/jleifeld/postmessage-api-concept/actions/workflows/cypress.yml) [![Lint](https://github.com/jleifeld/postmessage-api-concept/actions/workflows/lint.yml/badge.svg)](https://github.com/jleifeld/postmessage-api-concept/actions/workflows/lint.yml)
+[![E2E Tests](https://github.com/shopware/admin-app-actions/actions/workflows/cypress.yml/badge.svg)](https://github.com/shopware/admin-app-actions/actions/workflows/cypress.yml) [![Lint](https://github.com/shopware/admin-app-actions/actions/workflows/lint.yml/badge.svg)](https://github.com/shopware/admin-app-actions/actions/workflows/lint.yml)
 
 ## Installation
 
