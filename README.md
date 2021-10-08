@@ -3,6 +3,8 @@
  
 --------
 
+[![E2E Tests](https://github.com/shopware/admin-app-actions/actions/workflows/cypress.yml/badge.svg)](https://github.com/shopware/admin-app-actions/actions/workflows/cypress.yml) [![Lint](https://github.com/shopware/admin-app-actions/actions/workflows/lint.yml/badge.svg)](https://github.com/shopware/admin-app-actions/actions/workflows/lint.yml) [![NPM_SIZE](https://img.shields.io/bundlephobia/minzip/@shopware-ag/admin-app-actions?logo=npm)](https://bundlephobia.com/package/@shopware-ag/admin-app-actions)
+
 # Admin app actions
 ### for the Shopware 6 app system
 
@@ -16,8 +18,6 @@ send('redirect', {
   newTab: true
 })
 ```
-
-[![E2E Tests](https://github.com/shopware/admin-app-actions/actions/workflows/cypress.yml/badge.svg)](https://github.com/shopware/admin-app-actions/actions/workflows/cypress.yml) [![Lint](https://github.com/shopware/admin-app-actions/actions/workflows/lint.yml/badge.svg)](https://github.com/shopware/admin-app-actions/actions/workflows/lint.yml)
 
 ## Installation
 
