@@ -7,6 +7,11 @@ sidebar_position: 0
 custom_edit_url: null
 ---
 
+# Warning:
+### This repository is still under development and should not be used yet.
+ 
+--------
+
 # Admin app actions
 ### for the Shopware 6 app system
 

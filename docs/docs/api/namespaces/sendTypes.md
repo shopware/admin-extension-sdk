@@ -29,7 +29,7 @@ send('createAlert', {
 
 #### Defined in
 
-[send-types.ts:10](https://github.com/jleifeld/postmessage-api-concept/blob/641fe56/lib/send-types.ts#L10)
+[send-types.ts:10](https://github.com/shopware/admin-app-actions/blob/bc5c7bb/lib/send-types.ts#L10)
 
 ___
 
@@ -52,7 +52,7 @@ send('redirect', {}).then(pageTitle => {
 
 #### Defined in
 
-[send-types.ts:48](https://github.com/jleifeld/postmessage-api-concept/blob/641fe56/lib/send-types.ts#L48)
+[send-types.ts:48](https://github.com/shopware/admin-app-actions/blob/bc5c7bb/lib/send-types.ts#L48)
 
 ___
 
@@ -79,4 +79,4 @@ send('redirect', {
 
 #### Defined in
 
-[send-types.ts:28](https://github.com/jleifeld/postmessage-api-concept/blob/641fe56/lib/send-types.ts#L28)
+[send-types.ts:28](https://github.com/shopware/admin-app-actions/blob/bc5c7bb/lib/send-types.ts#L28)

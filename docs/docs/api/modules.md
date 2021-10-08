@@ -45,7 +45,7 @@ The return value is a cancel function to stop listening to the events
 
 #### Defined in
 
-[index.ts:105](https://github.com/jleifeld/postmessage-api-concept/blob/641fe56/lib/index.ts#L105)
+[index.ts:105](https://github.com/shopware/admin-app-actions/blob/bc5c7bb/lib/index.ts#L105)
 
 ___
 
@@ -90,4 +90,4 @@ A promise with the response data in the given responseType
 
 #### Defined in
 
-[index.ts:62](https://github.com/jleifeld/postmessage-api-concept/blob/641fe56/lib/index.ts#L62)
+[index.ts:62](https://github.com/shopware/admin-app-actions/blob/bc5c7bb/lib/index.ts#L62)

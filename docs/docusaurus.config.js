@@ -9,7 +9,7 @@ const config = {
   title: 'Admin App Actions',
   tagline: 'for Shopware 6 apps',
   url: 'https://your-docusaurus-test-site.com',
-  baseUrl: '/',
+  baseUrl: '/admin-app-actions/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
