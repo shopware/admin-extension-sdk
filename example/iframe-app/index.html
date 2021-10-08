@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App with Iframe</title>
+  </head>
+  <body>
+    <main>
+      <h1>Iframe Window</h1>
+
+      <label for="actionType">
+        Action type:
+      </label>
+      <input type="text" id="actionType">
+
+      <br><br>
+
+      <label for="actionValue">Action value:</label>
+      <br>
+      <textarea name="actionValue" id="actionValue" cols="30" rows="10"></textarea>
+
+      <br>
+
+      <button id="sendAction">Send action</button>
+
+      <br>
+
+      <code id="result"></code>
+    </main>
+
+    <script type="module" src="./app.ts"></script>
+  </body>
+</html>

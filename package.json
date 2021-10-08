@@ -1,0 +1,46 @@
+{
+  "name": "@shopware-ag/admin-app-actions",
+  "version": "0.0.1",
+  "repository": "git://github.com/shopware/admin-app-actions.git",
+  "description": "A small library for App iframes to communicate with the Shopware Adminstration.",
+  "keywords": [
+    "iframe",
+    "shopware",
+    "admin",
+    "bridge",
+    "app"
+  ],
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/admin-app-actions.umd.js",
+  "module": "./dist/admin-app-actions.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/admin-app-actions.es.js",
+      "require": "./dist/admin-app-actions.umd.js"
+    }
+  },
+  "types": "./dist/admin-app-actions.d.ts",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:build-watch\" \"npm run dev:serve\"",
+    "dev:build-watch": "vite build --watch --mode example",
+    "dev:serve": "live-server --port=8181 dist-example",
+    "build": "tsc && vite build",
+    "doc": "cd docs && npm run build",
+    "doc:dev": "cd docs && npm run start",
+    "lint": "tsc",
+    "e2e:open": "concurrently --handle-input --kill-others --success first \"cypress open\" \"npm run dev:build-watch\" \"npm run dev:serve -- --no-browser\"",
+    "e2e:run": "concurrently --handle-input --kill-others --success first \"cypress run\" \"npm run dev:build-watch\" \"npm run dev:serve -- --no-browser\""
+  },
+  "devDependencies": {
+    "concurrently": "^6.3.0",
+    "cypress": "^8.5.0",
+    "live-server": "^1.2.1",
+    "typescript": "^4.4.3",
+    "vite": "^2.6.0",
+    "vite-plugin-dts": "^0.8.2",
+    "vite-tsconfig-paths": "^3.3.14"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,54 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #189EFF;
+  --ifm-color-primary-dark: #1596FF;
+  --ifm-color-primary-darker: #118CFF;
+  --ifm-color-primary-darkest: #0870FF;
+  --ifm-color-primary-light: #3BADFF;
+  --ifm-color-primary-lighter: #5DBBFF;
+  --ifm-color-primary-lightest: #BAE2FF;
+  --ifm-code-font-size: 95%;
+}
+
+html[data-theme='dark'] {
+  --ifm-color-primary: #5DBBFF;
+  --ifm-color-primary-dark: #5DBBFF;
+  --ifm-color-primary-darker: #1596FF;
+  --ifm-color-primary-darkest: #0870FF;
+  --ifm-color-primary-light: #8CCFFF;
+  --ifm-color-primary-lighter: #BAE2FF;
+  --ifm-color-primary-lightest: #E3F3FF;
+  --ifm-code-font-size: 95%;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+html[data-theme='dark'] .docusaurus-highlight-code-line {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme='dark'] .hero__title, html[data-theme='dark'] .hero__subtitle {
+  color: #fff;
+}
+
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-wrapper main {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}

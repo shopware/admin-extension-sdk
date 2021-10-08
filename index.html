@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopware Admin</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <main>
+        <h1>Main Window</h1>
+
+        <label for="actionType">
+          Action type:
+        </label>
+        <br>
+        <input type="text" id="actionType">
+        
+        <br>
+
+        <label for="responseData">Response data:</label>
+        <br>
+        <textarea name="responseData" id="responseData" cols="30" rows="10"></textarea>
+
+        <br>
+
+        <button id="listenToAction">Listen to action</button>
+        
+        <br>
+        <br>
+
+        <code id="result"></code>
+      </main>
+  
+      <iframe src="./example/iframe-app/index.html" frameborder="1" width="500px" height="500px"></iframe>
+    </div>
+
+    <script type="module" src="./example/main-app/main.ts"></script>
+  </body>
+</html>

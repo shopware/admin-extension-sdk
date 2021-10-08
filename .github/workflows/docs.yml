@@ -1,0 +1,48 @@
+name: Docs
+
+on: [push, pull_request]
+
+jobs:
+  create_docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+
+      - name: Retrieve the cached main "node_modules" directory (if present)
+        uses: actions/cache@v2
+        id: node-cache-main
+        with:
+          path: node_modules
+          key: node-modules-main-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      
+      - name: Retrieve the cached docs "node_modules" directory (if present)
+        uses: actions/cache@v2
+        id: node-cache-docs
+        with:
+          path: node_modules
+          key: node-modules-cache-${{ runner.os }}-${{ hashFiles('docs/package-lock.json') }}
+
+      - name: Install main dependencies (if the cached directory was not found)
+        if: steps.node-cache-main.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Install docs dependencies (if the cached directory was not found)
+        if: steps.node-cache-docs.outputs.cache-hit != 'true'
+        run: cd ./docs && npm ci && cd ./..
+
+      - name: Test to see if the project compiles
+        run: npm run lint
+
+      - name: Create the docs directory locally in CI
+        run: npm run doc
+
+      - name: Deploy 🚀
+        if: github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: docs/build
