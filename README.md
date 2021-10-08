@@ -8,6 +8,8 @@
 # Admin app actions
 ### for the Shopware 6 app system
 
+[Open documentation](https://shopware.github.io/admin-app-actions/)
+
 This small library is for using admin actions in your app iframes.
 
 Your app can then extend the Administration with many different actions, customizing UI elements and more. It can send actions to the administration or receive data from it.
@@ -37,10 +39,10 @@ Import the source from the CDN:
 
 ```js
 // use the latest version available
-<script src="https://unpkg.com/@shopware-ag/admin-app-actions/admin-app-actions.umd.js"></script>
+<script src="https://unpkg.com/@shopware-ag/admin-app-actions"></script>
 
 // use a fix version (example here: 1.2.3)
-<script src="https://unpkg.com/@shopware-ag/admin-app-actions@1.2.3/admin-app-actions.umd.js"></script>
+<script src="https://unpkg.com/@shopware-ag/admin-app-actions@1.2.3"></script>
 ```
 
 Then you can access it with the global variable `AdminAppActions`.
@@ -85,7 +87,7 @@ The bundle size of this library is extremely small and will not grow when new ac
 ## Full Typescript support
 Typescript provides a good developer experience for everyone using this tool. Every action and options can be autocompleted by the IDE. If you are also writing your application in Typescript you get direct feedback if you are doing a mistake in using the API.
 
-A full auto-generated API documentation can be found in the documentation: [TODO: Add link here]
+A full auto-generated API documentation can be found in the documentation: https://shopware.github.io/admin-app-actions/
 
 ___________
 
