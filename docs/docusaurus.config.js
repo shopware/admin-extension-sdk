@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Admin App Actions',
   tagline: 'for Shopware 6 apps',
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://shopware.github.io',
   baseUrl: '/admin-app-actions/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
