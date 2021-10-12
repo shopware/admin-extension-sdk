@@ -108,7 +108,15 @@ export function on<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE, m
       return;
     }
 
-    const shopwareMessageData = JSON.parse(event.data);
+    let shopwareMessageData;
+
+    // try to parse the json file
+    try {
+      shopwareMessageData = JSON.parse(event.data);
+    } catch {
+      // fail silently when message is not a valid json file
+      return;
+    }
 
     // check if messageData is valid
     if (!isMessageData(shopwareMessageData)) {
@@ -126,7 +134,9 @@ export function on<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE, m
       response: method(shopwareMessageData.data)
     }
 
-    event.source?.postMessage(JSON.stringify(responseMessage));
+    event.source?.postMessage(JSON.stringify(responseMessage), {
+      targetOrigin: '*'
+    });
   }
 
   // start listening directly
