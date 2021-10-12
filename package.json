@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/admin-app-actions",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": "git://github.com/shopware/admin-app-actions.git",
   "description": "A small library for App iframes to communicate with the Shopware Adminstration.",
   "keywords": [

@@ -64,10 +64,13 @@ export function send<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE,
   // generate a unique callback ID. This here is only for simple demonstration purposes
   const callbackId = String(Math.floor(Math.random() * Date.now()));
 
+  // set fallback data when no data is defined
+  const sendData = data ?? {};
+
   // generate the message with the callbackId
   const messageData: ShopwareMessageSendData<SEND_TYPE> = {
     type,
-    data,
+    data: sendData,
     callbackId: callbackId
   }
   const message = JSON.stringify(messageData);
