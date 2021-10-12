@@ -38,6 +38,14 @@ export type redirect = {
 }
 
 /**
+ * Reload the current page. Also useful if the iframe uses a watcher. Then it can trigger a reload
+ * on the administration.
+ */
+export type reload = {
+  responseType: void
+}
+
+/**
  * Get the actual page title
  * ```js
  * send('redirect', {}).then(pageTitle => {

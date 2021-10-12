@@ -36,6 +36,7 @@ export type ShopwareMessageResponseData<SEND_TYPE extends keyof ShopwareSendType
   getPageTitle: sendTypes.getPageTitle,
   createAlert: sendTypes.createAlert,
   redirect: sendTypes.redirect,
+  reload: sendTypes.reload,
 }
 
 /**
