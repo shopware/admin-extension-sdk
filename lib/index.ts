@@ -81,10 +81,22 @@ export function send<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE,
         return;
       }
 
-      const data = JSON.parse(event.data);
+      let data;
+      // try to parse the json file
+      try {
+        data = JSON.parse(event.data);
+      } catch {
+        // fail silently when message is not a valid json file
+        return;
+      }
 
       // only execute when callbackId matches
       if (data.callbackId !== callbackId) {
+        return;
+      }
+
+      // only execute if response value exists
+      if (!data.hasOwnProperty('response')) {
         return;
       }
       
@@ -135,7 +147,7 @@ export function on<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE, m
     const responseMessage: ShopwareMessageResponseData<any> = {
       callbackId: shopwareMessageData.callbackId,
       type: shopwareMessageData.type,
-      response: method(shopwareMessageData.data)
+      response: method(shopwareMessageData.data) ?? null
     }
 
     event.source?.postMessage(JSON.stringify(responseMessage), {
