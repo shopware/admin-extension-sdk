@@ -26,12 +26,12 @@ send('redirect', {
 #### Using NPM:
 Install it to your `package.json`
 ```
-npm i --save @shopware/admin-app-actions
+npm i --save @shopware-ag/admin-app-actions
 ```
 
 Then import it in your app:
 ```js
-import { send } from '@shopware/admin-app-actions;
+import { send } from '@shopware-ag/admin-app-actions';
 ```
 
 #### Using CDN:
@@ -65,7 +65,7 @@ The API is very expressive and easy to learn. You just need to import our librar
 The iframe are using only the function `send` for sending the actions. The first parameter is the action-type and the second parameter contains the options for the action.
 
 ```js
-import { send } from 'sw-app-actions';
+import { send } from '@shopware-ag/admin-app-actions';
 
 send('redirect', {
   url: 'https://www.shopware.com',
@@ -76,7 +76,7 @@ send('redirect', {
 If the action has a response then you can get the information with the returned Promise value:
 
 ```javascript
-import { send } from 'sw-app-actions';
+import { send } from '@shopware-ag/admin-app-actions';
 
 const pageTitle = await send('getPageTitle', {});
 ```
@@ -95,7 +95,7 @@ ___________
 The Shopware 6 administration listens to all messages. If a message matches an action then the given functionality will be called. Here is an example code how it can look like:
 
 ```ts
-import { on } from 'sw-app-actions'
+import { on } from '@shopware-ag/admin-app-actions';
 
 on('redirect', ({ newTab, url }) => {  
   // call a method which redirects to the url
