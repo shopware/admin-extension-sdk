@@ -1,9 +1,9 @@
-name: Lint
+name: Base tests
 
 on: [push, pull_request]
 
 jobs:
-  tsc:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,3 +21,16 @@ jobs:
         run: npm ci
       - name: lint
         run: npm run lint
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          build: npm run build
+          start: npm run dev
+    
