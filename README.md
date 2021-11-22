@@ -3,7 +3,7 @@
  
 --------
 
-[![E2E Tests](https://github.com/shopware/admin-extension-sdk/actions/workflows/cypress.yml/badge.svg)](https://github.com/shopware/admin-extension-sdk/actions/workflows/cypress.yml) [![Lint](https://github.com/shopware/admin-extension-sdk/actions/workflows/lint.yml/badge.svg)](https://github.com/shopware/admin-extension-sdk/actions/workflows/lint.yml) [![NPM_SIZE](https://img.shields.io/bundlephobia/minzip/@shopware-ag/admin-extension-sdk?logo=npm)](https://bundlephobia.com/package/@shopware-ag/admin-extension-sdk)
+[![Tests](https://github.com/shopware/admin-extension-sdk/actions/workflows/base.yml/badge.svg?branch=main)](https://github.com/shopware/admin-extension-sdk/actions/workflows/base.yml)
 
 # Admin app actions
 ### for the Shopware 6 app system
