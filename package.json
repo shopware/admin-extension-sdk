@@ -1,27 +1,28 @@
 {
-  "name": "@shopware-ag/admin-app-actions",
+  "name": "@shopware-ag/admin-extension-sdk",
   "version": "0.0.5",
-  "repository": "git://github.com/shopware/admin-app-actions.git",
-  "description": "A small library for App iframes to communicate with the Shopware Adminstration.",
+  "repository": "git://github.com/shopware/admin-extension-sdk.git",
+  "description": "The SDK for App iframes to communicate with the Shopware Adminstration",
   "keywords": [
     "iframe",
     "shopware",
     "admin",
     "bridge",
-    "app"
+    "app",
+    "sdk"
   ],
   "files": [
     "dist"
   ],
-  "main": "./dist/admin-app-actions.umd.js",
-  "module": "./dist/admin-app-actions.es.js",
+  "main": "./dist/admin-extension-sdk.umd.js",
+  "module": "./dist/admin-extension-sdk.es.js",
   "exports": {
     ".": {
-      "import": "./dist/admin-app-actions.es.js",
-      "require": "./dist/admin-app-actions.umd.js"
+      "import": "./dist/admin-extension-sdk.es.js",
+      "require": "./dist/admin-extension-sdk.umd.js"
     }
   },
-  "types": "./dist/admin-app-actions.d.ts",
+  "types": "./dist/admin-extension-sdk.d.ts",
   "scripts": {
     "dev": "concurrently \"npm run dev:build-watch\" \"npm run dev:serve\"",
     "dev:build-watch": "vite build --watch --mode example",

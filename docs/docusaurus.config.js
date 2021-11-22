@@ -9,12 +9,12 @@ const config = {
   title: 'Admin App Actions',
   tagline: 'for Shopware 6 apps',
   url: 'https://shopware.github.io',
-  baseUrl: '/admin-app-actions/',
+  baseUrl: '/admin-extension-sdk/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'Shopware AG', // Usually your GitHub org/user name.
-  projectName: 'admin-app-actions', // Usually your repo name.
+  projectName: 'admin-extension-sdk', // Usually your repo name.
 
   plugins: [
     [
@@ -68,7 +68,7 @@ const config = {
             label: 'Documentation',
           },
           {
-            href: 'https://github.com/shopware/admin-app-actions',
+            href: 'https://github.com/shopware/admin-extension-sdk',
             label: 'GitHub',
             position: 'right',
           },

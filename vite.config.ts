@@ -39,7 +39,7 @@ module.exports = defineConfig(({ command, mode }) => {
       lib: {
         entry: resolve(__dirname, 'lib/index.ts'),
         name: 'AdminAppActions',
-        fileName: (format) => `admin-app-actions.${format}.js`
+        fileName: (format) => `admin-extension-sdk.${format}.js`
       }
     }
   }

@@ -3,12 +3,12 @@
  
 --------
 
-[![E2E Tests](https://github.com/shopware/admin-app-actions/actions/workflows/cypress.yml/badge.svg)](https://github.com/shopware/admin-app-actions/actions/workflows/cypress.yml) [![Lint](https://github.com/shopware/admin-app-actions/actions/workflows/lint.yml/badge.svg)](https://github.com/shopware/admin-app-actions/actions/workflows/lint.yml) [![NPM_SIZE](https://img.shields.io/bundlephobia/minzip/@shopware-ag/admin-app-actions?logo=npm)](https://bundlephobia.com/package/@shopware-ag/admin-app-actions)
+[![E2E Tests](https://github.com/shopware/admin-extension-sdk/actions/workflows/cypress.yml/badge.svg)](https://github.com/shopware/admin-extension-sdk/actions/workflows/cypress.yml) [![Lint](https://github.com/shopware/admin-extension-sdk/actions/workflows/lint.yml/badge.svg)](https://github.com/shopware/admin-extension-sdk/actions/workflows/lint.yml) [![NPM_SIZE](https://img.shields.io/bundlephobia/minzip/@shopware-ag/admin-extension-sdk?logo=npm)](https://bundlephobia.com/package/@shopware-ag/admin-extension-sdk)
 
 # Admin app actions
 ### for the Shopware 6 app system
 
-[Open documentation](https://shopware.github.io/admin-app-actions/)
+[Open documentation](https://shopware.github.io/admin-extension-sdk/)
 
 This small library is for using admin actions in your app iframes.
 
@@ -26,12 +26,12 @@ send('redirect', {
 #### Using NPM:
 Install it to your `package.json`
 ```
-npm i --save @shopware-ag/admin-app-actions
+npm i --save @shopware-ag/admin-extension-sdk
 ```
 
 Then import it in your app:
 ```js
-import { send } from '@shopware-ag/admin-app-actions';
+import { send } from '@shopware-ag/admin-extension-sdk';
 ```
 
 #### Using CDN:
@@ -39,10 +39,10 @@ Import the source from the CDN:
 
 ```js
 // use the latest version available
-<script src="https://unpkg.com/@shopware-ag/admin-app-actions"></script>
+<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk"></script>
 
 // use a fix version (example here: 1.2.3)
-<script src="https://unpkg.com/@shopware-ag/admin-app-actions@1.2.3"></script>
+<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk@1.2.3"></script>
 ```
 
 Then you can access it with the global variable `AdminAppActions`.
@@ -65,7 +65,7 @@ The API is very expressive and easy to learn. You just need to import our librar
 The iframe are using only the function `send` for sending the actions. The first parameter is the action-type and the second parameter contains the options for the action.
 
 ```js
-import { send } from '@shopware-ag/admin-app-actions';
+import { send } from '@shopware-ag/admin-extension-sdk';
 
 send('redirect', {
   url: 'https://www.shopware.com',
@@ -76,7 +76,7 @@ send('redirect', {
 If the action has a response then you can get the information with the returned Promise value:
 
 ```javascript
-import { send } from '@shopware-ag/admin-app-actions';
+import { send } from '@shopware-ag/admin-extension-sdk';
 
 const pageTitle = await send('getPageTitle', {});
 ```
@@ -87,7 +87,7 @@ The bundle size of this library is extremely small and will not grow when new ac
 ## Full Typescript support
 Typescript provides a good developer experience for everyone using this tool. Every action and options can be autocompleted by the IDE. If you are also writing your application in Typescript you get direct feedback if you are doing a mistake in using the API.
 
-A full auto-generated API documentation can be found in the documentation: https://shopware.github.io/admin-app-actions/
+A full auto-generated API documentation can be found in the documentation: https://shopware.github.io/admin-extension-sdk/
 
 ___________
 
@@ -95,7 +95,7 @@ ___________
 The Shopware 6 administration listens to all messages. If a message matches an action then the given functionality will be called. Here is an example code how it can look like:
 
 ```ts
-import { on } from '@shopware-ag/admin-app-actions';
+import { on } from '@shopware-ag/admin-extension-sdk';
 
 on('redirect', ({ newTab, url }) => {  
   // call a method which redirects to the url
