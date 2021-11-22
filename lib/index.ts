@@ -13,9 +13,9 @@ export type SendDataType<TYPE extends keyof ShopwareSendTypes> = Omit<ShopwareSe
  * @internal
  */
 export type ShopwareMessageSendData<SEND_TYPE extends keyof ShopwareSendTypes> = {
-  type: SEND_TYPE,
-  data: SendDataType<SEND_TYPE>,
-  callbackId: string
+  _type: SEND_TYPE,
+  _data: SendDataType<SEND_TYPE>,
+  _callbackId: string
 }
 
 /**
@@ -23,9 +23,9 @@ export type ShopwareMessageSendData<SEND_TYPE extends keyof ShopwareSendTypes> =
  * @internal
  */
 export type ShopwareMessageResponseData<SEND_TYPE extends keyof ShopwareSendTypes> = {
-  type: SEND_TYPE,
-  response: ShopwareSendTypes[SEND_TYPE]['responseType'],
-  callbackId: string
+  _type: SEND_TYPE,
+  _response: ShopwareSendTypes[SEND_TYPE]['responseType'],
+  _callbackId: string
 }
 
 /**
@@ -69,34 +69,39 @@ export function send<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE,
 
   // generate the message with the callbackId
   const messageData: ShopwareMessageSendData<SEND_TYPE> = {
-    type,
-    data: sendData,
-    callbackId: callbackId
+    _type: type,
+    _data: sendData,
+    _callbackId: callbackId
   }
   const message = JSON.stringify(messageData);
 
   return new Promise((resolve) => {
-    const callbackHandler = function(event: MessageEvent) {      
+    const callbackHandler = function(event: MessageEvent<string>) {     
       if (typeof event.data !== 'string') {
         return;
       }
 
-      let data;
+      let shopwareResponseData;
       // try to parse the json file
       try {
-        data = JSON.parse(event.data);
+        shopwareResponseData = JSON.parse(event.data);
       } catch {
         // fail silently when message is not a valid json file
+        return;
+      }      
+
+      // check if messageData is valid
+      if (!isMessageResponseData(shopwareResponseData)) {
         return;
       }
 
       // only execute when callbackId matches
-      if (data.callbackId !== callbackId) {
+      if (shopwareResponseData._callbackId !== callbackId) {
         return;
       }
 
       // only execute if response value exists
-      if (!data.hasOwnProperty('response')) {
+      if (!shopwareResponseData.hasOwnProperty('_response')) {
         return;
       }
       
@@ -104,7 +109,7 @@ export function send<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE,
       window.removeEventListener('message', callbackHandler);
 
       // return the data
-      resolve(data.response);
+      resolve(shopwareResponseData._response);
     }
 
     window.addEventListener('message', callbackHandler);
@@ -119,7 +124,7 @@ export function send<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE,
  * @returns The return value is a cancel function to stop listening to the events
  */
 export function on<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE, method: (data: SendDataType<SEND_TYPE>) => ShopwareSendTypes[SEND_TYPE]['responseType']): () => void {
-  const onListener = function(event: MessageEvent) {    
+  const onListener = function(event: MessageEvent<string>) {    
     if (typeof event.data !== 'string') {
       return;
     }
@@ -140,14 +145,14 @@ export function on<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE, m
     }
 
     // check if messageData type matches the type argument
-    if (shopwareMessageData.type !== type) {
+    if (shopwareMessageData._type !== type) {
       return;
     }
 
     const responseMessage: ShopwareMessageResponseData<any> = {
-      callbackId: shopwareMessageData.callbackId,
-      type: shopwareMessageData.type,
-      response: method(shopwareMessageData.data) ?? null
+      _callbackId: shopwareMessageData._callbackId,
+      _type: shopwareMessageData._type,
+      _response: method(shopwareMessageData._data) ?? null
     }
 
     const stringifiedResponseMessage = JSON.stringify(responseMessage);
@@ -174,7 +179,15 @@ export function on<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE, m
 function isMessageData(eventData: object): eventData is ShopwareMessageSendData<any> {
   const shopwareMessageData = eventData as ShopwareMessageSendData<any>;
 
-  return shopwareMessageData.type
-         && shopwareMessageData.data
-         && shopwareMessageData.callbackId;
+  return shopwareMessageData._type
+         && shopwareMessageData._data
+         && shopwareMessageData._callbackId;
+}
+
+function isMessageResponseData(eventData: object): eventData is ShopwareMessageResponseData<any> {
+  const shopwareMessageData = eventData as ShopwareMessageResponseData<any>;
+
+  return shopwareMessageData._type
+         && shopwareMessageData._response
+         && shopwareMessageData._callbackId;
 }
