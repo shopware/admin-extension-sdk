@@ -1,4 +1,4 @@
-import { on } from 'lib'
+import { handle } from 'lib/channel';
 import './style.css'
 
 const listenToActionButton = document.getElementById('listenToAction')
@@ -10,7 +10,7 @@ listenToActionButton?.addEventListener('click', () => {
   const actionTypeValue = actionType.value;
   const reponseDataValue = responseData.value;
 
-  on(actionTypeValue as any, (receivedData) => {
+  handle(actionTypeValue as any, (receivedData) => {
     result.innerHTML += JSON.stringify(receivedData) + '\n';
 
     return reponseDataValue;

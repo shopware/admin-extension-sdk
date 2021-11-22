@@ -1,11 +1,16 @@
 /**
+ * Contains all shopware send types.
+ * @internal
+ */
+export type ShopwareMessageTypes = {
+  getPageTitle: getPageTitle,
+  createAlert: createAlert,
+  redirect: redirect,
+  reload: reload,
+}
+
+/**
    * Create a alert notification.
-   * 
-   * ```js
-   * send('createAlert', {
-   *   message: 'My alert message'
-   * })
-   * ```
    */
  export type createAlert = {
   responseType: void,
@@ -17,13 +22,6 @@
 
 /**
    * Redirect to another URL
-   * 
-   * ```js
-   * send('redirect', {
-   *   url: 'https://www.shopware.com',
-   *   newTab: true
-   * })
-   * ```
    */
 export type redirect = {
   responseType: void,
@@ -34,7 +32,7 @@ export type redirect = {
   /**
    * If this is activated then the link will be opened in a new tab
    */
-  newTab: boolean
+  newTab?: boolean
 }
 
 /**
@@ -47,11 +45,6 @@ export type reload = {
 
 /**
  * Get the actual page title
- * ```js
- * send('redirect', {}).then(pageTitle => {
- *   console.log(pageTitle)
- * })
- * ```
  */
 export type getPageTitle = {
   responseType: string
