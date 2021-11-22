@@ -108,7 +108,7 @@ export function send<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE,
     }
 
     window.addEventListener('message', callbackHandler);
-    window.parent.postMessage(message, '*');
+    window.parent.postMessage(message, window.parent.origin);
   })
 }
 
@@ -155,11 +155,12 @@ export function on<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE, m
     if (event.source) {
       // if event source exists then send it back to original source
       event.source.postMessage(stringifiedResponseMessage, {
-        targetOrigin: '*'
+        // @ts-expect-error - event.source.origin is not correctly defined in TS
+        targetOrigin: event.source.origin ?? '*'
       });
     } else {
       // if no event source exists then it should send to same window
-      window.postMessage(stringifiedResponseMessage, '*')
+      window.postMessage(stringifiedResponseMessage, window.origin)
     }
   }
 
