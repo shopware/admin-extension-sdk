@@ -32,13 +32,18 @@
     "doc:dev": "cd docs && npm run start",
     "lint": "tsc",
     "e2e:open": "concurrently --handle-input --kill-others --success first \"cypress open\" \"npm run dev:build-watch\" \"npm run dev:serve -- --no-browser\"",
-    "e2e:run": "concurrently --handle-input --kill-others --success first \"cypress run\" \"npm run dev:build-watch\" \"npm run dev:serve -- --no-browser\""
+    "e2e:run": "concurrently --handle-input --kill-others --success first \"cypress run\" \"npm run dev:build-watch\" \"npm run dev:serve -- --no-browser\"",
+    "test": "jest --collectCoverage",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
+    "@types/jest": "^27.0.3",
     "concurrently": "^6.3.0",
     "cypress": "^8.5.0",
+    "jest": "^27.3.1",
     "live-server": "^1.2.1",
-    "typescript": "^4.4.3",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.5.2",
     "vite": "^2.6.0",
     "vite-plugin-dts": "^0.8.2",
     "vite-tsconfig-paths": "^3.3.14"

@@ -150,9 +150,17 @@ export function on<SEND_TYPE extends keyof ShopwareSendTypes>(type: SEND_TYPE, m
       response: method(shopwareMessageData.data) ?? null
     }
 
-    event.source?.postMessage(JSON.stringify(responseMessage), {
-      targetOrigin: '*'
-    });
+    const stringifiedResponseMessage = JSON.stringify(responseMessage);
+
+    if (event.source) {
+      // if event source exists then send it back to original source
+      event.source.postMessage(stringifiedResponseMessage, {
+        targetOrigin: '*'
+      });
+    } else {
+      // if no event source exists then it should send to same window
+      window.postMessage(stringifiedResponseMessage, '*')
+    }
   }
 
   // start listening directly
