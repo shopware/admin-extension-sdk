@@ -1,5 +1,6 @@
-import { dispatchNotification } from "lib/sdk/notification"
-import { redirectWindow } from "lib/sdk/window"
+import { dispatchNotification } from '../sdk/notification/index';
+import { redirectWindow } from '../sdk/window/index';
+
 
 /**
  * Contains all shopware send types.

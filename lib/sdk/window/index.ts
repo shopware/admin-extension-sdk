@@ -1,4 +1,4 @@
-import { createSender } from 'lib/channel';
+import { createSender } from '../../channel';
 
 export const redirect = createSender('redirectWindow');
 

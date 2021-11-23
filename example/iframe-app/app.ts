@@ -1,5 +1,5 @@
 import './style.css';
-import { send } from 'lib/channel';
+import { send } from '../../lib/channel';
 
 const actionType = document.getElementById('actionType')! as HTMLInputElement
 const actionValue = document.getElementById('actionValue')! as HTMLTextAreaElement
