@@ -1,12 +1,5 @@
 import { send, handle, createSender, createHandler } from './channel';
 
-declare global {
-  interface Window {
-    send: typeof send
-    on: typeof handle
-  }
-}
-
 describe('Test the channel bridge from iFrame to admin', () => {
   it('should send "reload" command to the admin', (done) => {
     const removeListener = handle('reload', (result) => {
