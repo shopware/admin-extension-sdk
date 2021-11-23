@@ -14,7 +14,6 @@
   "files": [
     "dist"
   ],
-  "type": "module",
   "main": "./dist/umd/index.js",
   "module": "./dist/es/index.js",
   "exports": {

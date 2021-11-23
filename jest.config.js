@@ -8,6 +8,7 @@ module.exports = {
     }
   },
   modulePathIgnorePatterns: [
-    '<rootDir>/cypress/'
+    '<rootDir>/cypress/',
+    '<rootDir>/dist/'
   ]
 };
