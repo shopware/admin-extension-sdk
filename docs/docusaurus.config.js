@@ -22,7 +22,7 @@ const config = {
 
       // Plugin / TypeDoc options
       {
-        entryPoints: ['../lib'],
+        entryPoints: ['../src'],
         entryPointStrategy: 'expand',
         tsconfig: '../tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,

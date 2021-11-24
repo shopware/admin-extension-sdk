@@ -4,6 +4,7 @@
 --------
 
 [![Tests](https://github.com/shopware/admin-extension-sdk/actions/workflows/base.yml/badge.svg?branch=main)](https://github.com/shopware/admin-extension-sdk/actions/workflows/base.yml)
+[![NPM Package](https://img.shields.io/npm/v/@shopware-ag/admin-extension-sdk)](https://www.npmjs.com/package/@shopware-ag/admin-extension-sdk)
 
 # Admin app actions
 ### for the Shopware 6 app system
