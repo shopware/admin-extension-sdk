@@ -1,4 +1,4 @@
-import { ShopwareMessageTypes } from './types/message.types';
+import { ShopwareMessageTypes } from './messages.types';
 
 /**
  * This type contains the data of the type without the responseType

@@ -1,5 +1,5 @@
-import * as window from './sdk/window';
-import * as notification from './sdk/notification';
+import * as window from './window';
+import * as notification from './notification';
 
 export {
   window,

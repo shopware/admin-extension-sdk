@@ -1,4 +1,4 @@
-import { createSender } from '../../channel';
+import { createSender } from '../channel';
 
 export const dispatch = createSender('dispatchNotification');
 

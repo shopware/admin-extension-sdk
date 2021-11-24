@@ -11,7 +11,7 @@ module.exports = defineConfig(({ command, mode }) => {
       tsconfigPaths()
     ],
     build: {
-      outDir: resolve(__dirname, 'lib-example'),
+      outDir: resolve(__dirname, 'example-dist'),
       sourcemap: true,
       rollupOptions: {
         input: {

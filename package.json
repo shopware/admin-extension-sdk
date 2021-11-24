@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/admin-extension-sdk",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "repository": "git://github.com/shopware/admin-extension-sdk.git",
   "description": "The SDK for App iframes to communicate with the Shopware Adminstration",
   "keywords": [
@@ -12,22 +12,25 @@
     "sdk"
   ],
   "files": [
-    "lib"
+    "umd",
+    "es"
   ],
-  "main": "./dist/umd/index.js",
-  "module": "./dist/es/index.js",
+  "main": "./umd/index.js",
+  "module": "./es/index.js",
   "exports": {
     ".": {
-      "import": "./dist/es/index.js",
-      "require": "./dist/umd/index.js"
+      "import": "./es/index.js",
+      "require": "./umd/index.js"
     }
   },
-  "types": "./dist/es/index.d.ts",
+  "types": "./es/index.d.ts",
   "scripts": {
     "dev": "concurrently \"npm run dev:build-watch\" \"npm run dev:serve\"",
     "dev:build-watch": "vite build --watch --mode example",
-    "dev:serve": "live-server --port=8181 dist-example",
-    "build": "rm -rf lib && tsc",
+    "dev:serve": "live-server --port=8181 example-dist",
+    "build": "rm -rf es && rm -rf umd && npm run build:umd && npm run build:es",
+    "build:umd": "tsc --project tsconfig.json --module umd --outDir \"./umd\"",
+    "build:es": "tsc --project tsconfig.json --outDir \"./es\"",
     "doc": "cd docs && npm run build",
     "doc:dev": "cd docs && npm run start",
     "lint": "tsc --noEmit",

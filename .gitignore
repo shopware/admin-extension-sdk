@@ -6,5 +6,6 @@ dist-example
 *.local
 coverage
 docs/docs/api
-lib
-lib-example
+es
+umd
+example-dist

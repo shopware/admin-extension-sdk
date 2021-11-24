@@ -1,5 +1,5 @@
-import { dispatchNotification } from '../sdk/notification/index';
-import { redirectWindow } from '../sdk/window/index';
+import { dispatchNotification } from './notification/index';
+import { redirectWindow } from './window/index';
 
 
 /**

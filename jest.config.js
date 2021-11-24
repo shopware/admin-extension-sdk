@@ -9,6 +9,9 @@ module.exports = {
   },
   modulePathIgnorePatterns: [
     '<rootDir>/cypress/',
-    '<rootDir>/dist/'
+  ],
+  testMatch: [
+    '<rootDir>/src/**/*.spec.js',
+    '<rootDir>/src/**/*.spec.ts',
   ]
 };
