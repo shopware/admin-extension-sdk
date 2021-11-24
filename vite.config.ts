@@ -6,40 +6,18 @@ import dts from 'vite-plugin-dts'
 
 module.exports = defineConfig(({ command, mode }) => {
   // Development config (with HTML files for easier development)
-  if (mode === 'example') {
-    return {
-      plugins: [
-        tsconfigPaths()
-      ],
-      build: {
-        outDir: resolve(__dirname, 'dist-example'),
-        sourcemap: true,
-        rollupOptions: {
-          input: {
-            main: resolve(__dirname, './index.html'),
-            iframe: resolve(__dirname, './example/iframe-app/index.html'),
-          }
-        }
-      }
-    }
-  }
-
-  // Build config
   return {
     plugins: [
-      tsconfigPaths(),
-      dts({
-        include: ['lib'],
-        insertTypesEntry: true
-      })
+      tsconfigPaths()
     ],
     build: {
-      outDir: resolve(__dirname, 'dist'),
+      outDir: resolve(__dirname, 'lib-example'),
       sourcemap: true,
-      lib: {
-        entry: resolve(__dirname, 'lib/index.ts'),
-        name: 'AdminAppActions',
-        fileName: (format) => `admin-extension-sdk.${format}.js`
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, './index.html'),
+          iframe: resolve(__dirname, './example/iframe-app/index.html'),
+        }
       }
     }
   }

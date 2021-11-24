@@ -1,5 +1,5 @@
 import './style.css'
-import { handle } from '../../lib/channel';
+import { handle } from '../../src/channel';
 
 const listenToActionButton = document.getElementById('listenToAction')
 const actionType = document.getElementById('actionType')! as HTMLInputElement

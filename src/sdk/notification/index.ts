@@ -20,7 +20,7 @@ export const dispatch = createSender('dispatchNotification');
   title: string,
 
   /**
-   * Create a growl notification
+   * Create a growl notification. Default is true.
    */
   growl?: boolean,
 
@@ -44,6 +44,5 @@ export const dispatch = createSender('dispatchNotification');
     label: string,
     route: string,
     disabled?: boolean,
-    newTab?: boolean,
   }>
 }

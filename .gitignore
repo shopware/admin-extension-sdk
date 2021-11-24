@@ -6,3 +6,5 @@ dist-example
 *.local
 coverage
 docs/docs/api
+lib
+lib-example

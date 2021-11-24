@@ -12,7 +12,7 @@
     "sdk"
   ],
   "files": [
-    "dist"
+    "lib"
   ],
   "main": "./dist/umd/index.js",
   "module": "./dist/es/index.js",
@@ -27,9 +27,7 @@
     "dev": "concurrently \"npm run dev:build-watch\" \"npm run dev:serve\"",
     "dev:build-watch": "vite build --watch --mode example",
     "dev:serve": "live-server --port=8181 dist-example",
-    "build": "rm -rf dist && npm run build:umd && npm run build:es",
-    "build:umd": "tsc --project tsconfig.json --module umd --outDir \"./dist/umd\"",
-    "build:es": "tsc --project tsconfig.json --outDir \"./dist/es\"",
+    "build": "rm -rf lib && tsc",
     "doc": "cd docs && npm run build",
     "doc:dev": "cd docs && npm run start",
     "lint": "tsc --noEmit",
