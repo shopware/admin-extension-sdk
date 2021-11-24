@@ -1,5 +1,5 @@
 export function generateUniqueId(): string {
-  return String(Math.floor(Math.random() * Date.now()));
+  return String(Date.now().toString(36) + Math.random().toString(36).substr(2));
 }
 
 /* eslint-disable */
