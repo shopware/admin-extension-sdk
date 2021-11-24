@@ -1,4 +1,13 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { ShopwareMessageTypes } from './messages.types';
+import { serializeMessageData, deserializeMessageData } from './_internals/function-serializer';
+import { generateUniqueId } from './_internals/utils';
+
+/**
+ * ----------------
+ * GENERAL TYPES
+ * ----------------
+ */
 
 /**
  * This type contains the data of the type without the responseType
@@ -27,15 +36,25 @@ export type ShopwareMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessa
 }
 
 /**
+ * ----------------
+ * MAIN FUNCTIONS FOR EXPORT
+ * ----------------
+ */
+
+/**
  * With this method you can send actions or you can request data:
  * 
  * @param type Choose a type of action from the {@link send-types}
  * @param data The matching data for the type
  * @returns A promise with the response data in the given responseType 
  */
-export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: MESSAGE_TYPE, data: MessageDataType<MESSAGE_TYPE>): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
+export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  type: MESSAGE_TYPE,
+  data: MessageDataType<MESSAGE_TYPE>,
+  targetWindow?: Window
+): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
   // generate a unique callback ID. This here is only for simple demonstration purposes
-  const callbackId = String(Math.floor(Math.random() * Date.now()));
+  const callbackId = generateUniqueId();
 
   // set fallback data when no data is defined
   const sendData = data ?? {};
@@ -46,7 +65,12 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: MESS
     _data: sendData,
     _callbackId: callbackId
   }
-  const message = JSON.stringify(messageData);
+
+  // replace methods etc. so that they are working in JSON format
+  serializeMessageData<MESSAGE_TYPE>(messageData)
+
+  // convert message data to string for message sending
+  const message = JSON.stringify(messageData);  
 
   return new Promise((resolve) => {
     const callbackHandler = function(event: MessageEvent<string>) {    
@@ -87,7 +111,9 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: MESS
     }
 
     window.addEventListener('message', callbackHandler);
-    window.parent.postMessage(message, window.parent.origin);
+    targetWindow 
+        ? targetWindow.postMessage(message, window.parent.origin)
+        : window.parent.postMessage(message, window.parent.origin);
   })
 }
 
@@ -97,8 +123,14 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: MESS
  * @param method This method should return the response value
  * @returns The return value is a cancel function to stop listening to the events
  */
-export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: MESSAGE_TYPE, method: (data: MessageDataType<MESSAGE_TYPE>) => ShopwareMessageTypes[MESSAGE_TYPE]['responseType']): () => void {
-  const handleListener = function(event: MessageEvent<string>) {    
+export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
+  (
+    type: MESSAGE_TYPE,
+    method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
+    )
+  : () => void
+  {
+  const handleListener = async function(event: MessageEvent<string>) {    
     if (typeof event.data !== 'string') {
       return;
     }
@@ -123,10 +155,15 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: ME
       return;
     }
 
+    // deserialize methods etc. so that they are callable in JS
+    deserializeMessageData<MESSAGE_TYPE>(shopwareMessageData)
+
+    const responseValue = await Promise.resolve(method(shopwareMessageData._data));
+
     const responseMessage: ShopwareMessageResponseData<MESSAGE_TYPE> = {
       _callbackId: shopwareMessageData._callbackId,
       _type: shopwareMessageData._type,
-      _response: method(shopwareMessageData._data) ?? null
+      _response: responseValue ?? null
     }
 
     const stringifiedResponseMessage = JSON.stringify(responseMessage);
@@ -151,6 +188,39 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: ME
   return () => window.removeEventListener('message', handleListener);
 }
 
+/**
+ * Function overloading for these two cases:
+ * 
+ * 1. case: createSender('reload', {})  ==> no option parameter required in usage
+ * 2. case: createSender('redirect')  ==> option parameter required in usage
+ * 
+ * */
+ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
+ (messageType: MESSAGE_TYPE, baseMessageOptions: MessageDataType<MESSAGE_TYPE>)
+ :(messageOptions?: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
+export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
+ (messageType: MESSAGE_TYPE)
+ :(messageOptions: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
+
+export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
+(messageType: MESSAGE_TYPE, baseMessageOptions?: MessageDataType<MESSAGE_TYPE>)
+{
+ return (messageOptions: MessageDataType<MESSAGE_TYPE>) => send(messageType, { ...baseMessageOptions, ...messageOptions});
+}
+
+export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
+ return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => handle(messageType, method);
+}
+
+/**
+ * ----------------
+ * INTERNAL HELPER FUNCTIONS
+ * ----------------
+ */
+
+/**
+ * check if the data is valid message data
+ */
 function isMessageData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(eventData: unknown): eventData is ShopwareMessageSendData<MESSAGE_TYPE> {
   const shopwareMessageData = eventData as ShopwareMessageSendData<MESSAGE_TYPE>;
 
@@ -166,28 +236,4 @@ function isMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   return !!shopwareMessageData._type
          && !!shopwareMessageData.hasOwnProperty('_response')
          && !!shopwareMessageData._callbackId;
-}
-
-/**
- * Function overloading for these two cases:
- * 
- * 1. case: createSender('reload', {})  ==> no option parameter required in usage
- * 2. case: createSender('redirect')  ==> option parameter required in usage
- * 
- * */
-export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
-  (messageType: MESSAGE_TYPE, baseMessageOptions: MessageDataType<MESSAGE_TYPE>)
-  :(messageOptions?: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
-export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
-  (messageType: MESSAGE_TYPE)
-  :(messageOptions: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
-
-export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
-(messageType: MESSAGE_TYPE, baseMessageOptions?: MessageDataType<MESSAGE_TYPE>)
-{
-  return (messageOptions: MessageDataType<MESSAGE_TYPE>) => send(messageType, { ...baseMessageOptions, ...messageOptions});
-}
-
-export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
-  return (method: (data: MessageDataType<MESSAGE_TYPE>) => ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => handle(messageType, method);
 }

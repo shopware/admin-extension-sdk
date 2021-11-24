@@ -1,10 +1,16 @@
+import { _subtract } from './../../src/messages.types';
 import './style.css';
-import { send } from '../../src/channel';
+import { handle, send } from '../../src/channel';
 
 const actionType = document.getElementById('actionType')! as HTMLInputElement
 const actionValue = document.getElementById('actionValue')! as HTMLTextAreaElement
 const sendAction = document.getElementById('sendAction')!;
 const result = document.getElementById('result')!;
+
+const callMethodInMainWindow = document.getElementById('callMethodInMainWindow');
+const firstNumber = document.getElementById('firstNumber')! as HTMLInputElement
+const secondNumber = document.getElementById('secondNumber')! as HTMLInputElement
+const methodResult = document.getElementById('methodResult')!;
 
 sendAction.addEventListener('click', () => {
   const actionTypeValue = actionType.value;
@@ -14,4 +20,17 @@ sendAction.addEventListener('click', () => {
     .then((dataFromMain) => {
       result.innerHTML = dataFromMain;
     })
+})
+
+handle('_multiply', ({ firstNumber, secondNumber }) => {  
+  return firstNumber * secondNumber;
+})
+
+callMethodInMainWindow.addEventListener('click', () => {
+  send(
+    '_subtract',
+    { firstNumber: Number(firstNumber.value), secondNumber: Number(secondNumber.value)},
+  ).then((result) => {
+    methodResult.innerHTML = result.toString();
+  })
 })

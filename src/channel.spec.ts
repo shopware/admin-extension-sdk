@@ -70,4 +70,64 @@ describe('Test the channel bridge from iFrame to admin', () => {
       done();
     })
   });
+
+  it('should convert functions in options and call them on the handler side', (done) => {
+    const buttonMethodMock = jest.fn(() => {});
+    const dispatchNotification = createSender('dispatchNotification');
+    const handleNotification = createHandler('dispatchNotification');
+
+    const removeListener = handleNotification(async ({ actions }) => {
+      if (!actions || actions?.length <= 0) {
+        fail('The notification handler does not get any actions from the sender');
+        return;
+      }
+
+      const firstAction = actions[0];
+
+      if(!firstAction.method) {
+        fail('"method" in the firstAction is undefined');
+      }
+
+      expect(typeof firstAction.method).toBe('function');
+
+      expect(buttonMethodMock).toHaveBeenCalledTimes(0);
+      await firstAction.method();
+      expect(buttonMethodMock).toHaveBeenCalledTimes(1);
+    })
+
+    dispatchNotification({
+      title: 'Notification with action',
+      message: 'The action should contain a callable method',
+      actions: [
+        {
+          label: 'Button with method',
+          method: () => buttonMethodMock()
+        }
+      ]
+    }).then(() => {
+      removeListener();
+
+      done();
+    })
+  });
+
+  it('should convert functions in options and call them on the handler side with arguments and return value', (done) => {
+    const methodMock = jest.fn((firstNumber, secondNumber) => {
+      return firstNumber * secondNumber;
+    });
+    const sendMultiply = createSender('_multiply');
+    const handleMultiply = createHandler('_multiply');
+
+    const removeListener = handleMultiply(({ firstNumber, secondNumber }) => {
+      return Promise.resolve(methodMock(firstNumber, secondNumber))
+    })
+
+    sendMultiply({ firstNumber: 7, secondNumber: 8 })
+      .then((result) => {
+        expect(result).toEqual(56);
+
+        removeListener();
+        done();
+      })
+  });
 });

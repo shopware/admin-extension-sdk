@@ -52,7 +52,7 @@ describe('Test the actions', () => {
     });
   });
 
-    // Test actions which get data back
+  // Test actions which get data back
   ;[
     {
       type: 'getPageTitle',
@@ -85,4 +85,34 @@ describe('Test the actions', () => {
       cy.getIframe().find('#result').contains(JSON.stringify(action.responseData))  
     });
   })
+
+  it(`calling method from main window to iframe`, () => {
+    // multiply values
+    cy.get('#firstNumber').type(7);
+    cy.get('#secondNumber').type(7);
+    cy.get('#callMethodInIframe').click();
+
+    // check if result is correct
+    cy.get('#methodResult').contains(49);
+  });
+
+  it(`calling method from main window to iframe`, () => {
+    // subtract values
+    cy.getIframe()
+      .find('#firstNumber')
+      .type(43)
+
+    cy.getIframe()
+      .find('#secondNumber')
+      .type(23)
+
+    cy.getIframe()
+      .find('#callMethodInMainWindow')
+      .click()
+
+    // check if result is correct
+    cy.getIframe()
+      .find('#methodResult')
+      .contains(20);
+  });
 })

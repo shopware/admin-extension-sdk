@@ -42,7 +42,8 @@ export type dispatchNotification = {
    */
   actions?: Array<{
     label: string,
-    route: string,
+    method?: () => void,
+    route?: string,
     disabled?: boolean,
   }>
 }
