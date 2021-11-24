@@ -3,9 +3,9 @@ import { createSender } from '../channel';
 export const redirect = createSender('redirectWindow');
 
 /**
-   * Redirect to another URL
-   */
- export type redirectWindow = {
+ * Redirect to another URL
+ */
+export type redirectWindow = {
   responseType: void,
   /**
    * The URL for the redirection

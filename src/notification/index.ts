@@ -3,9 +3,9 @@ import { createSender } from '../channel';
 export const dispatch = createSender('dispatchNotification');
 
 /**
-   * Dispatch a notification.
-   */
- export type dispatchNotification = {
+ * Dispatch a notification.
+ */
+export type dispatchNotification = {
   responseType: void,
   /**
    * This message will be shown in the notification.

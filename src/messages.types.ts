@@ -3,7 +3,7 @@ import { redirectWindow } from './window/index';
 
 
 /**
- * Contains all shopware send types.
+ * Contains all shopware send types.
  * @internal
  */
 export type ShopwareMessageTypes = {

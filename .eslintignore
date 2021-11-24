@@ -1,0 +1,10 @@
+node_modules
+dist
+es
+umd
+example-dist
+docs
+example
+coverage
+cypress
+*.spec.ts

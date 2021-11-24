@@ -22,7 +22,7 @@ export type ShopwareMessageSendData<MESSAGE_TYPE extends keyof ShopwareMessageTy
  */
 export type ShopwareMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = {
   _type: MESSAGE_TYPE,
-  _response: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
+  _response: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null,
   _callbackId: string
 }
 
@@ -33,7 +33,7 @@ export type ShopwareMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessa
  * @param data The matching data for the type
  * @returns A promise with the response data in the given responseType 
  */
-export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: MESSAGE_TYPE, data: MessageDataType<MESSAGE_TYPE>): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> {
+export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: MESSAGE_TYPE, data: MessageDataType<MESSAGE_TYPE>): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
   // generate a unique callback ID. This here is only for simple demonstration purposes
   const callbackId = String(Math.floor(Math.random() * Date.now()));
 
@@ -58,14 +58,14 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: MESS
       let shopwareResponseData;
       // try to parse the json file
       try {
-        shopwareResponseData = JSON.parse(event.data);
+        shopwareResponseData = JSON.parse(event.data) as unknown;
       } catch {
         // fail silently when message is not a valid json file
         return;
       }
 
       // check if messageData is valid
-      if (!isMessageResponseData(shopwareResponseData)) {
+      if (!isMessageResponseData<MESSAGE_TYPE>(shopwareResponseData)) {
         return;
       }
 
@@ -107,14 +107,14 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: ME
 
     // try to parse the json file
     try {
-      shopwareMessageData = JSON.parse(event.data);
+      shopwareMessageData = JSON.parse(event.data) as unknown;
     } catch {
       // fail silently when message is not a valid json file
       return;
     }
 
     // check if messageData is valid
-    if (!isMessageData(shopwareMessageData)) {
+    if (!isMessageData<MESSAGE_TYPE>(shopwareMessageData)) {
       return;
     }
 
@@ -123,7 +123,7 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: ME
       return;
     }
 
-    const responseMessage: ShopwareMessageResponseData<any> = {
+    const responseMessage: ShopwareMessageResponseData<MESSAGE_TYPE> = {
       _callbackId: shopwareMessageData._callbackId,
       _type: shopwareMessageData._type,
       _response: method(shopwareMessageData._data) ?? null
@@ -135,6 +135,7 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: ME
       // if event source exists then send it back to original source
       event.source.postMessage(stringifiedResponseMessage, {
         // @ts-expect-error - event.source.origin is not correctly defined in TS
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         targetOrigin: event.source.origin ?? '*'
       });
     } else {
@@ -150,20 +151,21 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(type: ME
   return () => window.removeEventListener('message', handleListener);
 }
 
-function isMessageData(eventData: object): eventData is ShopwareMessageSendData<any> {
-  const shopwareMessageData = eventData as ShopwareMessageSendData<any>;
+function isMessageData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(eventData: unknown): eventData is ShopwareMessageSendData<MESSAGE_TYPE> {
+  const shopwareMessageData = eventData as ShopwareMessageSendData<MESSAGE_TYPE>;
 
-  return shopwareMessageData._type
-         && shopwareMessageData._data
-         && shopwareMessageData._callbackId;
+  return !!shopwareMessageData._type
+         && !!shopwareMessageData._data
+         && !!shopwareMessageData._callbackId;
 }
 
-function isMessageResponseData(eventData: object): eventData is ShopwareMessageResponseData<any> {
-  const shopwareMessageData = eventData as ShopwareMessageResponseData<any>;
+// ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
+function isMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(eventData: unknown): eventData is ShopwareMessageResponseData<MESSAGE_TYPE> {
+  const shopwareMessageData = eventData as ShopwareMessageResponseData<MESSAGE_TYPE>;
 
-  return shopwareMessageData._type
-         && shopwareMessageData.hasOwnProperty('_response')
-         && shopwareMessageData._callbackId;
+  return !!shopwareMessageData._type
+         && !!shopwareMessageData.hasOwnProperty('_response')
+         && !!shopwareMessageData._callbackId;
 }
 
 /**
