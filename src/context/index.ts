@@ -1,8 +1,10 @@
-import { createSender } from '../channel';
+import { createSender, createSubscriber } from '../channel';
 
 export const getLanguage = createSender('contextLanguage', {});
+export const subscribeLanguage = createSubscriber('contextLanguage');
 export const getEnvironment = createSender('contextEnvironment', {});
 export const getLocale = createSender('contextLocale', {});
+export const subscribeLocale = createSubscriber('contextLocale');
 export const getCurrency = createSender('contextCurrency', {});
 
 /**

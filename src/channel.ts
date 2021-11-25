@@ -268,6 +268,10 @@ export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(m
  return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => handle(messageType, method);
 }
 
+export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
+  return (method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>) => subscribe(messageType, method);
+}
+
 /**
  * ----------------
  * IIFE for default handler
