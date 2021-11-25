@@ -2,18 +2,18 @@ import { send, handle, createSender, createHandler } from './channel';
 
 describe('Test the channel bridge from iFrame to admin', () => {
   it('should send "reload" command to the admin', (done) => {
-    const removeListener = handle('reload', (result) => {
+    const removeListener = handle('windowReload', (result) => {
       expect(result).toEqual({});
       
       removeListener();
       done();
     })
 
-    send('reload', {});
+    send('windowReload', {});
   });
 
   it('should send "reload" command to the admin also without options', (done) => {
-    const removeListener = handle('reload', (result) => {
+    const removeListener = handle('windowReload', (result) => {
       expect(result).toEqual({});
       
       removeListener();
@@ -22,7 +22,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
 
     // safety check if non-ts user aren't providing options
     // @ts-expect-error
-    send('reload');
+    send('windowReload');
   });
 
   it('should get value back from admin', (done) => {
@@ -59,8 +59,8 @@ describe('Test the channel bridge from iFrame to admin', () => {
   });
 
   it('should create a sender and handler with optional options', (done) => {
-    const reload = createSender('reload', {});
-    const handleReload = createHandler('reload');
+    const reload = createSender('windowReload', {});
+    const handleReload = createHandler('windowReload');
 
     const removeListener = handleReload(() => {})
 
@@ -73,8 +73,8 @@ describe('Test the channel bridge from iFrame to admin', () => {
 
   it('should convert functions in options and call them on the handler side', (done) => {
     const buttonMethodMock = jest.fn(() => {});
-    const dispatchNotification = createSender('dispatchNotification');
-    const handleNotification = createHandler('dispatchNotification');
+    const dispatchNotification = createSender('notificationDispatch');
+    const handleNotification = createHandler('notificationDispatch');
 
     const removeListener = handleNotification(async ({ actions }) => {
       if (!actions || actions?.length <= 0) {

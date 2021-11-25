@@ -1,11 +1,11 @@
 import { createSender } from '../channel';
 
-export const redirect = createSender('redirectWindow');
+export const redirect = createSender('windowRedirect');
 
 /**
  * Redirect to another URL
  */
-export type redirectWindow = {
+export type windowRedirect = {
   responseType: void,
   /**
    * The URL for the redirection
@@ -15,4 +15,11 @@ export type redirectWindow = {
    * If this is activated then the link will be opened in a new tab
    */
   newTab?: boolean,
+}
+
+/**
+ * Reload the current window
+ */
+export type windowReload = {
+  responseType: void,
 }

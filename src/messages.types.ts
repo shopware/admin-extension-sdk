@@ -1,6 +1,6 @@
-import { dispatchNotification } from './notification/index';
-import { redirectWindow } from './window/index';
-import { languageContext, environmentContext, localeContext, currencyContext, hostContext } from './context/index';
+import { notificationDispatch } from './notification/index';
+import { windowRedirect, windowReload } from './window/index';
+import { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextHost } from './context/index';
 
 
 /**
@@ -8,26 +8,18 @@ import { languageContext, environmentContext, localeContext, currencyContext, ho
  * @internal
  */
 export type ShopwareMessageTypes = {
+  notificationDispatch: notificationDispatch,
+  windowRedirect: windowRedirect,
+  windowReload: windowReload,
+  contextLanguage: contextLanguage,
+  contextEnvironment: contextEnvironment,
+  contextLocale: contextLocale,
+  contextCurrency: contextCurrency,
+  contextHost: contextHost,
   getPageTitle: getPageTitle,
-  dispatchNotification: dispatchNotification,
-  redirectWindow: redirectWindow,
-  reload: reload,
-  languageContext: languageContext,
-  environmentContext: environmentContext,
-  localeContext: localeContext,
-  currencyContext: currencyContext,
-  hostContext: hostContext,
   __function__: __function__,
   _multiply: _multiply,
   _subtract: _subtract,
-}
-
-/**
- * @private
- * JUST FOR DEMO CASES HOW A TYPE WITHOUT OPTIONS LOOKS LIKE
- */
-export type reload = {
-  responseType: void,
 }
 
 /**

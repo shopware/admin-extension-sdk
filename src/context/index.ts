@@ -1,15 +1,15 @@
 import { createSender } from '../channel';
 
-export const getLanguage = createSender('languageContext', {});
-export const getEnvironment = createSender('environmentContext', {});
-export const getLocale = createSender('localeContext', {});
-export const getCurrency = createSender('currencyContext', {});
-export const getHost = createSender('hostContext', {});
+export const getLanguage = createSender('contextLanguage', {});
+export const getEnvironment = createSender('contextEnvironment', {});
+export const getLocale = createSender('contextLocale', {});
+export const getCurrency = createSender('contextCurrency', {});
+export const getHost = createSender('contextHost', {});
 
 /**
  * Get the current content language
  */
- export type languageContext = {
+ export type contextLanguage = {
   responseType: {
     systemLanguageId: string,
     languageId: string,
@@ -20,14 +20,14 @@ export const getHost = createSender('hostContext', {});
 /**
  * Get the current environment (development or production)
  */
-export type environmentContext = {
+export type contextEnvironment = {
   responseType: 'development' | 'production',
 }
 
 /**
  * Get the current UI locale
  */
-export type localeContext = {
+export type contextLocale = {
   responseType: {
     locale: string,
     fallbackLocale: string,
@@ -37,7 +37,7 @@ export type localeContext = {
 /**
  * Get the system currency
  */
-export type currencyContext = {
+export type contextCurrency = {
   responseType: {
     systemCurrencyISOCode: string,
     systemCurrencyId: string,
@@ -47,7 +47,7 @@ export type currencyContext = {
 /**
  * Get the information about the host
  */
-export type hostContext = {
+export type contextHost = {
   responseType: {
     hostUrl: string,
   },
