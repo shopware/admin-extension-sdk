@@ -1,7 +1,8 @@
 import './style.css'
-import { handle, send } from '../../src/channel';
+import { handle, publish, send } from '../../src/channel';
 
 const listenToActionButton = document.getElementById('listenToAction')
+const publishAction = document.getElementById('publishAction')
 const actionType = document.getElementById('actionType')! as HTMLInputElement
 const result = document.getElementById('result')!;
 const responseData = document.getElementById('responseData')! as HTMLTextAreaElement;
@@ -22,6 +23,13 @@ listenToActionButton?.addEventListener('click', () => {
 
     return reponseDataValue;
   })
+})
+
+publishAction?.addEventListener('click', () => {
+  const actionTypeValue = actionType.value;
+  const reponseDataValue = responseData.value;
+
+  publish(actionTypeValue as any, reponseDataValue)
 })
 
 handle('_subtract', ({ firstNumber, secondNumber }) => {  

@@ -115,4 +115,43 @@ describe('Test the actions', () => {
       .find('#methodResult')
       .contains(20);
   });
+
+  it.only(`should subscribe to published events from main window`, () => {
+    // start listener
+    cy.getIframe()
+      .find('#actionType')
+      .type('contextLocale')
+
+    cy.getIframe()
+      .find('#subscribeAction')
+      .click()
+
+    // publish data
+    cy.get('#actionType')
+      .type('contextLocale');
+    
+    cy.get('#responseData')
+      .type(`{ "locale": "en-GB" }`, { parseSpecialCharSequences: false })
+
+    cy.get('#publishAction')
+      .click();
+
+    // check if published data was written
+    cy.getIframe()
+      .find('#result')
+      .contains('{ "locale": "en-GB" }');
+
+    // publish more data
+    cy.get('#responseData')
+      .clear()
+      .type(`{ "locale": "de-DE" }`, { parseSpecialCharSequences: false })
+
+    cy.get('#publishAction')
+      .click();
+    
+    // check if published data was written
+    cy.getIframe()
+      .find('#result')
+      .contains('{ "locale": "de-DE" }');
+  });
 })

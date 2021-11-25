@@ -229,7 +229,9 @@ export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
 ) {
   const sendPromises = [...sourceRegistry].map((source) => {    
-    return send(type, data, source);
+    // Disable error handling because not every window need to react to the data
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return send(type, data, source).catch(() => {});
   })
 
   return Promise.all(sendPromises);
