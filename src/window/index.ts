@@ -14,5 +14,5 @@ export type redirectWindow = {
   /**
    * If this is activated then the link will be opened in a new tab
    */
-  newTab?: boolean
+  newTab?: boolean,
 }

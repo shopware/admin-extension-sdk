@@ -1,5 +1,6 @@
 import { dispatchNotification } from './notification/index';
 import { redirectWindow } from './window/index';
+import { languageContext, environmentContext, localeContext, currencyContext, hostContext } from './context/index';
 
 
 /**
@@ -11,6 +12,11 @@ export type ShopwareMessageTypes = {
   dispatchNotification: dispatchNotification,
   redirectWindow: redirectWindow,
   reload: reload,
+  languageContext: languageContext,
+  environmentContext: environmentContext,
+  localeContext: localeContext,
+  currencyContext: currencyContext,
+  hostContext: hostContext,
   __function__: __function__,
   _multiply: _multiply,
   _subtract: _subtract,
@@ -21,7 +27,7 @@ export type ShopwareMessageTypes = {
  * JUST FOR DEMO CASES HOW A TYPE WITHOUT OPTIONS LOOKS LIKE
  */
 export type reload = {
-  responseType: void
+  responseType: void,
 }
 
 /**
@@ -30,7 +36,7 @@ export type reload = {
  * Get the actual page title
  */
 export type getPageTitle = {
-  responseType: string
+  responseType: string,
 }
 
 /**

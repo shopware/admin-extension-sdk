@@ -45,5 +45,5 @@ export type dispatchNotification = {
     method?: () => void,
     route?: string,
     disabled?: boolean,
-  }>
+  }>,
 }

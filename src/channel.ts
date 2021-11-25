@@ -22,7 +22,7 @@ export type MessageDataType<TYPE extends keyof ShopwareMessageTypes> = Omit<Shop
 export type ShopwareMessageSendData<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = {
   _type: MESSAGE_TYPE,
   _data: MessageDataType<MESSAGE_TYPE>,
-  _callbackId: string
+  _callbackId: string,
 }
 
 /**
@@ -32,7 +32,7 @@ export type ShopwareMessageSendData<MESSAGE_TYPE extends keyof ShopwareMessageTy
 export type ShopwareMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = {
   _type: MESSAGE_TYPE,
   _response: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null,
-  _callbackId: string
+  _callbackId: string,
 }
 
 /**
@@ -63,7 +63,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   const messageData: ShopwareMessageSendData<MESSAGE_TYPE> = {
     _type: type,
     _data: sendData,
-    _callbackId: callbackId
+    _callbackId: callbackId,
   }
 
   // replace methods etc. so that they are working in JSON format
@@ -163,7 +163,7 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     const responseMessage: ShopwareMessageResponseData<MESSAGE_TYPE> = {
       _callbackId: shopwareMessageData._callbackId,
       _type: shopwareMessageData._type,
-      _response: responseValue ?? null
+      _response: responseValue ?? null,
     }
 
     const stringifiedResponseMessage = JSON.stringify(responseMessage);
@@ -173,7 +173,7 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
       event.source.postMessage(stringifiedResponseMessage, {
         // @ts-expect-error - event.source.origin is not correctly defined in TS
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        targetOrigin: event.source.origin ?? '*'
+        targetOrigin: event.source.origin ?? '*',
       });
     } else {
       // if no event source exists then it should send to same window
