@@ -1,6 +1,7 @@
 import { createSender } from '../channel';
 
 export const redirect = createSender('windowRedirect');
+export const reload = createSender('windowReload');
 
 /**
  * Redirect to another URL
