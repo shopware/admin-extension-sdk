@@ -1,6 +1,6 @@
 import { notificationDispatch } from './notification/index';
 import { windowRedirect, windowReload } from './window/index';
-import { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextHost } from './context/index';
+import { contextLanguage, contextEnvironment, contextLocale, contextCurrency } from './context/index';
 
 
 /**
@@ -15,7 +15,6 @@ export type ShopwareMessageTypes = {
   contextEnvironment: contextEnvironment,
   contextLocale: contextLocale,
   contextCurrency: contextCurrency,
-  contextHost: contextHost,
   getPageTitle: getPageTitle,
   __function__: __function__,
   _multiply: _multiply,

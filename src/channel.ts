@@ -75,7 +75,6 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   return new Promise((resolve) => {
     const callbackHandler = function(event: MessageEvent<string>) {    
       if (typeof event.data !== 'string') {
-        console.log('event.data', event.data)
         return;
       }
 

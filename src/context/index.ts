@@ -4,7 +4,6 @@ export const getLanguage = createSender('contextLanguage', {});
 export const getEnvironment = createSender('contextEnvironment', {});
 export const getLocale = createSender('contextLocale', {});
 export const getCurrency = createSender('contextCurrency', {});
-export const getHost = createSender('contextHost', {});
 
 /**
  * Get the current content language
@@ -13,7 +12,6 @@ export const getHost = createSender('contextHost', {});
   responseType: {
     systemLanguageId: string,
     languageId: string,
-    name: string,
   },
 }
 
@@ -21,7 +19,7 @@ export const getHost = createSender('contextHost', {});
  * Get the current environment (development or production)
  */
 export type contextEnvironment = {
-  responseType: 'development' | 'production',
+  responseType: 'development' | 'production' | 'testing',
 }
 
 /**
@@ -41,14 +39,5 @@ export type contextCurrency = {
   responseType: {
     systemCurrencyISOCode: string,
     systemCurrencyId: string,
-  },
-}
-
-/**
- * Get the information about the host
- */
-export type contextHost = {
-  responseType: {
-    hostUrl: string,
   },
 }
