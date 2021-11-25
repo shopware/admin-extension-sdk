@@ -116,7 +116,7 @@ describe('Test the actions', () => {
       .contains(20);
   });
 
-  it.only(`should subscribe to published events from main window`, () => {
+  it(`should subscribe to published events from main window`, () => {
     // start listener
     cy.getIframe()
       .find('#actionType')
