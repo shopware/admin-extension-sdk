@@ -4,7 +4,8 @@ module.exports = {
   testEnvironment: 'jsdom',
   globals: {
     'ts-jest': {
-      diagnostics: false
+      diagnostics: false,
+      isolatedModules: true
     }
   },
   modulePathIgnorePatterns: [

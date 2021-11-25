@@ -17,6 +17,7 @@ export type ShopwareMessageTypes = {
   contextCurrency: contextCurrency,
   getPageTitle: getPageTitle,
   __function__: __function__,
+  __registerWindow__: __registerWindow__,
   _multiply: _multiply,
   _subtract: _subtract,
 }
@@ -51,4 +52,8 @@ export type __function__ = {
   responseType: any,
   args: unknown[],
   id: string,
+}
+
+export type __registerWindow__ = {
+  responseType: void,
 }

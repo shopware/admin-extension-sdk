@@ -1,4 +1,4 @@
-import { send, handle, createSender, createHandler } from './channel';
+import { send, handle, createSender, createHandler, subscribe, publish } from './channel';
 
 describe('Test the channel bridge from iFrame to admin', () => {
   it('should send "reload" command to the admin', (done) => {
@@ -25,22 +25,20 @@ describe('Test the channel bridge from iFrame to admin', () => {
     send('windowReload');
   });
 
-  it('should get value back from admin', (done) => {
+  it('should get value back from admin', async () => {
     const PAGE_TITLE = 'Awesome page title';
 
     const removeListener = handle('getPageTitle', () => {
       return PAGE_TITLE;
     })
 
-    send('getPageTitle', {}).then((pageTitle) => {
-      expect(pageTitle).toEqual(PAGE_TITLE);
+    const pageTitle = await send('getPageTitle', {})
+    expect(pageTitle).toEqual(PAGE_TITLE);
 
-      removeListener();
-      done();
-    })
+    removeListener();
   });
 
-  it('should create a sender and handler with required options', (done) => {
+  it('should create a sender and handler with required options', async () => {
     const getPageTitle = createSender('getPageTitle');
     const handlePageTitle = createHandler('getPageTitle');
 
@@ -50,25 +48,21 @@ describe('Test the channel bridge from iFrame to admin', () => {
       return PAGE_TITLE;
     })
 
-    getPageTitle({}).then((pageTitle) => {
-      expect(pageTitle).toEqual(PAGE_TITLE);
+    const pageTitle = await getPageTitle({})
+    expect(pageTitle).toEqual(PAGE_TITLE);
 
-      removeListener();
-      done();
-    })
+    removeListener();
   });
 
-  it('should create a sender and handler with optional options', (done) => {
+  it('should create a sender and handler with optional options', async () => {
     const reload = createSender('windowReload', {});
     const handleReload = createHandler('windowReload');
 
     const removeListener = handleReload(() => {})
 
-    reload().then(() => {      
-      removeListener();
+    await reload();
 
-      done();
-    })
+    removeListener();
   });
 
   it('should convert functions in options and call them on the handler side', (done) => {
@@ -111,7 +105,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
     })
   });
 
-  it('should convert functions in options and call them on the handler side with arguments and return value', (done) => {
+  it('should convert functions in options and call them on the handler side with arguments and return value', async () => {
     const methodMock = jest.fn((firstNumber, secondNumber) => {
       return firstNumber * secondNumber;
     });
@@ -122,12 +116,52 @@ describe('Test the channel bridge from iFrame to admin', () => {
       return Promise.resolve(methodMock(firstNumber, secondNumber))
     })
 
-    sendMultiply({ firstNumber: 7, secondNumber: 8 })
-      .then((result) => {
-        expect(result).toEqual(56);
+    const result = await sendMultiply({ firstNumber: 7, secondNumber: 8 })
+    expect(result).toEqual(56);
 
-        removeListener();
-        done();
-      })
+    removeListener();
+  });
+
+  it('should get data from published messages when subscribed', async () => {
+    const localeMethodMock = jest.fn();
+    const fallbackLocaleMethodMock = jest.fn();
+
+    const removeSubscription = subscribe('contextLocale', ({ locale, fallbackLocale }) => {
+      localeMethodMock(locale);
+      fallbackLocaleMethodMock(fallbackLocale);
+    })
+
+    expect(localeMethodMock).toHaveBeenCalledTimes(0);
+    expect(fallbackLocaleMethodMock).toHaveBeenCalledTimes(0);
+
+    await publish('contextLocale', {
+      locale: 'en-GB',
+      fallbackLocale: 'en-GB',
+    })
+
+    expect(localeMethodMock).toHaveBeenCalledTimes(1);
+    expect(localeMethodMock).toHaveBeenLastCalledWith('en-GB');
+    expect(fallbackLocaleMethodMock).toHaveBeenCalledTimes(1);
+    expect(fallbackLocaleMethodMock).toHaveBeenLastCalledWith('en-GB');
+
+    await publish('contextLocale', {
+      locale: 'de-DE',
+      fallbackLocale: 'en-GB',
+    })
+
+    expect(localeMethodMock).toHaveBeenCalledTimes(2);
+    expect(localeMethodMock).toHaveBeenLastCalledWith('de-DE');
+    expect(fallbackLocaleMethodMock).toHaveBeenCalledTimes(2);
+    expect(fallbackLocaleMethodMock).toHaveBeenLastCalledWith('en-GB');
+
+    removeSubscription();
+
+    await publish('contextLocale', {
+      locale: 'nl-NL',
+      fallbackLocale: 'en-GB',
+    }).catch(() => {})
+
+    expect(localeMethodMock).toHaveBeenCalledTimes(2);
+    expect(fallbackLocaleMethodMock).toHaveBeenCalledTimes(2);
   });
 });

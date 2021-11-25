@@ -37,6 +37,13 @@ export type ShopwareMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessa
 
 /**
  * ----------------
+ * DATA STORES FOR REGISTRIES
+ * ----------------
+ */
+const sourceRegistry: Set<Window> = new Set();
+
+/**
+ * ----------------
  * MAIN FUNCTIONS FOR EXPORT
  * ----------------
  */
@@ -72,7 +79,11 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   // convert message data to string for message sending
   const message = JSON.stringify(messageData);  
 
-  return new Promise((resolve) => {
+  // set value if send was resolved
+  let isResolved = false;
+  const timeoutMs = 3000;
+
+  return new Promise((resolve, reject) => {
     const callbackHandler = function(event: MessageEvent<string>) {    
       if (typeof event.data !== 'string') {
         return;
@@ -105,14 +116,37 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       // remove event so that in only execute once
       window.removeEventListener('message', callbackHandler);
 
-      // return the data
-      resolve(shopwareResponseData._response);
+      // only return the data if the request is not timed out
+      if (!isResolved) {
+        isResolved = true;
+
+        // return the data
+        resolve(shopwareResponseData._response);
+      }
     }
 
     window.addEventListener('message', callbackHandler);
-    targetWindow 
+
+    // @ts-expect-error - Cypress tests run inside iframe. Therefore same level communication is not possible
+    if (window.parent.__Cypress__) {
+      targetWindow 
+        ? targetWindow.postMessage(message, window.parent.origin)
+        : window.postMessage(message, window.parent.origin);
+    } else {
+      targetWindow 
         ? targetWindow.postMessage(message, window.parent.origin)
         : window.parent.postMessage(message, window.parent.origin);
+    }
+
+    // send timeout when noone sends data back or handler freezes
+    setTimeout(() => {
+      // only runs when is not resolved
+      if (isResolved) {
+        return;
+      }
+
+      reject('Send timeout expired. It could be possible that no handler for the postMessage request exists or that the handler freezed.');
+    }, timeoutMs);
   })
 }
 
@@ -125,7 +159,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
   (
     type: MESSAGE_TYPE,
-    method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
+    method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
     )
   : () => void
   {
@@ -155,9 +189,12 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     }
 
     // deserialize methods etc. so that they are callable in JS
-    deserializeMessageData<MESSAGE_TYPE>(shopwareMessageData)
+    deserializeMessageData<MESSAGE_TYPE>(shopwareMessageData)   
 
-    const responseValue = await Promise.resolve(method(shopwareMessageData._data));
+    const responseValue = await Promise.resolve(method(
+      shopwareMessageData._data,
+      { _event_: event }
+      ));
 
     const responseMessage: ShopwareMessageResponseData<MESSAGE_TYPE> = {
       _callbackId: shopwareMessageData._callbackId,
@@ -187,6 +224,24 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
   return () => window.removeEventListener('message', handleListener);
 }
 
+export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  type: MESSAGE_TYPE,
+  data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
+) {
+  const sendPromises = [...sourceRegistry].map((source) => {    
+    return send(type, data, source);
+  })
+
+  return Promise.all(sendPromises);
+}
+
+export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  type: MESSAGE_TYPE,
+  method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>
+) {
+  return handle(type, method);
+}
+
 /**
  * Function overloading for these two cases:
  * 
@@ -210,6 +265,26 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
  return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => handle(messageType, method);
 }
+
+/**
+ * ----------------
+ * IIFE for default handler
+ * ----------------
+ */
+
+(async (): Promise<void> => {
+  // handle registrations at current window
+  handle('__registerWindow__', (_, additionalOptions) => {
+    if (additionalOptions._event_.source) {
+      sourceRegistry.add(additionalOptions._event_.source as Window);
+    } else {
+      sourceRegistry.add(window);
+    }
+  })
+
+  // register at parent window
+  await send('__registerWindow__', {});
+})().catch((e) => console.error(e));
 
 /**
  * ----------------

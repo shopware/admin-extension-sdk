@@ -21,7 +21,7 @@ listenToActionButton?.addEventListener('click', () => {
     result.innerHTML += JSON.stringify(receivedData) + '\n';
 
     return reponseDataValue;
-  });
+  })
 })
 
 handle('_subtract', ({ firstNumber, secondNumber }) => {  
