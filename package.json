@@ -13,7 +13,8 @@
   ],
   "files": [
     "umd",
-    "es"
+    "es",
+    "cdn"
   ],
   "main": "./umd/index.js",
   "module": "./es/index.js",
@@ -28,9 +29,10 @@
     "dev": "concurrently \"npm run dev:build-watch\" \"npm run dev:serve\"",
     "dev:build-watch": "vite build --watch --mode example",
     "dev:serve": "live-server --port=8181 example-dist",
-    "build": "rm -rf es && rm -rf umd && npm run build:umd && npm run build:es",
+    "build": "rm -rf es && rm -rf umd && rm -rf cdn && npm run build:umd && npm run build:es && npm run build:cdn",
     "build:umd": "tsc --project tsconfig.json --module umd --outDir \"./umd\"",
     "build:es": "tsc --project tsconfig.json --outDir \"./es\"",
+    "build:cdn": "vite build --mode cdn",
     "doc": "cd docs && npm run build",
     "doc:dev": "cd docs && npm run start",
     "lint": "npm run lint:types && npm run lint:eslint",

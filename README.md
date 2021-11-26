@@ -32,10 +32,10 @@ Import the source from the CDN
 
 ```js
 // use the latest version available
-<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk"></script>
+<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk/cdn"></script>
 
 // use a fix version (example here: 1.2.3)
-<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk@1.2.3"></script>
+<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk@1.2.3/cdn"></script>
 ```
 
 and then you can access it with the global variable `sw`.
