@@ -6,8 +6,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Admin App Actions',
-  tagline: 'for Shopware 6 apps',
+  title: 'Admin Extension SDK',
+  tagline: 'for Shopware 6 apps and plugins',
   url: 'https://shopware.github.io',
   baseUrl: '/admin-extension-sdk/',
   onBrokenLinks: 'throw',
@@ -26,13 +26,9 @@ const config = {
         entryPointStrategy: 'expand',
         tsconfig: '../tsconfig.json',
         watch: process.env.TYPEDOC_WATCH,
-        excludeInternal: true,
-        hideBreadcrumbs: true,
-        hideInPageTOC: true,
-        sidebar: {
-          fullNames: true,
-          readmeLabel: 'Getting started'
-        }
+        publicPath: 'api/',
+        readme: 'none',
+        sort: ['instance-first']
       },
     ]
   ],
@@ -56,17 +52,23 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'Admin App Actions',
+        title: 'Admin Extension SDK',
         logo: {
           alt: 'Shopware 6 Logo',
           src: 'img/sw6-logo.svg',
         },
         items: [
           {
+            to: 'docs/guide',
+            activeBasePath: 'docs/guide',
+            position: 'left',
+            label: 'Guide',
+          },
+          {
             to: 'docs/api',
             activeBasePath: 'docs/api',
             position: 'left',
-            label: 'Documentation',
+            label: 'API',
           },
           {
             href: 'https://github.com/shopware/admin-extension-sdk',

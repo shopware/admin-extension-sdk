@@ -245,12 +245,10 @@ export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 }
 
 /**
- * Function overloading for these two cases:
- * 
- * 1. case: createSender('reload', {})  ==> no option parameter required in usage
- * 2. case: createSender('redirect')  ==> option parameter required in usage
- * 
- * */
+ * Factory method which creates a sender so that the type don't need to be
+ * defined and can be hidden. Also this allows to use a send method without
+ * a required second argument if the default options are defined.
+ */
  export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  (messageType: MESSAGE_TYPE, baseMessageOptions: MessageDataType<MESSAGE_TYPE>)
  :(messageOptions?: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
@@ -264,10 +262,18 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  return (messageOptions: MessageDataType<MESSAGE_TYPE>) => send(messageType, { ...baseMessageOptions, ...messageOptions});
 }
 
+/**
+ * Factory method which creates a handler so that the type don't need to be 
+ * defined and can be hidden.
+ */
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
  return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => handle(messageType, method);
 }
 
+/**
+ * Factory method which creates a handler so that the type don't need to be 
+ * defined and can be hidden.
+ */
 export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
   return (method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>) => subscribe(messageType, method);
 }

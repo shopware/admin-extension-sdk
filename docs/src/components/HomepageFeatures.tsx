@@ -15,29 +15,29 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Simple API',
+    title: 'Easy to use',
     description: (
       <>
-      The AdminAppActions library was designed to make the communcation
-      to the admin simple and easy.
+      You don't need to have knowledge about
+      the internal of the Shopware 6 admin. The SDK hides the complicated stuff behind beautiful API.
       </>
     ),
   },
   {
-    title: 'Extremely small footprint',
+    title: 'Many capabilities',
     description: (
       <>
-        The library is designed to have a very small bundle size so that it
-        don't extend you app size much.
+        Throwing notifications, extending the current UI and much more. 
+        The SDK provides a ton of extension for your ideas and solutions.
       </>
     ),
   },
   {
-    title: 'Full type support',
+    title: 'Lightweight',
     description: (
       <>
-        The library is completely written in Typescript so that you get the best developer experience
-        possible.
+         The whole library is completely tree-shakable, dependency-free and every functionality
+         can be imported granularly so that your bundle stays small and fast.
       </>
     ),
   },

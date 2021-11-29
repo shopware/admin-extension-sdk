@@ -16,7 +16,7 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/api">
+            to="/docs/guide">
             Getting started
           </Link>
         </div>
@@ -30,7 +30,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="Admin App Actions for the Shopware 6 app system">
+      description="Admin Extension SDK for Shopware 6 apps and plugins">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
