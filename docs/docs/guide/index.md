@@ -21,9 +21,11 @@ It contains helper functions to communicate to the Admin, execute actions, subsc
 - 💙  **Developer experience:** get a great development experience from the beginning. And it will be improved more and more in the future.
 - 🪶  **Lightweight:** the whole library is completely tree-shakable, dependency-free and every functionality can be imported granularly so that your bundle stays small and fast.
 
+Go to [Installation](./installation.md) to get started. Or check out the quick start:
+
 ## Quick start
 
-Understand the Shopware Extension SDK in **5 minutes** by playing.
+Understand the Shopware Extension SDK by throwing a notification.
 
 The requirements for this quick start are:
 - [development Shopware 6 instance](https://developer.shopware.com/docs/guides/installation) or a [Shopware 6 cloud instance](https://www.shopware.com/en/products/shopware-cloud/)
