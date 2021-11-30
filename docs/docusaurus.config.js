@@ -100,7 +100,7 @@ const config = {
         externalUrlRegex: 'external\\.com|domain\\.com',
   
         // Optional: see doc section below
-        appId: 'YOUR_APP_ID',
+        // appId: 'YOUR_APP_ID',
   
         // Optional: Algolia search parameters
         searchParameters: {},
