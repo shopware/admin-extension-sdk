@@ -2,7 +2,7 @@
 
 ### Dispatch a notification
 
-![notification example](./notification-example.jpg)
+![notification example](./assets/notification-example.jpg)
 
 #### Usage:  
 ```ts

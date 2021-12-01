@@ -17,11 +17,15 @@ npm i --save @shopware-ag/admin-extension-sdk
 
 and import it in your app:
 ```js
-// import everything
+// import everything as one big object
 import * as sw from '@shopware-ag/admin-extension-sdk';
 
-// or import only needed functionality
+// or import only needed functionality scope
 import { notification }  from '@shopware-ag/admin-extension-sdk';
+
+// or the direct method (here with an alias)
+import { dispatch as dispatchNotification } from '@shopware-ag/admin-extension-sdk/es/notification'
+
 ```
 
 ## Using CDN:
