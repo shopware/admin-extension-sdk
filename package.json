@@ -35,6 +35,7 @@
     "build:cdn": "vite build --mode cdn",
     "doc": "cd docs && npm run build",
     "doc:dev": "cd docs && npm run start",
+    "doc:install-dependencies": "cd ./docs && npm ci",
     "lint": "npm run lint:types && npm run lint:eslint",
     "lint:types": "tsc --noEmit",
     "lint:eslint": "eslint ./src --ext .ts",
