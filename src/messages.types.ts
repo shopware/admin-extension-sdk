@@ -1,6 +1,7 @@
 import { notificationDispatch } from './notification/index';
 import { windowRedirect, windowReload } from './window/index';
 import { contextLanguage, contextEnvironment, contextLocale, contextCurrency } from './context/index';
+import { uiComponentRender } from './ui/component/index';
 
 
 /**
@@ -16,6 +17,7 @@ export type ShopwareMessageTypes = {
   contextLocale: contextLocale,
   contextCurrency: contextCurrency,
   getPageTitle: getPageTitle,
+  uiComponentRender: uiComponentRender,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,

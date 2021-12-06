@@ -249,13 +249,23 @@ export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
  * defined and can be hidden. Also this allows to use a send method without
  * a required second argument if the default options are defined.
  */
- export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
- (messageType: MESSAGE_TYPE, baseMessageOptions: MessageDataType<MESSAGE_TYPE>)
- :(messageOptions?: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
-export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
- (messageType: MESSAGE_TYPE)
- :(messageOptions: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
 
+// SENDER WITH OPTIONAL ARGUMENTS (WHEN ALL BASE ARGUMENTS ARE DEFINED)
+export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
+(messageType: MESSAGE_TYPE, baseMessageOptions: MessageDataType<MESSAGE_TYPE>)
+:(messageOptions?: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
+
+// SENDER WITH PARTIAL ARGUMENTS (ARGUMENTS DEFINED IN BASE OPTIONS ARE OMITTED)
+export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes, BASE_OPTIONS extends Partial<MessageDataType<MESSAGE_TYPE>>>
+(messageType: MESSAGE_TYPE, baseMessageOptions: BASE_OPTIONS)
+:(messageOptions: Omit<MessageDataType<MESSAGE_TYPE>, keyof BASE_OPTIONS>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
+
+// SENDER WITH FULL ARGUMENTS (WHEN NO BASE ARGUMENTS ARE DEFINED)
+export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
+(messageType: MESSAGE_TYPE)
+:(messageOptions: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
+
+// MAIN FUNCTION WHICH INCLUDES ALL POSSIBILITES
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (messageType: MESSAGE_TYPE, baseMessageOptions?: MessageDataType<MESSAGE_TYPE>)
 {
