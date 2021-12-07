@@ -2,7 +2,7 @@ import * as window from './window';
 import * as notification from './notification';
 import * as context from './context'
 import * as component from './ui/component'
-import * as card from './ui/card'
+import card from './ui/card'
 
 const ui = {
   component,
