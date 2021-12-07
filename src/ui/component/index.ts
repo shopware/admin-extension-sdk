@@ -10,7 +10,6 @@ export const render = createSender('uiComponentRender');
    responseType: void,
    component: string,
    positionId: string,
-   locationId: string,
    props: unknown,
  } &
  (
@@ -25,5 +24,6 @@ interface cardComponentRender {
   props: {
     title?: string,
     subtitle?: string,
+    locationId: string,
   },
 }
