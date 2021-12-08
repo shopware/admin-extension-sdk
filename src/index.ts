@@ -1,12 +1,10 @@
 import * as window from './window';
 import * as notification from './notification';
 import * as context from './context'
-import * as component from './ui/component'
-import card from './ui/card'
+import * as componentSection from './ui/componentSection'
 
 const ui = {
-  component,
-  card,
+  componentSection,
 }
 
 /**

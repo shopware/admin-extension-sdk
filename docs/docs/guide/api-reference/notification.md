@@ -37,14 +37,14 @@ sw.notification.dispatch({
 ```
 
 #### Parameters:
-| Name | Required | Default | Description |
-| :------ | :------ | :------ | :------ |
-| `title` | true | | The title of the notification |
-| `message` | true | | The message of the notification |
-| `variant` | false | `info` | Change the variant of the notification. Available variants are `success`, `info`, `warning` and `error`.|
-| `appearance` | false | `notification` | Change the look of the notification. Use `system` for technical application notifications. Otherwise use `notification`.|
-| `growl` | false | `true` | Should the notification directly be visible? |
-| `actions` | false | `[]` | Add buttons to the notification. Each button with a `label` can trigger a `method` or open a `route` (internal route or external link). Buttons can also be disabled with the attribute `disabled`. |
+| Name         | Required | Default        | Description                                                                                                                                                                                                     |
+|:-------------|:---------|:---------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `title`      | true     |                | Defines a notification's **title**.                                                                                                                                                                             |
+| `message`    | true     |                | Defines a notification's main expression or message to the user.                                                                                                                                                |
+| `variant`    | false    | `info`         | Defines the notification type. Available `variant` types are `success`, `info`, `warning` and `error`.                                                                                                          |
+| `appearance` | false    | `notification` | Changes the style of a notification. Use `system` for technical notifications thrown by the application. Otherwise keep the default value `notification`.                                                       |
+| `growl`      | false    | `true`         | Displays a notification that is overlaying any module. Use `false` to display the notification in the notification center (bell symbol) only.                                                                   |
+| `actions`    | false    | `[]`           | Adds clickable buttons to the notification. Each button with a `label` can trigger a `method` or open a `route` (internal route or external link). Buttons can also be disabled using the attribute `disabled`. |
 
 #### Return value:
-Returns a Promise without data.
+Returns a promise without data.

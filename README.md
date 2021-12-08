@@ -48,13 +48,13 @@ sw.notification.dispatch({
 ```
 
 ## Features
-- 🏗  **Works for Shopware 6 Apps and Plugins:** you can use the SDK for your plugins or apps. The API usage is identical.
-- 🎢  **Low learning curve:** you don't need to have knowledge about the internal of the Shopware 6 admin. The SDK hides the complicated stuff behind beautiful API.
-- 🧰  **Many extension capabilities:** from throwing notifications, accessing context information or extending the current UI. The feature set of the SDK will grow more and more. This gives you more possibilities and flexibility for your ideas and solutions.
-- 🪨  **Stable API with great backward compatibility:** don't fear Shopware updates. Breaking changes in this SDK are the exception. If you use it then your Apps and Plugins will stay stable for a long time. Without code maintenance.
-- 🧭  **Type safety:** the whole SDK is written in TypeScript. This provides you great autocompletion support and more safety for your Apps and Plugins.
-- 💙  **Developer experience:** get a great development experience from the beginning. And it will be improved more and more in the future.
-- 🪶  **Lightweight:** the whole library is completely tree-shakable, dependency-free and every functionality can be imported granularly so that your bundle stays small and fast.
+- 🏗  **Works with Shopware 6 Apps and Plugins:** you can use the SDK for your plugins or apps. API usage is identical.
+- 🎢  **Shallow learning curve:** you don't need to have extensive knowledge about the internals of the Shopware 6 Administration. Our SDK hides the complicated stuff behind a beautiful API.
+- 🧰  **Many extension capabilities:** from throwing notifications, accessing context information or extending the current UI. The feature set of the SDK will gradually be extended, providing more possibilities and flexibility for your ideas and solutions.
+- 🪨  **A stable API with great backwards compatibility:** don't fear Shopware updates anymore. Breaking changes in this SDK are an exception. If you use the SDK, your apps and plugins will stay stable for a longer time, without any need for code maintenance.
+- 🧭  **Type safety:** the whole SDK is written in TypeScript which provides great autocompletion support and more safety for your apps and plugins.
+- 💙  **Developer experience:** have a great development experience right from the start. And it will become better and better in the future.
+- 🪶  **Lightweight:** the whole library is completely tree-shakable and dependency-free. Every functionality can be imported granularly to keep your bundle as small and fast as possible.
 
 ## Examples
 

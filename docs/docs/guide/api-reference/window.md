@@ -17,7 +17,7 @@ sw.window.redirect({
 | `newTab` | false | false | The message of the notification |
 
 #### Return value:
-Returns a Promise without data.
+Returns a promise without data.
 
 ### Reload page
 
@@ -32,4 +32,4 @@ sw.window.reload()
 No parameters required.
 
 #### Return value:
-Returns a Promise without data.
+Returns a promise without data.

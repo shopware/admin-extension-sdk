@@ -1,11 +1,11 @@
 import { createSender } from '../../channel';
 
-export const render = createSender('uiComponentRender');
+export const add = createSender('uiComponentSectionRenderer');
 
 /**
- * Get the current content language
+ * Contains all possible components for the sections
  */
- export type uiComponentRender =
+ export type uiComponentSectionRenderer =
  {
    responseType: void,
    component: string,

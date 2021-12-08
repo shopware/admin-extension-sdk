@@ -4,6 +4,7 @@ dist
 dist-ssr
 dist-example
 *.local
+.idea
 coverage
 docs/docs/api
 es
