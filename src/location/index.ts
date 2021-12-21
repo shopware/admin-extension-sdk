@@ -1,10 +1,7 @@
 import { send } from '../channel';
+import { getLocationId } from '../_internals/utils';
 
-function getLocationId():string|null {
-  const params = new URLSearchParams(window.location.search);
 
-  return params.get('location-id');
-}
 
 // TODO: add documentation (+ "body {overflow: hidden}" notice for views)
 export const is = (location: string): boolean => {

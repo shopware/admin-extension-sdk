@@ -18,3 +18,9 @@ export function traverseObject(this: any, traversableObject: any, processor: (pa
 export function isObject(value: unknown): value is any {
   return value !== null && typeof value === 'object';
 }
+
+export function getLocationId():string|null {
+  const params = new URLSearchParams(window.location.search);
+
+  return params.get('location-id');
+}

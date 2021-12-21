@@ -1,6 +1,9 @@
 import { createSender } from '../../channel';
+import { getLocationId } from '../../_internals/utils';
 
-export const add = createSender('uiComponentSectionRenderer');
+export const add = createSender('uiComponentSectionRenderer', {
+  src: getLocationId() ?? undefined,
+});
 
 /**
  * Contains all possible components for the sections

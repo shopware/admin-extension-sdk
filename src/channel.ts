@@ -228,7 +228,7 @@ export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
 )
-:Promise<(void | Awaited<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | null)[]>
+:Promise<(void | Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | null)[]>
 {
   const sendPromises = [...sourceRegistry].map((source) => {    
     // Disable error handling because not every window need to react to the data
