@@ -6,7 +6,7 @@ function getLocationId():string|null {
   return params.get('location-id');
 }
 
-// TODO: add documentation
+// TODO: add documentation (+ "body {overflow: hidden}" notice for views)
 export const is = (location: string): boolean => {
   return getLocationId() === location;
 }
@@ -20,7 +20,7 @@ export const updateHeight = (height?: number): Promise<void|null> => {
   }
 
   // if no height is defined then send the current document height
-  const currentHeight = document.documentElement.scrollHeight;
+  const currentHeight = document.documentElement.offsetHeight;
 
   return send('locationUpdateHeight', {
     height: currentHeight,
@@ -28,8 +28,24 @@ export const updateHeight = (height?: number): Promise<void|null> => {
   });
 };
 
-// TODO: add startAutoResizer to update the height automatically
-// TODO: add stopAutoResizer to stop the auto-update of the height
+let resizeObserver: ResizeObserver | null = null;
+
+export const startAutoResizer = ():void => {
+  // create an Observer instance
+  resizeObserver = new ResizeObserver(() => {
+    void updateHeight();
+  })
+
+  // start observing a DOM node
+  resizeObserver.observe(document.body)
+}
+
+export const stopAutoResizer = ():void => {
+  if (resizeObserver) {
+    resizeObserver.unobserve(document.body);
+    resizeObserver.disconnect();
+  }
+}
 
 export const MAIN_HIDDEN = 'sw-main-hidden';
 
