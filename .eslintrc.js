@@ -15,6 +15,7 @@ module.exports = {
     'no-prototype-builtins': 'off',
     'comma-dangle': 'off',
     '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
+    '@typescript-eslint/explicit-function-return-type': ['error'],
     '@typescript-eslint/member-delimiter-style': ['error', {
       multiline: {
         delimiter: 'comma',

@@ -2,6 +2,7 @@ import { notificationDispatch } from './notification/index';
 import { windowRedirect, windowReload } from './window/index';
 import { contextLanguage, contextEnvironment, contextLocale, contextCurrency } from './context/index';
 import { uiComponentSectionRenderer } from './ui/componentSection/index';
+import { locationUpdateHeight } from './location/index';
 
 
 /**
@@ -18,6 +19,7 @@ export type ShopwareMessageTypes = {
   contextCurrency: contextCurrency,
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
+  locationUpdateHeight: locationUpdateHeight,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,

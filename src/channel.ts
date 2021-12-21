@@ -84,7 +84,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   const timeoutMs = 3000;
 
   return new Promise((resolve, reject) => {
-    const callbackHandler = function(event: MessageEvent<string>) {    
+    const callbackHandler = function(event: MessageEvent<string>):void {    
       if (typeof event.data !== 'string') {
         return;
       }
@@ -163,7 +163,7 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     )
   : () => void
   {
-  const handleListener = async function(event: MessageEvent<string>) {    
+  const handleListener = async function(event: MessageEvent<string>): Promise<void> {    
     if (typeof event.data !== 'string') {
       return;
     }
@@ -221,13 +221,15 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
   window.addEventListener('message', handleListener);
 
   // return a cancel method
-  return () => window.removeEventListener('message', handleListener);
+  return ():void => window.removeEventListener('message', handleListener);
 }
 
 export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
-) {
+)
+:Promise<(void | Awaited<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | null)[]>
+{
   const sendPromises = [...sourceRegistry].map((source) => {    
     // Disable error handling because not every window need to react to the data
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -240,7 +242,7 @@ export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>
-) {
+): () => void {
   return handle(type, method);
 }
 
@@ -269,7 +271,10 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (messageType: MESSAGE_TYPE, baseMessageOptions?: MessageDataType<MESSAGE_TYPE>)
 {
- return (messageOptions: MessageDataType<MESSAGE_TYPE>) => send(messageType, { ...baseMessageOptions, ...messageOptions});
+ // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+ return (messageOptions: MessageDataType<MESSAGE_TYPE>) => {
+   return send(messageType, { ...baseMessageOptions, ...messageOptions});
+ }
 }
 
 /**
@@ -277,7 +282,10 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  * defined and can be hidden.
  */
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
- return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => handle(messageType, method);
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+ return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
+   return handle(messageType, method);
+ }
 }
 
 /**
@@ -285,7 +293,10 @@ export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(m
  * defined and can be hidden.
  */
 export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
-  return (method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>) => subscribe(messageType, method);
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  return (method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>) => {
+    return subscribe(messageType, method);
+  }
 }
 
 /**
