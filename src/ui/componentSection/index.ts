@@ -11,6 +11,7 @@ export const add = createSender('uiComponentSectionRenderer');
    component: string,
    positionId: string,
    props: unknown,
+   src?: string,
  } &
  (
    cardComponentRender
