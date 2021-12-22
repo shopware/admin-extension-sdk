@@ -8,6 +8,10 @@ export const is = (location: string): boolean => {
   return getLocationId() === location;
 }
 
+export const isIframe = (): boolean => {
+  return window !== window.parent;
+}
+
 export const updateHeight = (height?: number): Promise<void|null> => {
   if (height) {
     return send('locationUpdateHeight', {
