@@ -21,7 +21,7 @@ It contains helper functions to communicate with the Administration, execute act
 - 💙  **Developer experience:** have a great development experience right from the start. And it will become better and better in the future.
 - 🪶  **Lightweight:** the whole library is completely tree-shakable and dependency-free. Every functionality can be imported granularly to keep your bundle as small and fast as possible.
 
-Go to [Installation](./1_getting-started/installation) to get started. Or check out the quick start guide:
+Go to [Installation](./1_getting-started/installation.md) to get started. Or check out the quick start guide:
 
 ## Quick start
 
