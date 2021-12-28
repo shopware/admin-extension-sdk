@@ -57,3 +57,7 @@ height everytime the height of the view changes:
 location.startAutoResizer();
 ```
 ![Auto Resizer example](./assets/auto-resizer.gif)
+
+## Avoiding scrollbars
+If you render custom locations it is useful to disable the scroll behavior in your view. Otherwise scrollbars are visible
+which aren't needed in most cases. To avoid this you can add the css property `overflow: hidden;` to the `body` element.
