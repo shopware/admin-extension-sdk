@@ -8,7 +8,7 @@ export const add = createSender('uiComponentSectionRenderer', {
 /**
  * Contains all possible components for the sections
  */
- export type uiComponentSectionRenderer =
+export type uiComponentSectionRenderer =
  {
    responseType: void,
    component: string,

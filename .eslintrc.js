@@ -26,20 +26,20 @@ module.exports = {
         requireLast: false,
       },
     }],
-    "capitalized-comments": [
-      "error",
-      "always",
+    'capitalized-comments': [
+      'error',
+      'always',
       {
-          "ignorePattern": "pragma|ignored",
-          "ignoreInlineComments": true
+          'ignorePattern': 'pragma|ignored',
+          'ignoreInlineComments': true,
       },
     ],
     semi: [
-      "error",
-      "always",
+      'error',
+      'always',
     ],
     'no-console': [
-      "error",
+      'error',
       {
         allow: [
           'warn',
@@ -47,5 +47,19 @@ module.exports = {
         ],
       },
     ],
-  }
+    'indent': [
+      'error',
+      2,
+    ],
+    'no-debugger': 'error',
+    'no-unreachable': 'error',
+    'consistent-return': 'error',
+    camelcase: 'error',
+    curly: 'error',
+    eqeqeq: 'error',
+    'multiline-comment-style': [
+      'error',
+      'starred-block',
+    ],
+  },
 };
