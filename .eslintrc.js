@@ -24,7 +24,28 @@ module.exports = {
       singleline: {
         delimiter: 'comma',
         requireLast: false,
-      }
+      },
     }],
+    "capitalized-comments": [
+      "error",
+      "always",
+      {
+          "ignorePattern": "pragma|ignored",
+          "ignoreInlineComments": true
+      },
+    ],
+    semi: [
+      "error",
+      "always",
+    ],
+    'no-console': [
+      "error",
+      {
+        allow: [
+          'warn',
+          'error',
+        ],
+      },
+    ],
   }
 };

@@ -1,6 +1,6 @@
 name: Docs
 
-on: [push, pull_request]
+on: push
 
 jobs:
   create_docs:
