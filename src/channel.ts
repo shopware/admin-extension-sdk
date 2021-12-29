@@ -137,10 +137,9 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 
     // @ts-expect-error - Cypress tests run inside iframe. Therefore same level communication is not possible
     const parentWindow = !corsRestriction && window.parent.__CYPRESS__ ? window : window.parent;
+    const targetOrigin = corsRestriction ? document.referrer : window.parent.origin;
 
-    targetWindow
-      ? targetWindow.postMessage(message, corsRestriction ? document.referrer : window.parent.origin)
-      : parentWindow.postMessage(message, corsRestriction ? document.referrer : window.parent.origin);
+    targetWindow ? targetWindow.postMessage(message, targetOrigin) : parentWindow.postMessage(message, targetOrigin);
 
     // Send timeout when noone sends data back or handler freezes
     setTimeout(() => {
@@ -161,12 +160,12 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
  * @returns The return value is a cancel function to stop listening to the events
  */
 export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
-  (
-    type: MESSAGE_TYPE,
-    method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
-    )
+(
+  type: MESSAGE_TYPE,
+  method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
+)
   : () => void
-  {
+{
   const handleListener = async function(event: MessageEvent<string>): Promise<void> {    
     if (typeof event.data !== 'string') {
       return;
@@ -198,7 +197,7 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     const responseValue = await Promise.resolve(method(
       shopwareMessageData._data,
       { _event_: event }
-      ));
+    ));
 
     const responseMessage: ShopwareMessageResponseData<MESSAGE_TYPE> = {
       _callbackId: shopwareMessageData._callbackId,
@@ -274,10 +273,10 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (messageType: MESSAGE_TYPE, baseMessageOptions?: MessageDataType<MESSAGE_TYPE>)
 {
- // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
- return (messageOptions: MessageDataType<MESSAGE_TYPE>) => {
-   return send(messageType, { ...baseMessageOptions, ...messageOptions});
- };
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  return (messageOptions: MessageDataType<MESSAGE_TYPE>) => {
+    return send(messageType, { ...baseMessageOptions, ...messageOptions});
+  };
 }
 
 /**
@@ -286,9 +285,9 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  */
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
- return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
-   return handle(messageType, method);
- };
+  return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
+    return handle(messageType, method);
+  };
 }
 
 /**

@@ -10,7 +10,7 @@ export const getCurrency = createSender('contextCurrency', {});
 /**
  * Get the current content language
  */
- export type contextLanguage = {
+export type contextLanguage = {
   responseType: {
     systemLanguageId: string,
     languageId: string,
