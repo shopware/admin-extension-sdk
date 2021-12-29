@@ -60,26 +60,26 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   data: MessageDataType<MESSAGE_TYPE>,
   targetWindow?: Window
 ): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
-  // generate a unique callback ID. This here is only for simple demonstration purposes
+  // Generate a unique callback ID. This here is only for simple demonstration purposes
   const callbackId = generateUniqueId();
 
-  // set fallback data when no data is defined
+  // Set fallback data when no data is defined
   const sendData = data ?? {};
 
-  // generate the message with the callbackId
+  // Generate the message with the callbackId
   const messageData: ShopwareMessageSendData<MESSAGE_TYPE> = {
     _type: type,
     _data: sendData,
     _callbackId: callbackId,
-  }
+  };
 
-  // replace methods etc. so that they are working in JSON format
-  serializeMessageData<MESSAGE_TYPE>(messageData)
+  // Replace methods etc. so that they are working in JSON format
+  serializeMessageData<MESSAGE_TYPE>(messageData);
 
-  // convert message data to string for message sending
+  // Convert message data to string for message sending
   const message = JSON.stringify(messageData);  
 
-  // set value if send was resolved
+  // Set value if send was resolved
   let isResolved = false;
   const timeoutMs = 3000;
 
@@ -90,64 +90,68 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       }
 
       let shopwareResponseData;
-      // try to parse the json file
+      // Try to parse the json file
       try {
         shopwareResponseData = JSON.parse(event.data) as unknown;
       } catch {
-        // fail silently when message is not a valid json file
+        // Fail silently when message is not a valid json file
         return;
       }
 
-      // check if messageData is valid
+      // Check if messageData is valid
       if (!isMessageResponseData<MESSAGE_TYPE>(shopwareResponseData)) {
         return;
       }
 
-      // only execute when callbackId matches
+      // Only execute when callbackId matches
       if (shopwareResponseData._callbackId !== callbackId) {
         return;
       }
 
-      // only execute if response value exists
+      // Only execute if response value exists
       if (!shopwareResponseData.hasOwnProperty('_response')) {
         return;
       }
       
-      // remove event so that in only execute once
+      // Remove event so that in only execute once
       window.removeEventListener('message', callbackHandler);
 
-      // only return the data if the request is not timed out
+      // Only return the data if the request is not timed out
       if (!isResolved) {
         isResolved = true;
 
-        // return the data
+        // Return the data
         resolve(shopwareResponseData._response);
       }
-    }
+    };
 
     window.addEventListener('message', callbackHandler);
 
-    // @ts-expect-error - Cypress tests run inside iframe. Therefore same level communication is not possible
-    if (window.parent.__Cypress__) {
-      targetWindow 
-        ? targetWindow.postMessage(message, window.parent.origin)
-        : window.postMessage(message, window.parent.origin);
-    } else {
-      targetWindow 
-        ? targetWindow.postMessage(message, window.parent.origin)
-        : window.parent.postMessage(message, window.parent.origin);
+    let corsRestriction = true;
+
+    try {
+      corsRestriction = !window.parent.origin;
+    } catch {
+      // Silent catch to prevent cross origin frame exception
     }
 
-    // send timeout when noone sends data back or handler freezes
+    // @ts-expect-error - Cypress tests run inside iframe. Therefore same level communication is not possible
+    const parentWindow = !corsRestriction && window.parent.__CYPRESS__ ? window : window.parent;
+
+    targetWindow
+      ? targetWindow.postMessage(message, corsRestriction ? document.referrer : window.parent.origin)
+      : parentWindow.postMessage(message, corsRestriction ? document.referrer : window.parent.origin);
+
+    // Send timeout when noone sends data back or handler freezes
     setTimeout(() => {
-      // only runs when is not resolved
+      // Only runs when is not resolved
       if (isResolved) {
         return;
       }
 
       reject('Send timeout expired. It could be possible that no handler for the postMessage request exists or that the handler freezed.');
     }, timeoutMs);
-  })
+  });
 }
 
 /**
@@ -170,26 +174,26 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 
     let shopwareMessageData;
 
-    // try to parse the json file
+    // Try to parse the json file
     try {
       shopwareMessageData = JSON.parse(event.data) as unknown;
     } catch {
-      // fail silently when message is not a valid json file
+      // Fail silently when message is not a valid json file
       return;
     }
 
-    // check if messageData is valid
+    // Check if messageData is valid
     if (!isMessageData<MESSAGE_TYPE>(shopwareMessageData)) {
       return;
     }
 
-    // check if messageData type matches the type argument
+    // Check if messageData type matches the type argument
     if (shopwareMessageData._type !== type) {
       return;
     }
 
-    // deserialize methods etc. so that they are callable in JS
-    deserializeMessageData<MESSAGE_TYPE>(shopwareMessageData)   
+    // Deserialize methods etc. so that they are callable in JS
+    deserializeMessageData<MESSAGE_TYPE>(shopwareMessageData);   
 
     const responseValue = await Promise.resolve(method(
       shopwareMessageData._data,
@@ -200,27 +204,26 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
       _callbackId: shopwareMessageData._callbackId,
       _type: shopwareMessageData._type,
       _response: responseValue ?? null,
-    }
+    };
 
     const stringifiedResponseMessage = JSON.stringify(responseMessage);
 
     if (event.source) {
-      // if event source exists then send it back to original source
+      // If event source exists then send it back to original source
       event.source.postMessage(stringifiedResponseMessage, {
-        // @ts-expect-error - event.source.origin is not correctly defined in TS
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        targetOrigin: event.source.origin ?? '*',
+        targetOrigin: event.origin ?? '*',
       });
     } else {
-      // if no event source exists then it should send to same window
-      window.postMessage(stringifiedResponseMessage, window.origin)
+      // If no event source exists then it should send to same window
+      window.postMessage(stringifiedResponseMessage, window.origin);
     }
-  }
+  };
 
-  // start listening directly
+  // Start listening directly
   window.addEventListener('message', handleListener);
 
-  // return a cancel method
+  // Return a cancel method
   return ():void => window.removeEventListener('message', handleListener);
 }
 
@@ -234,7 +237,7 @@ export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     // Disable error handling because not every window need to react to the data
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     return send(type, data, source).catch(() => {});
-  })
+  });
 
   return Promise.all(sendPromises);
 }
@@ -274,7 +277,7 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
  return (messageOptions: MessageDataType<MESSAGE_TYPE>) => {
    return send(messageType, { ...baseMessageOptions, ...messageOptions});
- }
+ };
 }
 
 /**
@@ -285,7 +288,7 @@ export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(m
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
  return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
    return handle(messageType, method);
- }
+ };
 }
 
 /**
@@ -296,7 +299,7 @@ export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   return (method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>) => {
     return subscribe(messageType, method);
-  }
+  };
 }
 
 /**
@@ -306,16 +309,16 @@ export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes
  */
 
 (async (): Promise<void> => {
-  // handle registrations at current window
+  // Handle registrations at current window
   handle('__registerWindow__', (_, additionalOptions) => {
     if (additionalOptions._event_.source) {
       sourceRegistry.add(additionalOptions._event_.source as Window);
     } else {
       sourceRegistry.add(window);
     }
-  })
+  });
 
-  // register at parent window
+  // Register at parent window
   await send('__registerWindow__', {});
 })().catch((e) => console.error(e));
 
@@ -326,7 +329,7 @@ export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes
  */
 
 /**
- * check if the data is valid message data
+ * Check if the data is valid message data
  */
 function isMessageData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(eventData: unknown): eventData is ShopwareMessageSendData<MESSAGE_TYPE> {
   const shopwareMessageData = eventData as ShopwareMessageSendData<MESSAGE_TYPE>;
