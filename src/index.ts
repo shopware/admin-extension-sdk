@@ -2,10 +2,12 @@ import * as window from './window';
 import * as notification from './notification';
 import * as context from './context';
 import * as componentSection from './ui/componentSection';
+import tabs from './ui/tabs';
 import * as location from './location';
 
 const ui = {
   componentSection,
+  tabs,
 };
 
 /**
