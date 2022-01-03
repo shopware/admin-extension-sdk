@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/admin-extension-sdk",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "repository": "git://github.com/shopware/admin-extension-sdk.git",
   "description": "The SDK for App iframes to communicate with the Shopware Adminstration",
   "keywords": [
@@ -42,7 +42,8 @@
     "e2e:open": "concurrently --handle-input --kill-others --success first \"cypress open --browser chrome\" \"npm run dev:build-watch\" \"npm run dev:serve -- --no-browser\"",
     "e2e:run": "concurrently --handle-input --kill-others --success first \"cypress run --browser chrome\" \"npm run dev:build-watch\" \"npm run dev:serve -- --no-browser\"",
     "test": "jest --collectCoverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
