@@ -2,6 +2,9 @@
 import { ShopwareMessageTypes } from './messages.types';
 import { serializeMessageData, deserializeMessageData } from './_internals/function-serializer';
 import { generateUniqueId } from './_internals/utils';
+import { extensions, sendPrivileged, handlePrivileged } from './privileges/privilege-resolver';
+import { ShopwareMessageTypePrivileges } from './privileges';
+import MissingPrivilegesError from './privileges/missing-privileges-error';
 
 /**
  * ----------------
@@ -60,6 +63,13 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   data: MessageDataType<MESSAGE_TYPE>,
   targetWindow?: Window
 ): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
+  const missingPriviliges = sendPrivileged(type);
+  if (missingPriviliges !== null) {
+    const missingPrivilegesError = new MissingPrivilegesError(type, missingPriviliges);
+
+    return Promise.reject(missingPrivilegesError);
+  }
+
   // Generate a unique callback ID. This here is only for simple demonstration purposes
   const callbackId = generateUniqueId();
 
@@ -159,14 +169,27 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
  * @param method This method should return the response value
  * @returns The return value is a cancel function to stop listening to the events
  */
-export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
+function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (
   type: MESSAGE_TYPE,
-  method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
+  method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
+  extensions: extensions
 )
   : () => void
 {
-  const handleListener = async function(event: MessageEvent<string>): Promise<void> {    
+  const handleListener = async function(event: MessageEvent<string>): Promise<void> {
+    // Message type needs privileges to be handled
+    if (ShopwareMessageTypePrivileges[type] && Object.keys(ShopwareMessageTypePrivileges[type]).length) {
+      if (!extensions) {
+        return;
+      }
+      
+      const missingPrivileges = handlePrivileged(type, extensions, event.origin);
+      if (missingPrivileges !== null) {
+        return;
+      }
+    }
+
     if (typeof event.data !== 'string') {
       return;
     }
@@ -226,6 +249,13 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
   return ():void => window.removeEventListener('message', handleListener);
 }
 
+export function handleFactory(extensions: extensions) {
+  return <MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+    type: MESSAGE_TYPE,
+    method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
+  ): () => void => handle(type, method, extensions);
+}
+
 export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
@@ -245,11 +275,11 @@ export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>
 ): () => void {
-  return handle(type, method);
+  return handle(type, method, {});
 }
 
 /**
- * Factory method which creates a sender so that the type don't need to be
+ * Factory method which creates a sender so that the type doesn't need to be
  * defined and can be hidden. Also this allows to use a send method without
  * a required second argument if the default options are defined.
  */
@@ -286,7 +316,7 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
-    return handle(messageType, method);
+    return handle(messageType, method, {});
   };
 }
 
@@ -315,7 +345,7 @@ export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes
     } else {
       sourceRegistry.add(window);
     }
-  });
+  }, {});
 
   // Register at parent window
   await send('__registerWindow__', {});

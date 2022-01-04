@@ -1,6 +1,7 @@
 import './style.css'
-import { handle, publish, send } from '../../src/channel';
+import { handleFactory, publish, send } from '../../src/channel';
 
+const handle = handleFactory({})
 const listenToActionButton = document.getElementById('listenToAction')
 const publishAction = document.getElementById('publishAction')
 const actionType = document.getElementById('actionType')! as HTMLInputElement
@@ -34,6 +35,23 @@ publishAction?.addEventListener('click', () => {
 
 handle('_subtract', ({ firstNumber, secondNumber }) => {  
   return firstNumber - secondNumber;
+})
+
+const privilegedHandle = handleFactory(
+  {
+    foo: {
+      baseUrl: 'http://localhost:8181',
+      permissions: {
+        create: ['user'],
+        read: ['user'],
+        update: ['user'],
+        delete: ['user'],
+      }
+    }
+})
+
+privilegedHandle('_privileges', () => {
+  result.innerHTML = 'Handle privileged';
 })
 
 callMethodInIframe.addEventListener('click', () => {

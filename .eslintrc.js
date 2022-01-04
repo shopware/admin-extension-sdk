@@ -5,7 +5,10 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
-  plugins: ['@typescript-eslint'],
+  plugins: [
+    '@typescript-eslint',
+    'import',
+  ],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -60,6 +63,13 @@ module.exports = {
     'multiline-comment-style': [
       'error',
       'starred-block',
+    ],
+    'no-iterator': 'error',
+    'import/no-cycle': [
+      2,
+      {
+        maxDepth: 1,
+      },
     ],
   },
 };

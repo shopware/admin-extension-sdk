@@ -1,5 +1,5 @@
 import { ShopwareMessageTypes } from '../messages.types';
-import { send, ShopwareMessageSendData, handle } from '../channel';
+import { send, ShopwareMessageSendData, handleFactory } from '../channel';
 import { traverseObject, isObject, generateUniqueId } from './utils';
 
 /* eslint-disable */
@@ -22,6 +22,7 @@ function startMethodHandler() {
   if (isMethodHandlerStarted) return;
   isMethodHandlerStarted = true;
 
+  const handle = handleFactory({})
   handle('__function__', async ({ args, id }) => {  
     return await Promise.resolve(methodRegistry[id](...args));
   })

@@ -1,8 +1,11 @@
-import { send, handle, createSender, createHandler, subscribe, publish } from './channel';
+import { send, handleFactory, createSender, createHandler, subscribe, publish } from './channel';
+import MissingPrivilegesError from './privileges/missing-privileges-error';
 
 describe('Test the channel bridge from iFrame to admin', () => {
+  const defaultHandle = handleFactory({});
+
   it('should send "reload" command to the admin', (done) => {
-    const removeListener = handle('windowReload', (result) => {
+    const removeListener = defaultHandle('windowReload', (result) => {
       expect(result).toEqual({});
       
       removeListener();
@@ -13,7 +16,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
   });
 
   it('should send "reload" command to the admin also without options', (done) => {
-    const removeListener = handle('windowReload', (result) => {
+    const removeListener = defaultHandle('windowReload', (result) => {
       expect(result).toEqual({});
       
       removeListener();
@@ -28,7 +31,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
   it('should get value back from admin', async () => {
     const PAGE_TITLE = 'Awesome page title';
 
-    const removeListener = handle('getPageTitle', () => {
+    const removeListener = defaultHandle('getPageTitle', () => {
       return PAGE_TITLE;
     })
 
@@ -163,5 +166,46 @@ describe('Test the channel bridge from iFrame to admin', () => {
 
     expect(localeMethodMock).toHaveBeenCalledTimes(2);
     expect(fallbackLocaleMethodMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('should reject send with missing privileges', () => {
+    send('_privileges', {}).catch(e => {
+      const expectedError = new MissingPrivilegesError('_privileges', ['create:user', 'read:user', 'update:user', 'delete:user']);
+
+      expect(e.message).toEqual(expectedError.message)
+    })
+  });
+
+  it('should not call handle callback with missing extensions', () => {
+    const callback = jest.fn();
+    const removeHandle = defaultHandle('_privileges', callback)
+
+    // Simulate a postMessage call from an iFrame
+    window.dispatchEvent(new Event('message'))
+
+    removeHandle();
+
+    expect(callback).toHaveBeenCalledTimes(0)
+  });
+
+  it('should not call handle callback with missing privileges', () => {
+    const url = 'http://example.com';
+    const callback = jest.fn();
+    const handle = handleFactory({foo: {baseUrl: url, permissions: {create: ['notification']}}});
+    const removeHandle = handle('_privileges', callback, )
+
+    const event = new Event('message');
+
+    // Simulate a postMessage call from an iFrame with a none registered origin
+    window.dispatchEvent(event)
+
+    // Simulate a postMessage call from an iFrame
+    // @ts-expect-error
+    event.origin = url;
+    window.dispatchEvent(event)
+
+    removeHandle();
+
+    expect(callback).toHaveBeenCalledTimes(0)
   });
 });
