@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+const { default: MissingPrivilegesError } = require('../../src/privileges/missing-privileges-error');
+
 Cypress.Commands.add('getIframe', (iframe = 'iframe') => {
   return cy.get(iframe)
       .its('0.contentDocument.body')
@@ -153,5 +155,66 @@ describe('Test the actions', () => {
     cy.getIframe()
       .find('#result')
       .contains('{ "locale": "de-DE" }');
+  });
+  
+  it('should reject send with missing privilegs', () => {
+    const error = new MissingPrivilegesError('_privileges', ['create:user', 'read:user', 'update:user', 'delete:user']);
+
+    cy.getIframe()
+      .find('#actionType')
+      .type('_privileges');
+
+    cy.getIframe()
+      .find('#actionValue')
+      .type('{}');
+
+    cy.getIframe()
+      .find('#sendAction')
+      .click();
+
+    cy.getIframe()
+      .find('#result')
+      .should('have.html', error.message);
+  });
+
+  it('should send and handle with privilegs', () => {
+    cy.get('iframe').then(iframe => {
+      const urlObject = new URL(iframe[0].src, window.location.origin);
+      urlObject.searchParams.append(
+        'privileges',
+        JSON.stringify(
+          {
+            create: ['user'],
+            read: ['user'],
+            update: ['user'],
+            delete: ['user'],
+          }
+      ));
+
+      iframe[0].src = urlObject.toString();
+
+      return cy.wait(50).then(() => Promise.resolve());
+    }).then(() => {
+      cy.getIframe()
+        .find('#actionType')
+        .type('_privileges');
+
+      cy.getIframe()
+        .find('#actionValue')
+        .type('{}');
+
+      cy.getIframe()
+        .find('#sendAction')
+        .click();
+
+      // No error from send
+      cy.getIframe()
+        .find('#result')
+        .should('have.html', '');
+
+      // Handle success message
+      cy.get('#result')
+        .should('have.text', 'Handle privileged');
+    });
   });
 })

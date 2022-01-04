@@ -5,7 +5,6 @@ import { uiComponentSectionRenderer } from './ui/componentSection/index';
 import { uiTabsAddTabItem } from './ui/tabs';
 import { locationUpdateHeight } from './location/index';
 
-
 /**
  * Contains all shopware send types.
  * @internal
@@ -26,6 +25,7 @@ export type ShopwareMessageTypes = {
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
   _subtract: _subtract,
+  _privileges: _privileges,
 }
 
 /**
@@ -51,6 +51,10 @@ export type _subtract = {
   responseType: number,
   firstNumber: number,
   secondNumber: number,
+}
+
+export type _privileges = {
+  responseType: void,
 }
 
 export type __function__ = {

@@ -1,7 +1,8 @@
 import { _subtract } from './../../src/messages.types';
 import './style.css';
-import { handle, send, subscribe } from '../../src/channel';
+import { handleFactory, send, subscribe } from '../../src/channel';
 
+const handle = handleFactory({})
 const actionType = document.getElementById('actionType')! as HTMLInputElement
 const actionValue = document.getElementById('actionValue')! as HTMLTextAreaElement
 const sendAction = document.getElementById('sendAction')!;
@@ -20,6 +21,8 @@ sendAction.addEventListener('click', () => {
   send(actionTypeValue as any, JSON.parse(actionValueValue))
     .then((dataFromMain) => {
       result.innerHTML = dataFromMain;
+    }).catch(e => {
+      result.innerHTML = e.message;
     })
 })
 
