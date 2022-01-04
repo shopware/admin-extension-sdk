@@ -8,7 +8,7 @@ export type privileges = {
     delete?: Array<string>,
 }
 
-type extension = {
+export type extension = {
   baseUrl: string,
   permissions: privileges,
 }
