@@ -1,6 +1,9 @@
 import { send, handleFactory, createSender, createHandler, subscribe, publish } from './channel';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
 
+// Channel send timout + 1000
+jest.setTimeout(8000);
+
 describe('Test the channel bridge from iFrame to admin', () => {
   const defaultHandle = handleFactory({});
 
