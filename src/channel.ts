@@ -91,7 +91,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 
   // Set value if send was resolved
   let isResolved = false;
-  const timeoutMs = 3000;
+  const timeoutMs = 7000;
 
   return new Promise((resolve, reject) => {
     const callbackHandler = function(event: MessageEvent<string>):void {    
