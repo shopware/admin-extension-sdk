@@ -16,6 +16,7 @@ export const ShopwareMessageTypePrivileges = {
   uiComponentSectionRenderer: {},
   uiTabsAddTabItem: {},
   locationUpdateHeight: {},
+  menuItemAdd: {},
   __function__: {},
   __registerWindow__: {},
   _multiply: {},

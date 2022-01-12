@@ -4,10 +4,12 @@ import * as context from './context';
 import * as componentSection from './ui/componentSection';
 import tabs from './ui/tabs';
 import * as location from './location';
+import * as menu from './ui/menuItem';
 
 const ui = {
   componentSection,
   tabs,
+  menu,
 };
 
 /**
