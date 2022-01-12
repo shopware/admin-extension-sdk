@@ -4,6 +4,7 @@ import { contextLanguage, contextEnvironment, contextLocale, contextCurrency } f
 import { uiComponentSectionRenderer } from './ui/componentSection/index';
 import { uiTabsAddTabItem } from './ui/tabs';
 import { locationUpdateHeight } from './location/index';
+import { menuItemAdd } from './ui/menuItem';
 
 /**
  * Contains all shopware send types.
@@ -21,6 +22,7 @@ export type ShopwareMessageTypes = {
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
   locationUpdateHeight: locationUpdateHeight,
+  menuItemAdd: menuItemAdd,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,

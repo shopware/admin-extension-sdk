@@ -193,7 +193,7 @@ describe('Test the actions', () => {
 
       iframe[0].src = urlObject.toString();
 
-      return cy.wait(50).then(() => Promise.resolve());
+      return cy.wait(500).then(() => Promise.resolve());
     }).then(() => {
       cy.getIframe()
         .find('#actionType')
