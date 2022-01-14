@@ -1,4 +1,4 @@
-import { ShopwareMessageTypes } from "../messages.types";
+import { ShopwareMessageTypes } from '../messages.types';
 
 export default class MissingPrivilegesError extends Error {
   missingPrivileges: Array<string>;

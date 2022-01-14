@@ -1,4 +1,4 @@
-import { _privileges } from "./messages/_privileges";
+import { _privileges } from './messages/_privileges';
 
 /**
  * Determines which privileges are needed for a certain message type.
@@ -17,6 +17,7 @@ export const ShopwareMessageTypePrivileges = {
   uiTabsAddTabItem: {},
   locationUpdateHeight: {},
   menuItemAdd: {},
+  settingsItemAdd: {},
   __function__: {},
   __registerWindow__: {},
   _multiply: {},
