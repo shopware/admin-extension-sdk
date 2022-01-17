@@ -21,6 +21,7 @@ ui.menu.addMenuItem({
 | `locationId`         | true     |                | The Id for for the component section in the tab content       |
 | `displaySearchBar`   | false    | true           | Toggles the sw-page search bar on/off                         |
 | `parent`             | false    | 'sw-extension' | Determines under which main menu entry your item is displayed |
+| `position`           | false    | 110            | Determines the position of your menu item                     |
 
 #### Example
 ![Menu item example](./assets/add-menu-item-example.png)

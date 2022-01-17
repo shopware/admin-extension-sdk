@@ -1,4 +1,4 @@
-import { createSender } from "../../channel";
+import { createSender } from '../../channel';
 
 export const addMenuItem = createSender('menuItemAdd');
 
@@ -26,4 +26,10 @@ export type menuItemAdd = {
    * Defaults to `sw-extension`.
    */
   parent?: string,
+
+  /**
+   * Determines the position of your menu item.
+   * Defaults to 110.
+   */
+  position?: number,
 }

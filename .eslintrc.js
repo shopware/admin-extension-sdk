@@ -71,5 +71,6 @@ module.exports = {
         maxDepth: 1,
       },
     ],
+    quotes: ['error', 'single'],
   },
 };
