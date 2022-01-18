@@ -18,6 +18,7 @@ export const ShopwareMessageTypePrivileges = {
   locationUpdateHeight: {},
   menuItemAdd: {},
   settingsItemAdd: {},
+  mainModuleAdd: {},
   __function__: {},
   __registerWindow__: {},
   _multiply: {},

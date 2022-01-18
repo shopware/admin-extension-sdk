@@ -18,7 +18,7 @@ ui.menu.addMenuItem({
 | Name                 | Required | Default        | Description                                                   |
 | :------------------- | :------- | :------------- | :------------------------------------------------------------ |
 | `label`              | true     |                | The label of the tab bar item                                 |
-| `locationId`         | true     |                | The Id for for the component section in the tab content       |
+| `locationId`         | true     |                | The id for the content of the menu item module                |
 | `displaySearchBar`   | false    | true           | Toggles the sw-page search bar on/off                         |
 | `parent`             | false    | 'sw-extension' | Determines under which main menu entry your item is displayed |
 | `position`           | false    | 110            | Determines the position of your menu item                     |

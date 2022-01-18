@@ -19,7 +19,7 @@ ui.settings.addSettingsItem({
 | Name                 | Required | Default        | Description                                                   |
 | :------------------- | :------- | :------------- | :------------------------------------------------------------ |
 | `label`              | true     |                | The label of the tab bar item                                 |
-| `locationId`         | true     |                | The Id for for the component section in the tab content       |
+| `locationId`         | true     |                | The id for the content of the settings item module            |
 | `icon`               | true     |                | The icon to display in your settings item                     |
 | `displaySearchBar`   | false    | true           | Toggles the sw-page search bar on/off                         |
 | `tab`                | false    | 'plugins'      | Determines in which tab your settings item will be displayed  |

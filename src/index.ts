@@ -6,12 +6,14 @@ import tabs from './ui/tabs';
 import * as location from './location';
 import * as menu from './ui/menu';
 import * as settings from './ui/settings';
+import * as mainModule from './ui/mainModule';
 
 const ui = {
   componentSection,
   tabs,
   menu,
   settings,
+  mainModule,
 };
 
 /**
