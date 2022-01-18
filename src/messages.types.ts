@@ -6,6 +6,7 @@ import { uiTabsAddTabItem } from './ui/tabs';
 import { locationUpdateHeight } from './location/index';
 import { menuItemAdd } from './ui/menu';
 import { settingsItemAdd } from './ui/settings';
+import { mainModuleAdd } from './ui/mainModule';
 
 /**
  * Contains all shopware send types.
@@ -25,6 +26,7 @@ export type ShopwareMessageTypes = {
   locationUpdateHeight: locationUpdateHeight,
   menuItemAdd: menuItemAdd,
   settingsItemAdd: settingsItemAdd,
+  mainModuleAdd: mainModuleAdd,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
