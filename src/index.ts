@@ -7,6 +7,7 @@ import * as location from './location';
 import * as menu from './ui/menu';
 import * as settings from './ui/settings';
 import * as mainModule from './ui/mainModule';
+import * as modal from './ui/modal';
 
 const ui = {
   componentSection,
@@ -14,6 +15,7 @@ const ui = {
   menu,
   settings,
   mainModule,
+  modal,
 };
 
 /**

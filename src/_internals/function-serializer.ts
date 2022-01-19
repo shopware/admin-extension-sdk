@@ -7,8 +7,11 @@ export function serializeMessageData<MESSAGE_TYPE extends keyof ShopwareMessageT
   serializeMethodsWithPlaceholder(messageData);
 }
 
-export function deserializeMessageData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageData: ShopwareMessageSendData<MESSAGE_TYPE>): void {
-  deserializeMethodsWithPlaceholder(messageData);
+export function deserializeMessageData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  messageData: ShopwareMessageSendData<MESSAGE_TYPE>,
+  event: MessageEvent<string>
+): void {
+  deserializeMethodsWithPlaceholder(messageData, event);
 }
 
 // only avaliable on sender side
@@ -23,7 +26,7 @@ function startMethodHandler() {
   isMethodHandlerStarted = true;
 
   const handle = handleFactory({})
-  handle('__function__', async ({ args, id }) => {  
+  handle('__function__', async ({ args, id }) => {
     return await Promise.resolve(methodRegistry[id](...args));
   })
 }
@@ -48,7 +51,13 @@ function serializeMethodsWithPlaceholder<MESSAGE_TYPE extends keyof ShopwareMess
 }
 
 // the receiver don't have access to the methodRegistry
-function deserializeMethodsWithPlaceholder<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageData: ShopwareMessageSendData<MESSAGE_TYPE>): void {
+function deserializeMethodsWithPlaceholder<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  messageData: ShopwareMessageSendData<MESSAGE_TYPE>,
+  event: MessageEvent<string>
+): void {
+  // @ts-expect-error
+  const targetWindow: Window = event.source ?? window;
+
   traverseObject(messageData, (parentEntry, key, value) => {
     // when object is containing a method wrapper
     if (isObject(value)
@@ -59,11 +68,11 @@ function deserializeMethodsWithPlaceholder<MESSAGE_TYPE extends keyof ShopwareMe
       const id = value['id'];
 
       // convert wrapper to a callable method
-      parentEntry[key] = (...args: any[]) => {
+      parentEntry[key] = (...args: any[]) => {        
         return send('__function__', {
           args: args,
           id: id,
-        })
+        }, targetWindow)
       };
     }
   });
