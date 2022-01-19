@@ -11,6 +11,8 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/gallium'
 
       - name: Retrieve the cached main "node_modules" directory (if present)
         uses: actions/cache@v2
