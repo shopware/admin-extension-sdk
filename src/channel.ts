@@ -215,7 +215,7 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     }
 
     // Deserialize methods etc. so that they are callable in JS
-    deserializeMessageData<MESSAGE_TYPE>(shopwareMessageData);   
+    deserializeMessageData<MESSAGE_TYPE>(shopwareMessageData, event);   
 
     const responseValue = await Promise.resolve(method(
       shopwareMessageData._data,

@@ -7,6 +7,7 @@ import { locationUpdateHeight } from './location/index';
 import { menuItemAdd } from './ui/menu';
 import { settingsItemAdd } from './ui/settings';
 import { mainModuleAdd } from './ui/mainModule';
+import { uiModalOpen, uiModalClose } from './ui/modal/index';
 
 /**
  * Contains all shopware send types.
@@ -27,6 +28,8 @@ export type ShopwareMessageTypes = {
   menuItemAdd: menuItemAdd,
   settingsItemAdd: settingsItemAdd,
   mainModuleAdd: mainModuleAdd,
+  uiModalOpen: uiModalOpen,
+  uiModalClose: uiModalClose,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
