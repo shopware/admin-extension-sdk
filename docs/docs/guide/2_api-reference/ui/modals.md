@@ -1,5 +1,10 @@
 # Modals
 
+A modal can be displayed in front of all other elements. To return to the main content the user must engage
+with the modal by completing an action or by closing it. It should be mainly opened when the user interacts with something.
+We recommend that no modal gets opened without context. As an example, it would be bad practice if the user gets logged
+in and directly see some modals (e.g. changelogs of extensions) which all need to be closed manually.
+
 ### Open modal
 Open a new modal in the current view. The content of the modal is determined by your `locationId`.
 
