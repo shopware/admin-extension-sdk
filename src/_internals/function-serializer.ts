@@ -41,7 +41,8 @@ function serializeMethodsWithPlaceholder<MESSAGE_TYPE extends keyof ShopwareMess
       // replace function with a object containing the type and id
       parentEntry[key] = {
         __type__: '__function__',
-        id: id
+        id: id,
+        origin: window.origin,
       }
 
       // start a general function listener which calls the method when the handler calls the method
@@ -66,13 +67,19 @@ function deserializeMethodsWithPlaceholder<MESSAGE_TYPE extends keyof ShopwareMe
         && typeof value['id'] === 'string'
     ) {
       const id = value['id'];
+      const origin = value['origin'];
 
       // convert wrapper to a callable method
       parentEntry[key] = (...args: any[]) => {        
-        return send('__function__', {
-          args: args,
-          id: id,
-        }, targetWindow)
+        return send(
+          '__function__',
+          {
+            args: args,
+            id: id,
+          },
+          targetWindow,
+          origin
+        );
       };
     }
   });

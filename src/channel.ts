@@ -61,7 +61,8 @@ const sourceRegistry: Set<Window> = new Set();
 export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: MessageDataType<MESSAGE_TYPE>,
-  targetWindow?: Window
+  _targetWindow?: Window,
+  _origin?: string
 ): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
   const missingPriviliges = sendPrivileged(type);
   if (missingPriviliges !== null) {
@@ -147,11 +148,16 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 
     // @ts-expect-error - Cypress tests run inside iframe. Therefore same level communication is not possible
     const parentWindow = !corsRestriction && window.parent.__CYPRESS__ ? window : window.parent;
-    const targetOrigin = corsRestriction ? document.referrer : window.parent.origin;
+    let targetOrigin = corsRestriction ? document.referrer : window.parent.origin;
 
-    targetWindow ? targetWindow.postMessage(message, targetOrigin) : parentWindow.postMessage(message, targetOrigin);
+    // Function calls keep track of the right origin in the registry
+    if (type === '__function__' && _origin) {
+      targetOrigin = _origin;
+    }
 
-    // Send timeout when noone sends data back or handler freezes
+    _targetWindow ? _targetWindow.postMessage(message, targetOrigin) : parentWindow.postMessage(message, targetOrigin);
+
+    // Send timeout when no one sends data back or handler freezes
     setTimeout(() => {
       // Only runs when is not resolved
       if (isResolved) {
