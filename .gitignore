@@ -11,3 +11,7 @@ es
 umd
 example-dist
 cdn
+test-results/
+playwright-test-results/
+playwright-report/
+testpageDist

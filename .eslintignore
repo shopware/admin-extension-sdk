@@ -8,3 +8,4 @@ example
 coverage
 cypress
 *.spec.ts
+e2e

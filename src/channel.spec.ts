@@ -1,3 +1,4 @@
+import flushPromises from 'flush-promises';
 import { send, handleFactory, createSender, createHandler, subscribe, publish } from './channel';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
 
@@ -140,20 +141,24 @@ describe('Test the channel bridge from iFrame to admin', () => {
     expect(localeMethodMock).toHaveBeenCalledTimes(0);
     expect(fallbackLocaleMethodMock).toHaveBeenCalledTimes(0);
 
-    await publish('contextLocale', {
+    publish('contextLocale', {
       locale: 'en-GB',
       fallbackLocale: 'en-GB',
     })
+
+    await flushPromises();
 
     expect(localeMethodMock).toHaveBeenCalledTimes(1);
     expect(localeMethodMock).toHaveBeenLastCalledWith('en-GB');
     expect(fallbackLocaleMethodMock).toHaveBeenCalledTimes(1);
     expect(fallbackLocaleMethodMock).toHaveBeenLastCalledWith('en-GB');
 
-    await publish('contextLocale', {
+    publish('contextLocale', {
       locale: 'de-DE',
       fallbackLocale: 'en-GB',
     })
+
+    await flushPromises();
 
     expect(localeMethodMock).toHaveBeenCalledTimes(2);
     expect(localeMethodMock).toHaveBeenLastCalledWith('de-DE');
@@ -162,10 +167,12 @@ describe('Test the channel bridge from iFrame to admin', () => {
 
     removeSubscription();
 
-    await publish('contextLocale', {
+    publish('contextLocale', {
       locale: 'nl-NL',
       fallbackLocale: 'en-GB',
-    }).catch(() => {})
+    })
+
+    await flushPromises();
 
     expect(localeMethodMock).toHaveBeenCalledTimes(2);
     expect(fallbackLocaleMethodMock).toHaveBeenCalledTimes(2);
