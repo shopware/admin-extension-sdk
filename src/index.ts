@@ -8,6 +8,12 @@ import * as menu from './ui/menu';
 import * as settings from './ui/settings';
 import * as mainModule from './ui/mainModule';
 import * as modal from './ui/modal';
+import * as actionButton from './ui/actionButton';
+import * as webhook from './app/action';
+
+const app = {
+  webhook,
+};
 
 const ui = {
   componentSection,
@@ -16,6 +22,7 @@ const ui = {
   settings,
   mainModule,
   modal,
+  actionButton,
 };
 
 /**
@@ -27,4 +34,5 @@ export {
   context,
   ui,
   location,
+  app,
 };

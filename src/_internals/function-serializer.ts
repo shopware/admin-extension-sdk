@@ -14,7 +14,7 @@ export function deserializeMessageData<MESSAGE_TYPE extends keyof ShopwareMessag
   deserializeMethodsWithPlaceholder(messageData, event);
 }
 
-// only avaliable on sender side
+// only available on sender side
 const methodRegistry: {
   [key: string]: (...args: any[]) => any
 } = {};
