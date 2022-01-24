@@ -21,6 +21,8 @@ export const ShopwareMessageTypePrivileges = {
   mainModuleAdd: {},
   uiModalOpen: {},
   uiModalClose: {},
+  actionButtonAdd: {},
+  actionExecute: {},
   __function__: {},
   __registerWindow__: {},
   _multiply: {},

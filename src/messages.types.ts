@@ -8,6 +8,8 @@ import { menuItemAdd } from './ui/menu';
 import { settingsItemAdd } from './ui/settings';
 import { mainModuleAdd } from './ui/mainModule';
 import { uiModalOpen, uiModalClose } from './ui/modal/index';
+import { actionButtonAdd } from './ui/actionButton';
+import { actionExecute } from './app/action';
 
 /**
  * Contains all shopware send types.
@@ -30,6 +32,8 @@ export type ShopwareMessageTypes = {
   mainModuleAdd: mainModuleAdd,
   uiModalOpen: uiModalOpen,
   uiModalClose: uiModalClose,
+  actionButtonAdd: actionButtonAdd,
+  actionExecute: actionExecute,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
