@@ -2,24 +2,18 @@
 const { resolve } = require('path')
 const { defineConfig } = require('vite')
 import tsconfigPaths from 'vite-tsconfig-paths'
-import dts from 'vite-plugin-dts'
 
 module.exports = defineConfig(({ command, mode }) => {
   if (mode === 'example') {
     // Development config (with HTML files for easier development)
     return {
+      root: resolve(__dirname, './e2e/testpage'),
       plugins: [
         tsconfigPaths()
       ],
       build: {
-        outDir: resolve(__dirname, 'example-dist'),
+        outDir: resolve(__dirname, 'testpageDist'),
         sourcemap: true,
-        rollupOptions: {
-          input: {
-            main: resolve(__dirname, './index.html'),
-            iframe: resolve(__dirname, './example/iframe-app/index.html'),
-          }
-        }
       }
     }
   }

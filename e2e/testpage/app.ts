@@ -1,0 +1,22 @@
+import * as sw from '../../src/index';
+import { handleFactory, publish, send } from '../../src/channel';
+
+export interface sw_internal {
+  handleFactory: typeof handleFactory,
+  publish: typeof publish,
+  send: typeof send,
+}
+
+declare global {
+  interface Window {
+    sw: typeof sw;
+    sw_internal: sw_internal
+  }
+}
+
+window.sw = sw;
+window.sw_internal = {
+  handleFactory: handleFactory,
+  publish: publish,
+  send: send,
+}

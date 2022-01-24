@@ -43,7 +43,10 @@ export type ShopwareMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessa
  * DATA STORES FOR REGISTRIES
  * ----------------
  */
-const sourceRegistry: Set<Window> = new Set();
+const sourceRegistry: Set<{
+  source: Window,
+  origin: string,
+}> = new Set();
 
 /**
  * ----------------
@@ -146,16 +149,15 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       // Silent catch to prevent cross origin frame exception
     }
 
-    // @ts-expect-error - Cypress tests run inside iframe. Therefore same level communication is not possible
-    const parentWindow = !corsRestriction && window.parent.__CYPRESS__ ? window : window.parent;
     let targetOrigin = corsRestriction ? document.referrer : window.parent.origin;
 
-    // Function calls keep track of the right origin in the registry
-    if (type === '__function__' && _origin) {
+    // If _origin was provided then update the targetOrigin
+    if (_origin) {
       targetOrigin = _origin;
     }
 
-    _targetWindow ? _targetWindow.postMessage(message, targetOrigin) : parentWindow.postMessage(message, targetOrigin);
+    // Send the data to the target window
+    _targetWindow ? _targetWindow.postMessage(message, targetOrigin) : window.parent.postMessage(message, targetOrigin);
 
     // Send timeout when no one sends data back or handler freezes
     setTimeout(() => {
@@ -266,15 +268,13 @@ export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
 )
-:Promise<(void | Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | null)[]>
+:void
 {
-  const sendPromises = [...sourceRegistry].map((source) => {    
+  [...sourceRegistry].forEach(({source, origin}) => {    
     // Disable error handling because not every window need to react to the data
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return send(type, data, source).catch(() => {});
+    return send(type, data, source, origin).catch(() => {});
   });
-
-  return Promise.all(sendPromises);
 }
 
 export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
@@ -347,15 +347,38 @@ export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes
   // Handle registrations at current window
   handle('__registerWindow__', (_, additionalOptions) => {
     if (additionalOptions._event_.source) {
-      sourceRegistry.add(additionalOptions._event_.source as Window);
+      const sourceWindow = additionalOptions._event_.source as Window;
+      sourceRegistry.add({
+        source: sourceWindow,
+        origin: additionalOptions._event_.origin,
+      });
     } else {
-      sourceRegistry.add(window);
+      sourceRegistry.add({
+        source: window,
+        origin: window.origin,
+      });
     }
   }, {});
 
   // Register at parent window
   await send('__registerWindow__', {});
 })().catch((e) => console.error(e));
+
+/**
+ * Add utils to global window object for
+ * testing
+ */
+ declare global {
+  interface Window {
+    _swsdk: {
+      sourceRegistry: typeof sourceRegistry,
+    },
+  }
+}
+
+window._swsdk = {
+  sourceRegistry,
+};
 
 /**
  * ----------------
