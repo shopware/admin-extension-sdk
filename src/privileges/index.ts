@@ -12,6 +12,8 @@ export const ShopwareMessageTypePrivileges = {
   contextEnvironment: {},
   contextLocale: {},
   contextCurrency: {},
+  contextShopwareVersion: {},
+  contextAppInformation: {},
   getPageTitle: {},
   uiComponentSectionRenderer: {},
   uiTabsAddTabItem: {},
