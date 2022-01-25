@@ -1,6 +1,6 @@
 import { notificationDispatch } from './notification/index';
 import { windowRedirect, windowReload } from './window/index';
-import { contextLanguage, contextEnvironment, contextLocale, contextCurrency } from './context/index';
+import { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation } from './context/index';
 import { uiComponentSectionRenderer } from './ui/componentSection/index';
 import { uiTabsAddTabItem } from './ui/tabs';
 import { locationUpdateHeight } from './location/index';
@@ -23,6 +23,8 @@ export type ShopwareMessageTypes = {
   contextEnvironment: contextEnvironment,
   contextLocale: contextLocale,
   contextCurrency: contextCurrency,
+  contextShopwareVersion: contextShopwareVersion,
+  contextAppInformation: contextAppInformation,
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,

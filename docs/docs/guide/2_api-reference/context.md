@@ -165,3 +165,51 @@ Promise<{
   systemCurrencyISOCode: 'b7d2554b0ce847cd82f3ac9bd1c0dfca'
 }
 ```
+
+## Shopware version
+
+### Get current Shopware version
+
+#### Usage:  
+```ts
+const shopwareVersion = await sw.context.getShopwareVersion();
+```
+
+#### Parameters
+No parameters needed.
+
+#### Return value:
+```ts
+string
+```
+
+#### Example value:
+```ts
+'6.4.0.0'
+```
+
+## App information
+
+### Get app information
+
+#### Usage:  
+```ts
+const { name, version, type } = await sw.context.getAppInformation();
+```
+
+#### Parameters
+No parameters needed.
+
+#### Return value:
+```ts
+Promise<{ name: string ; version: string ; type: 'app' | 'plugin' }>
+```
+
+#### Example value:
+```ts
+{
+  name: 'my-extension',
+  version: '1.2.3',
+  type: 'app'
+}
+```

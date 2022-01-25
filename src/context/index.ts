@@ -6,6 +6,8 @@ export const getEnvironment = createSender('contextEnvironment', {});
 export const getLocale = createSender('contextLocale', {});
 export const subscribeLocale = createSubscriber('contextLocale');
 export const getCurrency = createSender('contextCurrency', {});
+export const getShopwareVersion = createSender('contextShopwareVersion', {});
+export const getAppInformation = createSender('contextAppInformation', {});
 
 /**
  * Get the current content language
@@ -41,5 +43,23 @@ export type contextCurrency = {
   responseType: {
     systemCurrencyISOCode: string,
     systemCurrencyId: string,
+  },
+}
+
+/**
+ * Get the current Shopware version
+ */
+export type contextShopwareVersion = {
+  responseType: string,
+}
+
+/**
+ * Get the current Shopware version
+ */
+export type contextAppInformation = {
+  responseType: {
+    name: string,
+    version: string,
+    type: 'app'|'plugin',
   },
 }
