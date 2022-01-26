@@ -31,6 +31,15 @@ Requirements for this quick start guide are:
 - [development Shopware 6 instance](https://developer.shopware.com/docs/guides/installation) or a [Shopware 6 cloud instance](https://www.shopware.com/en/products/shopware-cloud/)
 - [clean Shopware 6 Plugin or App](https://developer.shopware.com/docs/guides/plugins/overview) which is activated
 
+### Feature flag
+The Extension SDK implementation in Shopware itself is currently hidden behind a feature flag.
+To activate the Extension SDK in Shopware, simply add the following to your `.env` file.
+Rebuild the cache and you are good to go.
+
+```
+FEATURE_NEXT_17950=1 # Extension SDK
+```
+
 ### App
 1. Create an HTML file with following content:
 ```html
