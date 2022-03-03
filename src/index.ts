@@ -10,6 +10,7 @@ import * as mainModule from './ui/mainModule';
 import * as modal from './ui/modal';
 import * as actionButton from './ui/actionButton';
 import * as webhook from './app/action';
+import * as repository from './repository';
 
 const app = {
   webhook,
@@ -35,4 +36,5 @@ export {
   ui,
   location,
   app,
+  repository,
 };

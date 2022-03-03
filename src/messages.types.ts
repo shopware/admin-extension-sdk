@@ -10,6 +10,7 @@ import { mainModuleAdd } from './ui/mainModule';
 import { uiModalOpen, uiModalClose } from './ui/modal/index';
 import { actionButtonAdd } from './ui/actionButton';
 import { actionExecute } from './app/action';
+import { repositoryGet } from './repository/index';
 
 /**
  * Contains all shopware send types.
@@ -34,6 +35,7 @@ export type ShopwareMessageTypes = {
   mainModuleAdd: mainModuleAdd,
   uiModalOpen: uiModalOpen,
   uiModalClose: uiModalClose,
+  repositoryGet: repositoryGet,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
   __function__: __function__,
