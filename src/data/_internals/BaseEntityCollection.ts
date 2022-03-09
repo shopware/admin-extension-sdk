@@ -7,7 +7,7 @@ type ApiAuthToken = {
     refresh: string,
 }
 
-interface ApiContext {
+export interface ApiContext {
     apiPath: null | string,
     apiResourcePath: null | string,
     assetsPath: null | string,
