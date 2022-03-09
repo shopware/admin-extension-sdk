@@ -1,4 +1,4 @@
-import Criteria from './_internals/Criteria';
+import Criteria from './Criteria';
 import Entity from './_internals/Entity';
 import EntityCollection from './_internals/EntityCollection';
 

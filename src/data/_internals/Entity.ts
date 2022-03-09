@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash-es';
+import cloneDeep from 'lodash/cloneDeep';
 
 type draft = {
   [key: string]: unknown,

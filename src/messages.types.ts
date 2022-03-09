@@ -1,15 +1,16 @@
-import { notificationDispatch } from './notification/index';
-import { windowRedirect, windowReload } from './window/index';
-import { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation } from './context/index';
-import { uiComponentSectionRenderer } from './ui/componentSection/index';
-import { uiTabsAddTabItem } from './ui/tabs';
-import { locationUpdateHeight } from './location/index';
-import { menuItemAdd } from './ui/menu';
-import { settingsItemAdd } from './ui/settings';
-import { mainModuleAdd } from './ui/mainModule';
-import { uiModalOpen, uiModalClose } from './ui/modal/index';
-import { actionButtonAdd } from './ui/actionButton';
-import { actionExecute } from './app/action';
+import type { notificationDispatch } from './notification/index';
+import type { windowRedirect, windowReload } from './window/index';
+import type { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation } from './context/index';
+import type { uiComponentSectionRenderer } from './ui/componentSection/index';
+import type { uiTabsAddTabItem } from './ui/tabs';
+import type { locationUpdateHeight } from './location/index';
+import type { menuItemAdd } from './ui/menu';
+import type { settingsItemAdd } from './ui/settings';
+import type { mainModuleAdd } from './ui/mainModule';
+import type { uiModalOpen, uiModalClose } from './ui/modal/index';
+import type { actionButtonAdd } from './ui/actionButton';
+import type { actionExecute } from './app/action';
+import type Criteria from './data/Criteria';
 
 /**
  * Contains all shopware send types.
@@ -40,6 +41,7 @@ export type ShopwareMessageTypes = {
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
   _subtract: _subtract,
+  _criteriaTest: _criteriaTest,
   _privileges: _privileges,
 }
 
@@ -70,6 +72,15 @@ export type _subtract = {
 
 export type _privileges = {
   responseType: void,
+}
+
+export type _criteriaTest = {
+  responseType: {
+    title: string,
+    myCriteria: Criteria,
+  },
+  title: string,
+  myCriteria: Criteria,
 }
 
 export type __function__ = {
