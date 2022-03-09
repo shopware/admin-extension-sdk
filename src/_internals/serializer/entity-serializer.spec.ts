@@ -1,6 +1,12 @@
-import {deserialize, serialize } from './index';
 import Entity from '../../data/_internals/Entity';
 import cloneDeep from 'lodash/cloneDeep';
+import SerializerFactory from './index';
+import { handleFactory, send } from '../../channel';
+
+const { serialize, deserialize } = SerializerFactory({
+  handleFactory: handleFactory,
+  send: send,
+})
 
 describe('entity-serializer.ts', () => {
   it('should convert entities', () => {
@@ -31,6 +37,12 @@ describe('entity-serializer.ts', () => {
     const messageData = {
       entity,
     };
+
+    // Check if private properties are hidden behind the proxy
+    const entityKeysBefore = Object.keys(messageData.entity);
+    expect(entityKeysBefore).not.toContain('_origin');
+    expect(entityKeysBefore).not.toContain('_isDirty');
+    expect(entityKeysBefore).not.toContain('_isNew');
 
     serialize(messageData);
 
@@ -139,5 +151,11 @@ describe('entity-serializer.ts', () => {
     expect(messageData.entity.association.array[2]).toBe('you');
     expect(messageData.entity.association.array[3]).toBe('and me');
     expect(messageData.entity.association.object.foo).toBe('buz');
+
+    // Check if private properties are hidden behind the proxy
+    const entityKeys = Object.keys(messageData.entity);
+    expect(entityKeys).not.toContain('_origin');
+    expect(entityKeys).not.toContain('_isDirty');
+    expect(entityKeys).not.toContain('_isNew');
   });
 });

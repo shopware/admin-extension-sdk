@@ -1,7 +1,7 @@
 {
   "name": "@shopware-ag/admin-extension-sdk",
   "license": "MIT",
-  "version": "0.0.44",
+  "version": "0.0.45",
   "repository": "git://github.com/shopware/admin-extension-sdk.git",
   "description": "The SDK for App iframes to communicate with the Shopware Adminstration",
   "keywords": [
@@ -46,7 +46,9 @@
     "e2e:dev": "playwright test --project=chromium --reporter=list",
     "e2e:dev-watch": "chokidar \"{e2e,src}/**/*.{js,ts}\" -c 'npm run e2e:dev' --initial",
     "e2e:dev-debug": "PWDEBUG=1 npm run e2e:dev",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "circular-dependencies": "madge --circular --warning src",
+    "circular-dependencies:image": "madge --circular --warning --image ./dependency-graph.png src"
   },
   "devDependencies": {
     "@playwright/test": "^1.18.0",
@@ -58,6 +60,8 @@
     "eslint": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
     "jest": "^27.3.1",
+    "jest-fail-on-console": "^2.2.3",
+    "madge": "^5.0.1",
     "ts-jest": "^27.0.7",
     "typescript": "^4.5.2",
     "vite": "^2.6.0",

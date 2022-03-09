@@ -1,91 +1,95 @@
-import { send, handleFactory } from '../../channel';
+import type { SerializerFactory } from '.';
 import { traverseObject, isObject, generateUniqueId } from '../utils';
 
-/* eslint-disable */
-function serialize<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
-  serializeMethodsWithPlaceholder(messageData);
-}
+const FunctionSerializerFactory: SerializerFactory = ({ send, handleFactory }) => {
+  /* eslint-disable */
+  function serialize<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
+    serializeMethodsWithPlaceholder(messageData);
+  }
 
-function deserialize<MESSAGE_DATA extends object>(
-  messageData: MESSAGE_DATA,
-  event: MessageEvent<string>
-): void {
-  deserializeMethodsWithPlaceholder(messageData, event);
-}
+  function deserialize<MESSAGE_DATA extends object>(
+    messageData: MESSAGE_DATA,
+    event: MessageEvent<string>
+  ): void {
+    deserializeMethodsWithPlaceholder(messageData, event);
+  }
 
-// only available on sender side
-const methodRegistry: {
-  [key: string]: (...args: any[]) => any
-} = {};
+  // only available on sender side
+  const methodRegistry: {
+    [key: string]: (...args: any[]) => any
+  } = {};
 
-let isMethodHandlerStarted = false;
+  let isMethodHandlerStarted = false;
 
-function startMethodHandler() {
-  if (isMethodHandlerStarted) return;
-  isMethodHandlerStarted = true;
+  function startMethodHandler() {
+    if (isMethodHandlerStarted) return;
+    isMethodHandlerStarted = true;
 
-  const handle = handleFactory({})
-  handle('__function__', async ({ args, id }) => {
-    return await Promise.resolve(methodRegistry[id](...args));
-  })
-}
+    const handle = handleFactory({})
+    handle('__function__', async ({ args, id }) => {
+      return await Promise.resolve(methodRegistry[id](...args));
+    })
+  }
 
-function serializeMethodsWithPlaceholder<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
-  traverseObject(messageData, (parentEntry, key, value) => {
-    if (typeof value === 'function') {
-      const id = generateUniqueId();
-      // add the method reference to the methodRegistry
-      methodRegistry[id] = value;
+  function serializeMethodsWithPlaceholder<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
+    traverseObject(messageData, (parentEntry, key, value) => {
+      if (typeof value === 'function') {
+        const id = generateUniqueId();
+        // add the method reference to the methodRegistry
+        methodRegistry[id] = value;
 
-      // replace function with a object containing the type and id
-      parentEntry[key] = {
-        __type__: '__function__',
-        id: id,
-        origin: window.origin,
+        // replace function with a object containing the type and id
+        parentEntry[key] = {
+          __type__: '__function__',
+          id: id,
+          origin: window.origin,
+        }
+
+        // start a general function listener which calls the method when the handler calls the method
+        startMethodHandler();
       }
+    });
+  }
 
-      // start a general function listener which calls the method when the handler calls the method
-      startMethodHandler();
-    }
-  });
+  // the receiver don't have access to the methodRegistry
+  function deserializeMethodsWithPlaceholder<MESSAGE_DATA extends object>(
+    messageData: MESSAGE_DATA,
+    event: MessageEvent<string>
+  ): void {
+    // @ts-expect-error
+    const targetWindow: Window = event.source ?? window;
+
+    traverseObject(messageData, (parentEntry, key, value) => {
+      // when object is containing a method wrapper
+      if (isObject(value)
+          && value['__type__']
+          && value['__type__'] === '__function__'
+          && typeof value['id'] === 'string'
+      ) {
+        const id = value['id'];
+        const origin = value['origin'];
+
+        // convert wrapper to a callable method
+        parentEntry[key] = (...args: any[]) => {
+          return send(
+            '__function__',
+            {
+              args: args,
+              id: id,
+            },
+            targetWindow,
+            origin
+          );
+        };
+      }
+    });
+  }
+
+  return {
+    name: 'function',
+    serialize,
+    deserialize
+  }
 }
 
-// the receiver don't have access to the methodRegistry
-function deserializeMethodsWithPlaceholder<MESSAGE_DATA extends object>(
-  messageData: MESSAGE_DATA,
-  event: MessageEvent<string>
-): void {
-  // @ts-expect-error
-  const targetWindow: Window = event.source ?? window;
-
-  traverseObject(messageData, (parentEntry, key, value) => {
-    // when object is containing a method wrapper
-    if (isObject(value)
-        && value['__type__']
-        && value['__type__'] === '__function__'
-        && typeof value['id'] === 'string'
-    ) {
-      const id = value['id'];
-      const origin = value['origin'];
-
-      // convert wrapper to a callable method
-      parentEntry[key] = (...args: any[]) => {
-        return send(
-          '__function__',
-          {
-            args: args,
-            id: id,
-          },
-          targetWindow,
-          origin
-        );
-      };
-    }
-  });
-}
-
-export default {
-  name: 'function',
-  serialize,
-  deserialize,
-};
+export default FunctionSerializerFactory;

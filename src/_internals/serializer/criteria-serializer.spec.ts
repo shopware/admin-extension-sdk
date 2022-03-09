@@ -1,6 +1,11 @@
 import Criteria from "../../data/Criteria";
-import {deserialize, serialize } from './index';
+import SerializerFactory from './index';
+import { handleFactory, send } from '../../channel';
 
+const { serialize, deserialize } = SerializerFactory({
+  handleFactory: handleFactory,
+  send: send,
+})
 
 describe('Criteria Serializer', () => {
   it('should serialize and deserialize the criteria', () => {

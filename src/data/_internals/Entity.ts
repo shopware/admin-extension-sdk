@@ -15,6 +15,12 @@ export function assignSetterMethod(newSetterMethod: (draft: draft, property: str
   setterMethod = newSetterMethod;
 }
 
+interface EntityOptions {
+  originData?: draft,
+  isDirty?: boolean,
+  isNew?: boolean,
+}
+
 class EntityClass {
   id: string;
 
@@ -28,13 +34,13 @@ class EntityClass {
 
   _isNew: boolean;
 
-  constructor(id: string, entityName: string, data: draft) {
+  constructor(id: string, entityName: string, data: draft, options: EntityOptions = {}) {
     this.id = id;
-    this._origin = cloneDeep(data);
+    this._origin = options.originData ? cloneDeep(options.originData) : cloneDeep(data);
     this._entityName = entityName;
     this._draft = data;
-    this._isDirty = false;
-    this._isNew = false;
+    this._isDirty = options.isDirty ?? false;
+    this._isNew = options.isNew ?? false;
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
 
@@ -105,9 +111,9 @@ class EntityClass {
 /* eslint-disable */
 type EntityType<DATA extends Record<string, unknown>> = DATA & EntityClass & Record<string, any>;
 
-const Entity = function EntityConstructor(id: string, entityName: string, data: draft) {
-  return new EntityClass(id, entityName, data);
-} as any as { new<DATA extends draft>(id: string, entityName: string, data: DATA): EntityType<DATA> }
+const Entity = function EntityConstructor(id: string, entityName: string, data: draft, options?: EntityOptions) {
+  return new EntityClass(id, entityName, data, options);
+} as any as { new<DATA extends draft>(id: string, entityName: string, data: DATA, options?: EntityOptions): EntityType<DATA> }
 
 export default Entity;
 export type Entity = EntityClass;

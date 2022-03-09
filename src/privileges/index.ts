@@ -1,10 +1,11 @@
 import { _privileges } from './messages/_privileges';
+import type { privileges } from './privilege-resolver';
 
 /**
  * Determines which privileges are needed for a certain message type.
  * @internal
  */
-export const ShopwareMessageTypePrivileges = {
+export const ShopwareMessageTypePrivileges: Record<string, privileges> = {
   notificationDispatch: {},
   windowRedirect: {},
   windowReload: {},
