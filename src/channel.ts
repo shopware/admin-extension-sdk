@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { ShopwareMessageTypes } from './messages.types';
-import { serializeMessageData, deserializeMessageData } from './_internals/function-serializer';
+import { serializeFunctionsInMessageData, deserializeFunctionsInMessageData } from './_internals/function-serializer';
 import { generateUniqueId } from './_internals/utils';
 import { extensions, sendPrivileged, handlePrivileged } from './privileges/privilege-resolver';
 import { ShopwareMessageTypePrivileges } from './privileges';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
+import { serializeCriteriasInMessageData, deserializeCriteriasInMessageData } from './_internals/criteria-serializer';
 
 /**
  * ----------------
@@ -88,10 +89,11 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   };
 
   // Replace methods etc. so that they are working in JSON format
-  serializeMessageData<MESSAGE_TYPE>(messageData);
+  serializeFunctionsInMessageData(messageData);
+  serializeCriteriasInMessageData(messageData);
 
   // Convert message data to string for message sending
-  const message = JSON.stringify(messageData);  
+  const message = JSON.stringify(messageData);
 
   // Set value if send was resolved
   let isResolved = false;
@@ -126,6 +128,10 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       if (!shopwareResponseData.hasOwnProperty('_response')) {
         return;
       }
+
+      // Deserialize methods etc. so that they are callable in JS
+      deserializeFunctionsInMessageData(shopwareResponseData, event);
+      deserializeCriteriasInMessageData(shopwareResponseData);
       
       // Remove event so that in only execute once
       window.removeEventListener('message', callbackHandler);
@@ -223,7 +229,8 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     }
 
     // Deserialize methods etc. so that they are callable in JS
-    deserializeMessageData<MESSAGE_TYPE>(shopwareMessageData, event);   
+    deserializeFunctionsInMessageData(shopwareMessageData, event);
+    deserializeCriteriasInMessageData(shopwareMessageData);
 
     const responseValue = await Promise.resolve(method(
       shopwareMessageData._data,
@@ -235,6 +242,10 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
       _type: shopwareMessageData._type,
       _response: responseValue ?? null,
     };
+
+    // Replace methods etc. so that they are working in JSON format
+    serializeFunctionsInMessageData(responseMessage);
+    serializeCriteriasInMessageData(responseMessage);
 
     const stringifiedResponseMessage = JSON.stringify(responseMessage);
 

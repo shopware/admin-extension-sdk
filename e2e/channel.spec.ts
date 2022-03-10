@@ -261,4 +261,48 @@ test.describe('Context tests', () => {
     expect(languageId).toBe('EXAMPLE_LANGUAGE_ID');
     expect(systemLanguageId).toBe('EXAMPLE_SYSTEM_LANGUAGE_ID');
   });
+
+  test('send criteria to iFrame', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // handle incoming criteria
+    await mainFrame.evaluate(() => {
+      const handle = window.sw_internal.handleFactory({});
+ 
+      handle('_criteriaTest', ({ title, myCriteria }) => {
+        // check if myCriteria is a real Criteria object
+        if (!(myCriteria instanceof window.sw_internal.Criteria)) {
+          return {
+            title: 'myCriteria is not a Criteria instance',
+            myCriteria,
+          }
+        }
+
+        return {
+          title,
+          myCriteria,
+        };
+      })
+    })
+
+    // send criteria from subFrame
+    const result = await subFrame.evaluate(async () => {
+      const criteriaExample = new window.sw_internal.Criteria();
+
+      const result = await window.sw_internal.send('_criteriaTest', {
+        title: 'Criteria testing',
+        myCriteria: criteriaExample,
+      })
+      
+      return {
+        title: result.title,
+        // the criteria check needs to be done inside the frame
+        isCriteriaInstance: result.myCriteria instanceof window.sw_internal.Criteria
+      };
+    })
+
+    // check if criteria is a real criteria object
+    expect (result.title).toEqual('Criteria testing');
+    expect (result.isCriteriaInstance).toBe(true);
+  });
 })

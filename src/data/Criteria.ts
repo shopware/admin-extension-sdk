@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash-es';
+import cloneDeep from 'lodash/cloneDeep';
 
 export const enum TotalCountMode {
     /* No total count will be selected. Should be used if no pagination required (fastest) */
@@ -47,13 +47,13 @@ interface Filters {
     },
     not: {
         type: 'not',
-        operator: 'and'|'or',
-        queries: Query[],
+        operator: 'and'|'AND'|'or'|'OR',
+        queries: SingleFilter[],
     },
     multi: {
         type: 'multi',
-        operator: 'and'|'or',
-        queries: Query[],
+        operator: 'and'|'AND'|'or'|'OR',
+        queries: SingleFilter[],
     },
 }
 
@@ -125,7 +125,7 @@ interface Association {
 }
 interface Query {
     score: number,
-    query: Filter,
+    query: SingleFilter,
     [scoreField: string]: unknown,
 }
 interface Sorting {
@@ -140,8 +140,8 @@ interface RequestParams {
     limit?: number,
     term?: string,
     query?: Query[],
-    filter?: Filter[],
-    'post-filter'?: Filter[],
+    filter?: SingleFilter[],
+    'post-filter'?: SingleFilter[],
     sort?: Sorting[],
     aggregations?: Aggregation[],
     groupFields?: GroupField[],
@@ -161,7 +161,7 @@ export default class Criteria {
 
   private term: string | null;
 
-  private filters: Filter[];
+  private filters: SingleFilter[];
 
   private ids: string[];
 
@@ -169,7 +169,7 @@ export default class Criteria {
 
   private associations: Association[];
 
-  private postFilter: Filter[];
+  private postFilter: SingleFilter[];
 
   private sortings: Sorting[];
 
@@ -306,7 +306,7 @@ export default class Criteria {
     return this;
   }
 
-  addFilter(filter: Filter): this {
+  addFilter(filter: SingleFilter): this {
     this.filters.push(filter);
 
     return this;
@@ -331,7 +331,7 @@ export default class Criteria {
    * Adds the provided filter as post filter.
    * Post filter will be considered for the documents query but not for the aggregations.
    */
-  addPostFilter(filter: Filter): this {
+  addPostFilter(filter: SingleFilter): this {
     this.postFilter.push(filter);
     return this;
   }
@@ -348,7 +348,7 @@ export default class Criteria {
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Query\ScoreQuery.
    * These queries are used to search for documents and score them with a ranking
    */
-  addQuery(filter: Filter, score: number, scoreField: string|null = null): this {
+  addQuery(filter: SingleFilter, score: number, scoreField: string|null = null): this {
     const query: Query = { score: score, query: filter };
 
     if (scoreField) {
@@ -454,6 +454,42 @@ export default class Criteria {
 
   getPage(): number {
     return this.page ?? 0;
+  }
+
+  getCriteriaData(): {
+      page: Criteria['page'],
+      limit: Criteria['limit'],
+      term: Criteria['term'],
+      filters: Criteria['filters'],
+      ids: Criteria['ids'],
+      queries: Criteria['queries'],
+      associations: Criteria['associations'],
+      postFilter: Criteria['postFilter'],
+      sortings: Criteria['sortings'],
+      aggregations: Criteria['aggregations'],
+      grouping: Criteria['grouping'],
+      fields: Criteria['fields'],
+      groupFields: Criteria['groupFields'],
+      totalCountMode: Criteria['totalCountMode'],
+      includes: Criteria['includes'],
+      } {
+    return {
+      page: this.page,
+      limit: this.limit,
+      term: this.term,
+      filters: this.filters,
+      ids: this.ids,
+      queries: this.queries,
+      associations: this.associations,
+      postFilter: this.postFilter,
+      sortings: this.sortings,
+      aggregations: this.aggregations,
+      grouping: this.grouping,
+      fields: this.fields,
+      groupFields: this.groupFields,
+      totalCountMode: this.totalCountMode,
+      includes: this.includes,
+    };
   }
 
   hasAssociation(property: string): boolean {
@@ -642,7 +678,7 @@ export default class Criteria {
    *
    * @returns {Object}}
    */
-  static not(operator: Filters['not']['operator'], queries = []): Filters['not'] {
+  static not(operator: Filters['not']['operator'], queries: SingleFilter[] = []): Filters['not'] {
     return { type: 'not', operator: operator, queries: queries };
   }
 
@@ -658,7 +694,7 @@ export default class Criteria {
    *
    * @returns {Object}}
    */
-  static multi(operator: Filters['multi']['operator'], queries = []): Filters['multi'] {
+  static multi(operator: Filters['multi']['operator'], queries: SingleFilter[] = []): Filters['multi'] {
     return { type: 'multi', operator, queries };
   }
 }

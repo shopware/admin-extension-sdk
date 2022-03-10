@@ -27,6 +27,7 @@ export const ShopwareMessageTypePrivileges = {
   actionExecute: {},
   __function__: {},
   __registerWindow__: {},
+  _criteriaTest: {},
   _multiply: {},
   _subtract: {},
   _privileges: _privileges,

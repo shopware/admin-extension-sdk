@@ -1,14 +1,13 @@
-import { ShopwareMessageTypes } from '../messages.types';
-import { send, ShopwareMessageSendData, handleFactory } from '../channel';
+import { send, handleFactory } from '../channel';
 import { traverseObject, isObject, generateUniqueId } from './utils';
 
 /* eslint-disable */
-export function serializeMessageData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageData: ShopwareMessageSendData<MESSAGE_TYPE>): void {
+export function serializeFunctionsInMessageData<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
   serializeMethodsWithPlaceholder(messageData);
 }
 
-export function deserializeMessageData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
-  messageData: ShopwareMessageSendData<MESSAGE_TYPE>,
+export function deserializeFunctionsInMessageData<MESSAGE_DATA extends object>(
+  messageData: MESSAGE_DATA,
   event: MessageEvent<string>
 ): void {
   deserializeMethodsWithPlaceholder(messageData, event);
@@ -31,7 +30,7 @@ function startMethodHandler() {
   })
 }
 
-function serializeMethodsWithPlaceholder<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageData: ShopwareMessageSendData<MESSAGE_TYPE>): void {
+function serializeMethodsWithPlaceholder<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
   traverseObject(messageData, (parentEntry, key, value) => {
     if (typeof value === 'function') {
       const id = generateUniqueId();
@@ -52,8 +51,8 @@ function serializeMethodsWithPlaceholder<MESSAGE_TYPE extends keyof ShopwareMess
 }
 
 // the receiver don't have access to the methodRegistry
-function deserializeMethodsWithPlaceholder<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
-  messageData: ShopwareMessageSendData<MESSAGE_TYPE>,
+function deserializeMethodsWithPlaceholder<MESSAGE_DATA extends object>(
+  messageData: MESSAGE_DATA,
   event: MessageEvent<string>
 ): void {
   // @ts-expect-error

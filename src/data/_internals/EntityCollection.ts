@@ -1,5 +1,5 @@
 import Entity from './Entity';
-import Criteria from './Criteria';
+import Criteria from '../Criteria';
 
 type ApiAuthToken = {
   access: string,
