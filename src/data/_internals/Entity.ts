@@ -1,7 +1,21 @@
-import BaseEntity from './_internals/BaseEntity';
 import { cloneDeep } from 'lodash-es';
 
-export default class Entity extends BaseEntity {
+type draft = {
+  [key: string]: unknown,
+};
+
+let setterMethod = (draft: draft, property: string, value: unknown): void => {
+  draft[property] = value;
+};
+
+/**
+ * @internal
+ */
+export function assignSetterMethod(newSetterMethod: (draft: draft, property: string, value: unknown) => void): void {
+  setterMethod = newSetterMethod;
+}
+
+export default class Entity {
   id: string;
 
   _origin: unknown;
@@ -14,9 +28,7 @@ export default class Entity extends BaseEntity {
 
   _isNew: boolean;
 
-  constructor(id: string, entityName: string, data: {[key: string]: unknown}) {
-    super();
-
+  constructor(id: string, entityName: string, data: draft) {
     this.id = id;
     this._origin = cloneDeep(data);
     this._entityName = entityName;
@@ -39,8 +51,7 @@ export default class Entity extends BaseEntity {
       },
 
       set(_, property, value): boolean {
-        // @ts-expect-error Property can't be used to index that._draft
-        that._draft[property] = value;
+        setterMethod(that._draft, property as string, value);
         that._isDirty = true;
 
         return true;

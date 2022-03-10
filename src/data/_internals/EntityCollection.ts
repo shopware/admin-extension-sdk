@@ -1,9 +1,31 @@
-import BaseEntityCollection from './_internals/BaseEntityCollection';
-import { ApiContext } from './_internals/BaseEntityCollection';
 import Entity from './Entity';
-import Criteria from './_internals/Criteria';
+import Criteria from './Criteria';
 
-export default class EntityCollection extends BaseEntityCollection {
+type ApiAuthToken = {
+  access: string,
+  expiry: number,
+  refresh: string,
+}
+
+interface ApiContext {
+  apiPath: null | string,
+  apiResourcePath: null | string,
+  assetsPath: null | string,
+  authToken: null | ApiAuthToken,
+  basePath: null | string,
+  pathInfo: null | string,
+  inheritance: null | boolean,
+  installationPath: null | string,
+  languageId: null | string,
+  language: null | {
+    name: string,
+  },
+  apiVersion: null | string,
+  liveVersionId: null | string,
+  systemLanguageId: null | string,
+}
+
+export default class EntityCollection extends Array<Entity> {
   entity: string;
 
   source: string;
