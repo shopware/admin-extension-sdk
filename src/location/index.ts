@@ -1,8 +1,6 @@
 import { send } from '../channel';
 import { getLocationId } from '../_internals/utils';
 
-
-
 // TODO: add documentation (+ "body {overflow: hidden}" notice for views)
 export const is = (location: string): boolean => {
   return getLocationId() === location;

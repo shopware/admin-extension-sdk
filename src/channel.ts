@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { ShopwareMessageTypes } from './messages.types';
-import { serializeFunctionsInMessageData, deserializeFunctionsInMessageData } from './_internals/function-serializer';
 import { generateUniqueId } from './_internals/utils';
 import { extensions, sendPrivileged, handlePrivileged } from './privileges/privilege-resolver';
 import { ShopwareMessageTypePrivileges } from './privileges';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
-import { serializeCriteriasInMessageData, deserializeCriteriasInMessageData } from './_internals/criteria-serializer';
+import { deserialize, serialize } from './_internals/serializer';
 
 /**
  * ----------------
@@ -57,10 +56,10 @@ const sourceRegistry: Set<{
 
 /**
  * With this method you can send actions or you can request data:
- * 
+ *
  * @param type Choose a type of action from the {@link send-types}
  * @param data The matching data for the type
- * @returns A promise with the response data in the given responseType 
+ * @returns A promise with the response data in the given responseType
  */
 export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
@@ -88,9 +87,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     _callbackId: callbackId,
   };
 
-  // Replace methods etc. so that they are working in JSON format
-  serializeFunctionsInMessageData(messageData);
-  serializeCriteriasInMessageData(messageData);
+  serialize(messageData);
 
   // Convert message data to string for message sending
   const message = JSON.stringify(messageData);
@@ -100,7 +97,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   const timeoutMs = 7000;
 
   return new Promise((resolve, reject) => {
-    const callbackHandler = function(event: MessageEvent<string>):void {    
+    const callbackHandler = function(event: MessageEvent<string>):void {
       if (typeof event.data !== 'string') {
         return;
       }
@@ -130,9 +127,8 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       }
 
       // Deserialize methods etc. so that they are callable in JS
-      deserializeFunctionsInMessageData(shopwareResponseData, event);
-      deserializeCriteriasInMessageData(shopwareResponseData);
-      
+      deserialize(shopwareResponseData, event);
+
       // Remove event so that in only execute once
       window.removeEventListener('message', callbackHandler);
 
@@ -178,7 +174,6 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 }
 
 /**
- * 
  * @param type Choose a type of action from the {@link send-types}
  * @param method This method should return the response value
  * @returns The return value is a cancel function to stop listening to the events
@@ -197,7 +192,7 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
       if (!extensions) {
         return;
       }
-      
+
       const missingPrivileges = handlePrivileged(type, extensions, event.origin);
       if (missingPrivileges !== null) {
         return;
@@ -229,8 +224,7 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     }
 
     // Deserialize methods etc. so that they are callable in JS
-    deserializeFunctionsInMessageData(shopwareMessageData, event);
-    deserializeCriteriasInMessageData(shopwareMessageData);
+    deserialize(shopwareMessageData, event);
 
     const responseValue = await Promise.resolve(method(
       shopwareMessageData._data,
@@ -244,8 +238,7 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     };
 
     // Replace methods etc. so that they are working in JSON format
-    serializeFunctionsInMessageData(responseMessage);
-    serializeCriteriasInMessageData(responseMessage);
+    serialize(responseMessage);
 
     const stringifiedResponseMessage = JSON.stringify(responseMessage);
 
@@ -281,7 +274,7 @@ export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 )
 :void
 {
-  [...sourceRegistry].forEach(({source, origin}) => {    
+  [...sourceRegistry].forEach(({source, origin}) => {
     // Disable error handling because not every window need to react to the data
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     return send(type, data, source, origin).catch(() => {});
@@ -327,7 +320,7 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 }
 
 /**
- * Factory method which creates a handler so that the type don't need to be 
+ * Factory method which creates a handler so that the type don't need to be
  * defined and can be hidden.
  */
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
@@ -338,7 +331,7 @@ export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(m
 }
 
 /**
- * Factory method which creates a handler so that the type don't need to be 
+ * Factory method which creates a handler so that the type don't need to be
  * defined and can be hidden.
  */
 export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {

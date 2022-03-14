@@ -1,12 +1,12 @@
-import { send, handleFactory } from '../channel';
-import { traverseObject, isObject, generateUniqueId } from './utils';
+import { send, handleFactory } from '../../channel';
+import { traverseObject, isObject, generateUniqueId } from '../utils';
 
 /* eslint-disable */
-export function serializeFunctionsInMessageData<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
+function serialize<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
   serializeMethodsWithPlaceholder(messageData);
 }
 
-export function deserializeFunctionsInMessageData<MESSAGE_DATA extends object>(
+function deserialize<MESSAGE_DATA extends object>(
   messageData: MESSAGE_DATA,
   event: MessageEvent<string>
 ): void {
@@ -69,7 +69,7 @@ function deserializeMethodsWithPlaceholder<MESSAGE_DATA extends object>(
       const origin = value['origin'];
 
       // convert wrapper to a callable method
-      parentEntry[key] = (...args: any[]) => {        
+      parentEntry[key] = (...args: any[]) => {
         return send(
           '__function__',
           {
@@ -83,3 +83,9 @@ function deserializeMethodsWithPlaceholder<MESSAGE_DATA extends object>(
     }
   });
 }
+
+export default {
+  name: 'function',
+  serialize,
+  deserialize,
+};

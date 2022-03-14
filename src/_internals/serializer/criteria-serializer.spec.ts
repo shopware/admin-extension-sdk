@@ -1,5 +1,6 @@
-import Criteria from "../data/Criteria";
-import { serializeCriteriasInMessageData, deserializeCriteriasInMessageData } from './criteria-serializer';
+import Criteria from "../../data/Criteria";
+import {deserialize, serialize } from './index';
+
 
 describe('Criteria Serializer', () => {
   it('should serialize and deserialize the criteria', () => {
@@ -10,7 +11,7 @@ describe('Criteria Serializer', () => {
       myCriteria: myCriteria,
     }
 
-    serializeCriteriasInMessageData(messageData)
+    serialize(messageData);
 
     expect(messageData.myCriteria).toBeInstanceOf(Object);
     expect(messageData).toEqual({
@@ -37,7 +38,7 @@ describe('Criteria Serializer', () => {
       }
     })
 
-    deserializeCriteriasInMessageData(messageData);
+    deserialize(messageData, new MessageEvent(''));
 
     expect(messageData.title).toEqual('Test title');
     expect(messageData.myCriteria).toBeInstanceOf(Criteria);
@@ -53,7 +54,7 @@ describe('Criteria Serializer', () => {
       myCriteria: myCriteria,
     }
 
-    serializeCriteriasInMessageData(messageData)
+    serialize(messageData)
 
     expect(messageData).toEqual({
       title: 'Test title',
@@ -79,7 +80,7 @@ describe('Criteria Serializer', () => {
       }
     })
 
-    deserializeCriteriasInMessageData(messageData);
+    deserialize(messageData, new MessageEvent(''));
 
     expect(messageData.title).toEqual('Test title');
     expect(messageData.myCriteria).toBeInstanceOf(Criteria);
@@ -95,7 +96,7 @@ describe('Criteria Serializer', () => {
 
     myCriteria.addFilter(
       Criteria.equals('name', 'Hello world'),
-    ); 
+    );
 
     myCriteria.addFilter(
       Criteria.multi('and', [
@@ -150,7 +151,7 @@ describe('Criteria Serializer', () => {
 
     const originalParsedCriteria = myCriteria.parse();
 
-    serializeCriteriasInMessageData(messageData)
+    serialize(messageData)
 
     expect(messageData).toEqual({
       title: 'Test title',
@@ -291,7 +292,7 @@ describe('Criteria Serializer', () => {
       }
     })
 
-    deserializeCriteriasInMessageData(messageData);
+    deserialize(messageData, new MessageEvent(''));
 
     expect(messageData.title).toEqual('Test title');
     expect(messageData.myCriteria).toBeInstanceOf(Criteria);

@@ -1,8 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep';
 
-type draft = {
+export interface draft  {
   [key: string]: unknown,
-};
+}
 
 let setterMethod = (draft: draft, property: string, value: unknown): void => {
   draft[property] = value;
@@ -15,10 +15,10 @@ export function assignSetterMethod(newSetterMethod: (draft: draft, property: str
   setterMethod = newSetterMethod;
 }
 
-export default class Entity {
+class EntityClass {
   id: string;
 
-  _origin: unknown;
+  _origin: draft;
 
   _entityName: string;
 
@@ -83,14 +83,14 @@ export default class Entity {
   /**
    * Allows access the origin entity value. The origin value contains the server values
    */
-  getOrigin(): unknown {
+  getOrigin(): draft {
     return this._origin;
   }
 
   /**
    * Allows to access the draft value. The draft value contains all local changes of the entity
    */
-  getDraft(): unknown {
+  getDraft(): draft {
     return this._draft;
   }
 
@@ -101,3 +101,13 @@ export default class Entity {
     return this._entityName;
   }
 }
+
+/* eslint-disable */
+type EntityType<DATA extends Record<string, unknown>> = DATA & EntityClass & Record<string, any>;
+
+const Entity = function EntityConstructor(id: string, entityName: string, data: draft) {
+  return new EntityClass(id, entityName, data);
+} as any as { new<DATA extends draft>(id: string, entityName: string, data: DATA): EntityType<DATA> }
+
+export default Entity;
+export type Entity = EntityClass;

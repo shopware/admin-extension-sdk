@@ -1,5 +1,5 @@
-import Entity from './Entity';
 import Criteria from '../Criteria';
+import type { Entity } from './Entity';
 
 type ApiAuthToken = {
   access: string,
@@ -7,7 +7,7 @@ type ApiAuthToken = {
   refresh: string,
 }
 
-interface ApiContext {
+export interface ApiContext {
   apiPath: null | string,
   apiResourcePath: null | string,
   assetsPath: null | string,

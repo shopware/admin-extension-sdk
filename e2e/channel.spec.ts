@@ -24,7 +24,7 @@ test.beforeEach(({ page }, testInfo) => {
 test.describe('Test setup', () => {
   test('check if setup process works correctly', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });
-  
+
     await expect(mainFrame.locator('h1')).toContainText('Main window');
     await expect(subFrame.locator('h1')).toContainText('Sub window');
   });
@@ -209,7 +209,7 @@ test.describe('Main communication test', () => {
 test.describe('Context tests', () => {
   test('get language', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });
-  
+
     // create handler in main window
     await mainFrame.evaluate(() => {
       const handle = window.sw_internal.handleFactory({});
@@ -268,7 +268,7 @@ test.describe('Context tests', () => {
     // handle incoming criteria
     await mainFrame.evaluate(() => {
       const handle = window.sw_internal.handleFactory({});
- 
+
       handle('_criteriaTest', ({ title, myCriteria }) => {
         // check if myCriteria is a real Criteria object
         if (!(myCriteria instanceof window.sw_internal.Criteria)) {
@@ -293,7 +293,7 @@ test.describe('Context tests', () => {
         title: 'Criteria testing',
         myCriteria: criteriaExample,
       })
-      
+
       return {
         title: result.title,
         // the criteria check needs to be done inside the frame
@@ -304,5 +304,74 @@ test.describe('Context tests', () => {
     // check if criteria is a real criteria object
     expect (result.title).toEqual('Criteria testing');
     expect (result.isCriteriaInstance).toBe(true);
+  });
+
+  test('send entity collection to iFrame', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // handle incoming collection
+    await mainFrame.evaluate(() => {
+      const handle = window.sw_internal.handleFactory({});
+
+      handle('_collectionTest', ({ title, collection}) => {
+        // check if collection is a real collection object
+        if (!(collection instanceof window.sw_internal.Collection)) {
+          return {
+            title: 'collection is not a EntityCollection instance',
+            collection,
+          };
+        }
+
+        const first = collection.first();
+        if (!first || typeof first.getDraft !== 'function') {
+          return {
+            title: 'First element is not an Entity instance',
+            collection,
+          };
+        }
+
+        const last = collection.last();
+        if (!last || typeof last.getDraft !== 'function') {
+          return {
+            title: 'Last element is not an Entity instance',
+            collection,
+          };
+        }
+
+        return {
+          title,
+          collection,
+        };
+      })
+    })
+
+    // send collection from subFrame
+    const result = await subFrame.evaluate(async () => {
+      const collection = new window.sw_internal.Collection(
+          'playwright',
+          'test',
+          // @ts-expect-error
+          {},
+          new window.sw_internal.Criteria(),
+      );
+      // @ts-expect-error
+      collection.add(new window.sw_internal.Entity('1', 'test', {}));
+      // @ts-expect-error
+      collection.add(new window.sw_internal.Entity('2', 'test', {}));
+
+      const result = await window.sw_internal.send('_collectionTest', {
+        title: 'Collection testing',
+        collection,
+      })
+
+      return {
+        title: result.title,
+        isCollectionInstance: result.collection instanceof window.sw_internal.Collection
+      };
+    })
+
+    // check if collection is a real collection object
+    expect (result.title).toEqual('Collection testing');
+    expect (result.isCollectionInstance).toBe(true);
   });
 })
