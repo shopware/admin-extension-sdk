@@ -31,3 +31,7 @@ export function getWindowSrc():string {
 
     return urlObject.toString();
 }
+
+export function hasType(type: string, obj: any): boolean {
+  return isObject(obj) && obj.__type__ && obj.__type__ === type;
+}

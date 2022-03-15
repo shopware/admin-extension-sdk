@@ -17,6 +17,8 @@ module.exports = {
   rules: {
     'no-prototype-builtins': 'off',
     'comma-dangle': 'off',
+    'no-irregular-whitespace': 'error',
+    'no-multiple-empty-lines': ['error', { max: 1}],
     '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
     '@typescript-eslint/explicit-function-return-type': ['error'],
     '@typescript-eslint/member-delimiter-style': ['error', {
@@ -72,5 +74,6 @@ module.exports = {
       },
     ],
     quotes: ['error', 'single'],
+    'eol-last': ['error', 'always'],
   },
 };

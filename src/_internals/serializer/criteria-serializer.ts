@@ -1,12 +1,12 @@
-import { traverseObject, isObject } from './utils';
-import Criteria from '../data/Criteria';
+import {traverseObject, hasType} from '../utils';
+import Criteria from '../../data/Criteria';
 
 /* eslint-disable */
-export function serializeCriteriasInMessageData<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
+function serialize<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
   serializeCriteriasWithPlaceholder(messageData);
 }
 
-export function deserializeCriteriasInMessageData<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
+function deserialize<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
   deserializeCriterias(messageData);
 }
 
@@ -24,11 +24,7 @@ function serializeCriteriasWithPlaceholder<MESSAGE_DATA extends object>(messageD
 function deserializeCriterias<MESSAGE_DATA extends object>(messageData: MESSAGE_DATA): void {
   traverseObject(messageData, (parentEntry, key, value) => {
     // when object is containing a criteria wrapper
-    if (isObject(value)
-        && value['__type__']
-        && value['__type__'] === '__Criteria__'
-        && typeof value['data'] === 'object'
-    ) {
+    if (hasType('__Criteria__', value) && typeof value['data'] === 'object') {
       // the original values
       const serializedData = parentEntry[key].data;
 
@@ -89,3 +85,9 @@ function deserializeCriterias<MESSAGE_DATA extends object>(messageData: MESSAGE_
     }
   });
 }
+
+export default {
+  name: 'criteria',
+  serialize,
+  deserialize,
+};

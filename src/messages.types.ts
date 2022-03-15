@@ -11,6 +11,7 @@ import type { uiModalOpen, uiModalClose } from './ui/modal/index';
 import type { actionButtonAdd } from './ui/actionButton';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
+import EntityCollection from './data/_internals/EntityCollection';
 
 /**
  * Contains all shopware send types.
@@ -42,6 +43,7 @@ export type ShopwareMessageTypes = {
   _multiply: _multiply,
   _subtract: _subtract,
   _criteriaTest: _criteriaTest,
+  _collectionTest: _collectionTest,
   _privileges: _privileges,
 }
 
@@ -81,6 +83,15 @@ export type _criteriaTest = {
   },
   title: string,
   myCriteria: Criteria,
+}
+
+export type _collectionTest = {
+  responseType: {
+    title: string,
+    collection: EntityCollection,
+  },
+  title: string,
+  collection: EntityCollection,
 }
 
 export type __function__ = {

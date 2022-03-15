@@ -11,7 +11,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
   it('should send "reload" command to the admin', (done) => {
     const removeListener = defaultHandle('windowReload', (result) => {
       expect(result).toEqual({});
-      
+
       removeListener();
       done();
     })
@@ -22,7 +22,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
   it('should send "reload" command to the admin also without options', (done) => {
     const removeListener = defaultHandle('windowReload', (result) => {
       expect(result).toEqual({});
-      
+
       removeListener();
       done();
     })
