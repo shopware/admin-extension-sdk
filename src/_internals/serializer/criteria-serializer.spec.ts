@@ -16,10 +16,10 @@ describe('Criteria Serializer', () => {
       myCriteria: myCriteria,
     }
 
-    serialize(messageData);
+    const serializedMessageData = serialize(messageData);
 
-    expect(messageData.myCriteria).toBeInstanceOf(Object);
-    expect(messageData).toEqual({
+    expect(serializedMessageData.myCriteria).toBeInstanceOf(Object);
+    expect(serializedMessageData).toEqual({
       title: 'Test title',
       myCriteria: {
         __type__: '__Criteria__',
@@ -43,10 +43,10 @@ describe('Criteria Serializer', () => {
       }
     })
 
-    deserialize(messageData, new MessageEvent(''));
+    const deserializedMessageData = deserialize(serializedMessageData, new MessageEvent(''));
 
-    expect(messageData.title).toEqual('Test title');
-    expect(messageData.myCriteria).toBeInstanceOf(Criteria);
+    expect(deserializedMessageData.title).toEqual('Test title');
+    expect(deserializedMessageData.myCriteria).toBeInstanceOf(Criteria);
   });
 
   it('should serialize the criteria with different page and limit', () => {
@@ -59,9 +59,9 @@ describe('Criteria Serializer', () => {
       myCriteria: myCriteria,
     }
 
-    serialize(messageData)
+    const serializedMessageData = serialize(messageData);
 
-    expect(messageData).toEqual({
+    expect(serializedMessageData).toEqual({
       title: 'Test title',
       myCriteria: {
         __type__: '__Criteria__',
@@ -85,13 +85,13 @@ describe('Criteria Serializer', () => {
       }
     })
 
-    deserialize(messageData, new MessageEvent(''));
+    const deserializedMessageData = deserialize(serializedMessageData, new MessageEvent(''));
 
-    expect(messageData.title).toEqual('Test title');
-    expect(messageData.myCriteria).toBeInstanceOf(Criteria);
+    expect(deserializedMessageData.title).toEqual('Test title');
+    expect(deserializedMessageData.myCriteria).toBeInstanceOf(Criteria);
 
-    expect(messageData.myCriteria.getPage()).toEqual(50);
-    expect(messageData.myCriteria.getLimit()).toEqual(500);
+    expect(deserializedMessageData.myCriteria.getPage()).toEqual(50);
+    expect(deserializedMessageData.myCriteria.getLimit()).toEqual(500);
   });
 
   it('should serialize the criteria with correct values', () => {
@@ -156,9 +156,9 @@ describe('Criteria Serializer', () => {
 
     const originalParsedCriteria = myCriteria.parse();
 
-    serialize(messageData)
+    const serializedMessageData = serialize(messageData);
 
-    expect(messageData).toEqual({
+    expect(serializedMessageData).toEqual({
       title: 'Test title',
       myCriteria: {
         __type__: '__Criteria__',
@@ -297,11 +297,11 @@ describe('Criteria Serializer', () => {
       }
     })
 
-    deserialize(messageData, new MessageEvent(''));
+    const deserializedMessageData = deserialize(serializedMessageData, new MessageEvent(''));
 
-    expect(messageData.title).toEqual('Test title');
-    expect(messageData.myCriteria).toBeInstanceOf(Criteria);
+    expect(deserializedMessageData.title).toEqual('Test title');
+    expect(deserializedMessageData.myCriteria).toBeInstanceOf(Criteria);
 
-    expect(messageData.myCriteria.parse()).toEqual(originalParsedCriteria);
+    expect(deserializedMessageData.myCriteria.parse()).toEqual(originalParsedCriteria);
   });
 });

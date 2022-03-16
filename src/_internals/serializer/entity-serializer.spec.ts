@@ -44,116 +44,116 @@ describe('entity-serializer.ts', () => {
     expect(entityKeysBefore).not.toContain('_isDirty');
     expect(entityKeysBefore).not.toContain('_isNew');
 
-    serialize(messageData);
+    const serializedMessageData = serialize(messageData);
 
-    expect(messageData.entity.hasOwnProperty('__id__')).toBe(true);
-    expect(messageData.entity.__id__).toBe('foo');
+    expect(serializedMessageData.entity.hasOwnProperty('__id__')).toBe(true);
+    expect(serializedMessageData.entity.__id__).toBe('foo');
 
-    expect(messageData.entity.hasOwnProperty('__entityName__')).toBe(true);
-    expect(messageData.entity.__entityName__).toBe('jest');
+    expect(serializedMessageData.entity.hasOwnProperty('__entityName__')).toBe(true);
+    expect(serializedMessageData.entity.__entityName__).toBe('jest');
 
-    expect(messageData.entity.hasOwnProperty('__isDirty__')).toBe(true);
-    expect(messageData.entity.__isDirty__).toBe(true);
+    expect(serializedMessageData.entity.hasOwnProperty('__isDirty__')).toBe(true);
+    expect(serializedMessageData.entity.__isDirty__).toBe(true);
 
-    expect(messageData.entity.hasOwnProperty('__isNew__')).toBe(true);
-    expect(messageData.entity.__isNew__).toBe(false);
+    expect(serializedMessageData.entity.hasOwnProperty('__isNew__')).toBe(true);
+    expect(serializedMessageData.entity.__isNew__).toBe(false);
 
-    expect(messageData.entity.hasOwnProperty('__origin__')).toBe(true);
-    expect(typeof messageData.entity.__origin__).toBe('object');
+    expect(serializedMessageData.entity.hasOwnProperty('__origin__')).toBe(true);
+    expect(typeof serializedMessageData.entity.__origin__).toBe('object');
 
-    expect(messageData.entity.__origin__.hasOwnProperty('string')).toBe(true);
-    expect(messageData.entity.__origin__.string).toBe('jest-is-fun');
+    expect(serializedMessageData.entity.__origin__.hasOwnProperty('string')).toBe(true);
+    expect(serializedMessageData.entity.__origin__.string).toBe('jest-is-fun');
 
-    expect(messageData.entity.__origin__.hasOwnProperty('number')).toBe(true);
-    expect(messageData.entity.__origin__.number).toBe(42);
+    expect(serializedMessageData.entity.__origin__.hasOwnProperty('number')).toBe(true);
+    expect(serializedMessageData.entity.__origin__.number).toBe(42);
 
-    expect(messageData.entity.__origin__.hasOwnProperty('array')).toBe(true);
-    expect(messageData.entity.__origin__.array.length).toBe(3);
+    expect(serializedMessageData.entity.__origin__.hasOwnProperty('array')).toBe(true);
+    expect(serializedMessageData.entity.__origin__.array.length).toBe(3);
 
-    expect(messageData.entity.__origin__.hasOwnProperty('object')).toBe(true);
-    expect(typeof messageData.entity.__origin__.object).toBe('object');
-    expect(messageData.entity.__origin__.object.hasOwnProperty('foo')).toBe(true);
-    expect(messageData.entity.__origin__.object.foo).toBe('bar');
+    expect(serializedMessageData.entity.__origin__.hasOwnProperty('object')).toBe(true);
+    expect(typeof serializedMessageData.entity.__origin__.object).toBe('object');
+    expect(serializedMessageData.entity.__origin__.object.hasOwnProperty('foo')).toBe(true);
+    expect(serializedMessageData.entity.__origin__.object.foo).toBe('bar');
 
-    expect(messageData.entity.hasOwnProperty('__draft__')).toBe(true);
-    expect(typeof messageData.entity.__draft__).toBe('object');
+    expect(serializedMessageData.entity.hasOwnProperty('__draft__')).toBe(true);
+    expect(typeof serializedMessageData.entity.__draft__).toBe('object');
 
-    expect(messageData.entity.__draft__.hasOwnProperty('string')).toBe(true);
-    expect(messageData.entity.__draft__.string).toBe('jest-is-more-fun');
+    expect(serializedMessageData.entity.__draft__.hasOwnProperty('string')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.string).toBe('jest-is-more-fun');
 
-    expect(messageData.entity.__draft__.hasOwnProperty('number')).toBe(true);
-    expect(messageData.entity.__draft__.number).toBe(1337);
+    expect(serializedMessageData.entity.__draft__.hasOwnProperty('number')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.number).toBe(1337);
 
-    expect(messageData.entity.__draft__.hasOwnProperty('array')).toBe(true);
-    expect(messageData.entity.__draft__.array.length).toBe(4);
+    expect(serializedMessageData.entity.__draft__.hasOwnProperty('array')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.array.length).toBe(4);
 
-    expect(messageData.entity.__draft__.hasOwnProperty('object')).toBe(true);
-    expect(typeof messageData.entity.__draft__.object).toBe('object');
-    expect(messageData.entity.__draft__.object.hasOwnProperty('foo')).toBe(true);
-    expect(messageData.entity.__draft__.object.foo).toBe('buz');
+    expect(serializedMessageData.entity.__draft__.hasOwnProperty('object')).toBe(true);
+    expect(typeof serializedMessageData.entity.__draft__.object).toBe('object');
+    expect(serializedMessageData.entity.__draft__.object.hasOwnProperty('foo')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.object.foo).toBe('buz');
 
-    expect(messageData.entity.__draft__.hasOwnProperty('association')).toBe(true);
-    expect(typeof messageData.entity.__draft__.association).toBe('object');
-    expect(messageData.entity.__draft__.association.hasOwnProperty('__id__')).toBe(true);
-    expect(messageData.entity.__draft__.association.__id__).toBe('bar');
+    expect(serializedMessageData.entity.__draft__.hasOwnProperty('association')).toBe(true);
+    expect(typeof serializedMessageData.entity.__draft__.association).toBe('object');
+    expect(serializedMessageData.entity.__draft__.association.hasOwnProperty('__id__')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__id__).toBe('bar');
 
-    expect(messageData.entity.__draft__.association.hasOwnProperty('__entityName__')).toBe(true);
-    expect(messageData.entity.__draft__.association.__entityName__).toBe('jest-association');
+    expect(serializedMessageData.entity.__draft__.association.hasOwnProperty('__entityName__')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__entityName__).toBe('jest-association');
 
-    expect(messageData.entity.__draft__.association.hasOwnProperty('__isDirty__')).toBe(true);
-    expect(messageData.entity.__draft__.association.__isDirty__).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.hasOwnProperty('__isDirty__')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__isDirty__).toBe(true);
 
-    expect(messageData.entity.__draft__.association.hasOwnProperty('__isNew__')).toBe(true);
-    expect(messageData.entity.__draft__.association.__isNew__).toBe(false);
+    expect(serializedMessageData.entity.__draft__.association.hasOwnProperty('__isNew__')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__isNew__).toBe(false);
 
-    expect(messageData.entity.__draft__.association.hasOwnProperty('__origin__')).toBe(true);
-    expect(typeof messageData.entity.__draft__.association.__origin__).toBe('object');
-    expect(messageData.entity.__draft__.association.__origin__.hasOwnProperty('string')).toBe(true);
-    expect(messageData.entity.__draft__.association.__origin__.hasOwnProperty('number')).toBe(true);
-    expect(messageData.entity.__draft__.association.__origin__.hasOwnProperty('array')).toBe(true);
-    expect(messageData.entity.__draft__.association.__origin__.hasOwnProperty('object')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.hasOwnProperty('__origin__')).toBe(true);
+    expect(typeof serializedMessageData.entity.__draft__.association.__origin__).toBe('object');
+    expect(serializedMessageData.entity.__draft__.association.__origin__.hasOwnProperty('string')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__origin__.hasOwnProperty('number')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__origin__.hasOwnProperty('array')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__origin__.hasOwnProperty('object')).toBe(true);
 
-    expect(messageData.entity.__draft__.association.hasOwnProperty('__draft__')).toBe(true);
-    expect(messageData.entity.__draft__.association.__draft__.hasOwnProperty('string')).toBe(true);
-    expect(messageData.entity.__draft__.association.__draft__.hasOwnProperty('number')).toBe(true);
-    expect(messageData.entity.__draft__.association.__draft__.hasOwnProperty('array')).toBe(true);
-    expect(messageData.entity.__draft__.association.__draft__.hasOwnProperty('object')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.hasOwnProperty('__draft__')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__draft__.hasOwnProperty('string')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__draft__.hasOwnProperty('number')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__draft__.hasOwnProperty('array')).toBe(true);
+    expect(serializedMessageData.entity.__draft__.association.__draft__.hasOwnProperty('object')).toBe(true);
 
-    deserialize(messageData, new MessageEvent(''));
+    const deserializedMessageData = deserialize(serializedMessageData, new MessageEvent(''));
 
     // Assert that all entities are converted back to entities
-    expect(typeof messageData.entity).toBe('object');
-    expect(typeof messageData.entity.getDraft).toBe('function');
-    expect(messageData.entity.hasOwnProperty('association')).toBe(true);
-    expect(typeof messageData.entity.association).toBe('object');
-    expect(typeof messageData.entity.association.getDraft).toBe('function');
+    expect(typeof deserializedMessageData.entity).toBe('object');
+    expect(typeof deserializedMessageData.entity.getDraft).toBe('function');
+    expect(deserializedMessageData.entity.hasOwnProperty('association')).toBe(true);
+    expect(typeof deserializedMessageData.entity.association).toBe('object');
+    expect(typeof deserializedMessageData.entity.association.getDraft).toBe('function');
 
     // Assert entity values
-    expect(messageData.entity.isNew()).toBe(false);
-    expect(messageData.entity.getIsDirty()).toBe(true);
-    expect(messageData.entity.string).toBe('jest-is-more-fun');
-    expect(messageData.entity.number).toBe(1337);
-    expect(messageData.entity.array.length).toBe(4);
-    expect(messageData.entity.array[0]).toBe('jest');
-    expect(messageData.entity.array[1]).toBe(4);
-    expect(messageData.entity.array[2]).toBe('you');
-    expect(messageData.entity.array[3]).toBe('and me');
-    expect(messageData.entity.object.foo).toBe('buz');
+    expect(deserializedMessageData.entity.getIsDirty()).toBe(true);
+    expect(deserializedMessageData.entity.isNew()).toBe(false);
+    expect(deserializedMessageData.entity.string).toBe('jest-is-more-fun');
+    expect(deserializedMessageData.entity.number).toBe(1337);
+    expect(deserializedMessageData.entity.array.length).toBe(4);
+    expect(deserializedMessageData.entity.array[0]).toBe('jest');
+    expect(deserializedMessageData.entity.array[1]).toBe(4);
+    expect(deserializedMessageData.entity.array[2]).toBe('you');
+    expect(deserializedMessageData.entity.array[3]).toBe('and me');
+    expect(deserializedMessageData.entity.object.foo).toBe('buz');
 
     // Assert association values
-    expect(messageData.entity.association.isNew()).toBe(false);
-    expect(messageData.entity.association.getIsDirty()).toBe(true);
-    expect(messageData.entity.association.string).toBe('jest-is-more-fun');
-    expect(messageData.entity.association.number).toBe(1337);
-    expect(messageData.entity.association.array.length).toBe(4);
-    expect(messageData.entity.association.array[0]).toBe('jest');
-    expect(messageData.entity.association.array[1]).toBe(4);
-    expect(messageData.entity.association.array[2]).toBe('you');
-    expect(messageData.entity.association.array[3]).toBe('and me');
-    expect(messageData.entity.association.object.foo).toBe('buz');
+    expect(deserializedMessageData.entity.association.isNew()).toBe(false);
+    expect(deserializedMessageData.entity.association.getIsDirty()).toBe(true);
+    expect(deserializedMessageData.entity.association.string).toBe('jest-is-more-fun');
+    expect(deserializedMessageData.entity.association.number).toBe(1337);
+    expect(deserializedMessageData.entity.association.array.length).toBe(4);
+    expect(deserializedMessageData.entity.association.array[0]).toBe('jest');
+    expect(deserializedMessageData.entity.association.array[1]).toBe(4);
+    expect(deserializedMessageData.entity.association.array[2]).toBe('you');
+    expect(deserializedMessageData.entity.association.array[3]).toBe('and me');
+    expect(deserializedMessageData.entity.association.object.foo).toBe('buz');
 
     // Check if private properties are hidden behind the proxy
-    const entityKeys = Object.keys(messageData.entity);
+    const entityKeys = Object.keys(deserializedMessageData.entity);
     expect(entityKeys).not.toContain('_origin');
     expect(entityKeys).not.toContain('_isDirty');
     expect(entityKeys).not.toContain('_isNew');

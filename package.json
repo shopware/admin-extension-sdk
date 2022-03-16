@@ -1,7 +1,7 @@
 {
   "name": "@shopware-ag/admin-extension-sdk",
   "license": "MIT",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "repository": "git://github.com/shopware/admin-extension-sdk.git",
   "description": "The SDK for App iframes to communicate with the Shopware Adminstration",
   "keywords": [
@@ -44,35 +44,35 @@
     "test:watch": "jest --watch",
     "e2e": "concurrently --handle-input --kill-others --success first \"npm run dev\" \"wait-on tcp:8181 && wait-on tcp:8182 && playwright test\"",
     "e2e:dev": "playwright test --project=chromium --reporter=list",
-    "e2e:dev-watch": "chokidar \"{e2e,src}/**/*.{js,ts}\" -c 'npm run e2e:dev' --initial",
+    "e2e:dev-watch": "chokidar \"{e2e,src}/**/*.{js,ts}\" -c 'clear && npm run e2e:dev' --initial",
     "e2e:dev-debug": "PWDEBUG=1 npm run e2e:dev",
     "prepublish": "npm run build",
     "circular-dependencies": "madge --circular --warning src",
     "circular-dependencies:image": "madge --circular --warning --image ./dependency-graph.png src"
   },
   "devDependencies": {
-    "@playwright/test": "^1.18.0",
-    "@types/jest": "^27.0.3",
-    "@types/lodash": "^4.14.179",
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "@typescript-eslint/parser": "^5.4.0",
-    "concurrently": "^6.3.0",
-    "eslint": "^8.3.0",
-    "eslint-plugin-import": "^2.25.4",
-    "jest": "^27.3.1",
-    "jest-fail-on-console": "^2.2.3",
-    "madge": "^5.0.1",
-    "ts-jest": "^27.0.7",
-    "typescript": "^4.5.2",
-    "vite": "^2.6.0",
-    "vite-plugin-dts": "^0.8.2",
-    "vite-tsconfig-paths": "^3.3.14"
-  },
-  "dependencies": {
+    "@playwright/test": "^1.20.0",
+    "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.180",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
     "chokidar-cli": "^3.0.0",
+    "concurrently": "^7.0.0",
+    "eslint": "^8.11.0",
+    "eslint-plugin-import": "^2.25.4",
     "flush-promises": "^1.0.2",
     "http-server": "^14.1.0",
-    "lodash": "^4.17.21",
-    "wait-on": "^6.0.0"
+    "jest": "^27.5.1",
+    "jest-fail-on-console": "^2.2.3",
+    "madge": "^5.0.1",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.6.2",
+    "vite": "^2.8.6",
+    "vite-plugin-dts": "^0.9.10",
+    "vite-tsconfig-paths": "^3.4.1",
+    "wait-on": "^6.0.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }

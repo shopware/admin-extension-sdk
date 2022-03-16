@@ -361,15 +361,10 @@ test.describe('Context tests', () => {
           {},
           new window.sw_internal.Criteria(),
       );
-      // @ts-expect-error
       subCollection.add(new window.sw_internal.Entity('1', 'test', {}));
-      // @ts-expect-error
       subCollection.add(new window.sw_internal.Entity('2', 'test', {}));
-      // @ts-expect-error
       collection.add(new window.sw_internal.Entity('1', 'test', {}));
-      // @ts-expect-error
       collection.add(new window.sw_internal.Entity('2', 'test', {
-        // @ts-expect-error
         foo: new window.sw_internal.Entity('exampleId', 'foo', {
           anotherCollection: subCollection,
         })
@@ -404,7 +399,7 @@ test.describe('Context tests', () => {
     await mainFrame.evaluate(() => {
       const handle = window.sw_internal.handleFactory({});
 
-      handle('_collectionTest', ({ title, entity}) => {
+      handle('_entityTest', ({ title, entity}) => {
         // check if entity is a real entity
         if (!entity || typeof entity.getDraft !== 'function') {
           return {
@@ -436,33 +431,26 @@ test.describe('Context tests', () => {
           {},
           new window.sw_internal.Criteria(),
       );
-      // @ts-expect-error
       subCollection.add(new window.sw_internal.Entity('1', 'test', {}));
-      // @ts-expect-error
       collection.add(new window.sw_internal.Entity('1', 'test', {}));
-      // @ts-expect-error
       collection.add(new window.sw_internal.Entity('2', 'test', {
-        // @ts-expect-error
         foo: new window.sw_internal.Entity('exampleId', 'foo', {
           anotherCollection: subCollection,
         })
       }));
 
-      // @ts-expect-error
       const mainEntity = new window.sw_internal.Entity('1', 'test', {
         collection,
         subCollection,
       })
 
-      const result = await window.sw_internal.send('_collectionTest', {
+      const result = await window.sw_internal.send('_entityTest', {
         title: 'Entity testing',
-        // @ts-expect-error
         entity: mainEntity,
       })
 
       return {
         title: result.title,
-        // @ts-expect-error
         entity: result.entity,
         // @ts-expect-error
         anotherCollectionIsCollection: result.entity.collection.get('2').foo.anotherCollection instanceof window.sw_internal.Collection,
@@ -475,5 +463,49 @@ test.describe('Context tests', () => {
     expect (result.title).toEqual('Entity testing');
     expect (result.anotherCollectionIsCollection).toEqual(true);
     expect (result.originCollectionIsCollection).toEqual(true);
+  });
+
+  test('should not mutate original data when serializing', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // handle incoming criteria
+    await mainFrame.evaluate(() => {
+      const handle = window.sw_internal.handleFactory({});
+
+      handle('_collectionTest', ({ title, collection}) => {
+        return { title, collection };
+      })
+    })
+
+    // send criteria from subFrame
+    const result = await subFrame.evaluate(async () => {
+      const collection = new window.sw_internal.Collection(
+          'playwright',
+          'test',
+          // @ts-expect-error
+          {},
+          new window.sw_internal.Criteria(),
+      );
+      collection.add(new window.sw_internal.Entity('1', 'test', {
+        foo: 'bar',
+      }));
+
+      const sendObject = {
+        title: 'Serializing mutation testing',
+        collection: collection,
+      }
+
+      const result = await window.sw_internal.send('_collectionTest', sendObject)
+
+      return {
+        title: result.title,
+        collection: result.collection,
+        wasNotMutated: sendObject.collection.__type__ === undefined
+      };
+    })
+
+    // check if collection is a real collection object
+    expect (result.title).toEqual('Serializing mutation testing');
+    expect (result.wasNotMutated).toEqual(true);
   });
 })
