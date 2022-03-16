@@ -11,7 +11,17 @@ import type { uiModalOpen, uiModalClose } from './ui/modal/index';
 import type { actionButtonAdd } from './ui/actionButton';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
-import EntityCollection from './data/_internals/EntityCollection';
+import type EntityCollection from './data/_internals/EntityCollection';
+import type {
+  repositoryGet,
+  repositorySearch,
+  repositorySave,
+  repositoryClone,
+  repositoryHasChanges,
+  repositorySaveAll,
+  repositoryDelete,
+  repositoryCreate,
+} from './data/repository';
 
 /**
  * Contains all shopware send types.
@@ -38,6 +48,14 @@ export type ShopwareMessageTypes = {
   uiModalClose: uiModalClose,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
+  repositoryGet: repositoryGet,
+  repositorySearch: repositorySearch,
+  repositorySave: repositorySave,
+  repositoryClone: repositoryClone,
+  repositoryHasChanges: repositoryHasChanges,
+  repositorySaveAll: repositorySaveAll,
+  repositoryDelete: repositoryDelete,
+  repositoryCreate: repositoryCreate,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,

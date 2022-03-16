@@ -1,7 +1,13 @@
-import {deserialize, serialize} from './index';
 import EntityCollection, {ApiContext} from '../../data/_internals/EntityCollection';
 import Criteria from '../../data/Criteria';
 import Entity from '../../data/_internals/Entity';
+import SerializerFactory from './index';
+import { handleFactory, send } from '../../channel';
+
+const { serialize, deserialize } = SerializerFactory({
+  handleFactory: handleFactory,
+  send: send,
+})
 
 describe('entity-collection-serializer.ts', () => {
   it('should convert collections', () => {

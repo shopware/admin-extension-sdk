@@ -14,5 +14,6 @@ module.exports = {
   testMatch: [
     '<rootDir>/src/**/*.spec.js',
     '<rootDir>/src/**/*.spec.ts',
-  ]
+  ],
+  setupFilesAfterEnv: ['<rootDir>/jest.afterEnv.js']
 };

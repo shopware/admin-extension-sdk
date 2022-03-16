@@ -4,6 +4,7 @@ on: push
 
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,7 +24,29 @@ jobs:
         run: npm ci
       - name: lint
         run: npm run lint
+  circular-dependencies:
+    name: Circular dependencies (Madge)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/gallium'
+      - name: Retrieve the cached "node_modules" directory (if present)
+        uses: actions/cache@v2
+        id: node-cache
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies (if the cached directory was not found)
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: madge
+        run: npm run circular-dependencies
   test:
+    name: Jest Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,6 +65,7 @@ jobs:
       - name: test
         run: npm run test
   playwright-run:
+    name: Playwright Integration Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:

@@ -39,8 +39,10 @@ export function handlePrivileged(messageType: keyof ShopwareMessageTypes, extens
   return getMissingPrivileges(requiredPrivileges, extension.permissions);
 }
 
-function getRequiredPrivilegesForMessage(messageType: keyof ShopwareMessageTypes): privileges  {
-  return ShopwareMessageTypePrivileges[messageType];
+function getRequiredPrivilegesForMessage<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE): typeof ShopwareMessageTypePrivileges[MESSAGE_TYPE]
+function getRequiredPrivilegesForMessage(messageType: string): privileges
+function getRequiredPrivilegesForMessage<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE | string): typeof ShopwareMessageTypePrivileges[MESSAGE_TYPE] | privileges  {
+  return ShopwareMessageTypePrivileges[messageType] ?? {};
 }
 
 function getLocationPrivileges(location: Location): privileges {

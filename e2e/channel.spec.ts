@@ -354,10 +354,26 @@ test.describe('Context tests', () => {
           {},
           new window.sw_internal.Criteria(),
       );
+      const subCollection = new window.sw_internal.Collection(
+          'playwright',
+          'test',
+          // @ts-expect-error
+          {},
+          new window.sw_internal.Criteria(),
+      );
+      // @ts-expect-error
+      subCollection.add(new window.sw_internal.Entity('1', 'test', {}));
+      // @ts-expect-error
+      subCollection.add(new window.sw_internal.Entity('2', 'test', {}));
       // @ts-expect-error
       collection.add(new window.sw_internal.Entity('1', 'test', {}));
       // @ts-expect-error
-      collection.add(new window.sw_internal.Entity('2', 'test', {}));
+      collection.add(new window.sw_internal.Entity('2', 'test', {
+        // @ts-expect-error
+        foo: new window.sw_internal.Entity('exampleId', 'foo', {
+          anotherCollection: subCollection,
+        })
+      }));
 
       const result = await window.sw_internal.send('_collectionTest', {
         title: 'Collection testing',
@@ -366,12 +382,98 @@ test.describe('Context tests', () => {
 
       return {
         title: result.title,
-        isCollectionInstance: result.collection instanceof window.sw_internal.Collection
+        isCollectionInstance: result.collection instanceof window.sw_internal.Collection,
+        // @ts-expect-error
+        nestedEntityIsEntity: typeof result.collection[1].foo.getDraft === 'function',
+        // @ts-expect-error
+        nestedCollectionIsCollection: result.collection[1].foo.anotherCollection instanceof window.sw_internal.Collection,
       };
     })
 
     // check if collection is a real collection object
     expect (result.title).toEqual('Collection testing');
     expect (result.isCollectionInstance).toBe(true);
+    expect (result.nestedEntityIsEntity).toBe(true);
+    expect (result.nestedCollectionIsCollection).toBe(true);
+  });
+
+  test('send empty entity collection in entity to iFrame', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // handle incoming collection
+    await mainFrame.evaluate(() => {
+      const handle = window.sw_internal.handleFactory({});
+
+      handle('_collectionTest', ({ title, entity}) => {
+        // check if entity is a real entity
+        if (!entity || typeof entity.getDraft !== 'function') {
+          return {
+            title: 'First element is not an Entity instance',
+            entity,
+          };
+        }
+
+        return {
+          title,
+          entity,
+        };
+      })
+    })
+
+    // send collection from subFrame
+    const result = await subFrame.evaluate(async () => {
+      const collection = new window.sw_internal.Collection(
+          'playwright',
+          'test',
+          // @ts-expect-error
+          {},
+          new window.sw_internal.Criteria(),
+      );
+      const subCollection = new window.sw_internal.Collection(
+          'playwright',
+          'test',
+          // @ts-expect-error
+          {},
+          new window.sw_internal.Criteria(),
+      );
+      // @ts-expect-error
+      subCollection.add(new window.sw_internal.Entity('1', 'test', {}));
+      // @ts-expect-error
+      collection.add(new window.sw_internal.Entity('1', 'test', {}));
+      // @ts-expect-error
+      collection.add(new window.sw_internal.Entity('2', 'test', {
+        // @ts-expect-error
+        foo: new window.sw_internal.Entity('exampleId', 'foo', {
+          anotherCollection: subCollection,
+        })
+      }));
+
+      // @ts-expect-error
+      const mainEntity = new window.sw_internal.Entity('1', 'test', {
+        collection,
+        subCollection,
+      })
+
+      const result = await window.sw_internal.send('_collectionTest', {
+        title: 'Entity testing',
+        // @ts-expect-error
+        entity: mainEntity,
+      })
+
+      return {
+        title: result.title,
+        // @ts-expect-error
+        entity: result.entity,
+        // @ts-expect-error
+        anotherCollectionIsCollection: result.entity.collection.get('2').foo.anotherCollection instanceof window.sw_internal.Collection,
+        // @ts-expect-error
+        originCollectionIsCollection: result.entity.collection.get('2').foo.getOrigin().anotherCollection instanceof window.sw_internal.Collection
+      };
+    })
+
+    // check if collection is a real collection object
+    expect (result.title).toEqual('Entity testing');
+    expect (result.anotherCollectionIsCollection).toEqual(true);
+    expect (result.originCollectionIsCollection).toEqual(true);
   });
 })

@@ -4,7 +4,12 @@ import { generateUniqueId } from './_internals/utils';
 import { extensions, sendPrivileged, handlePrivileged } from './privileges/privilege-resolver';
 import { ShopwareMessageTypePrivileges } from './privileges';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
-import { deserialize, serialize } from './_internals/serializer';
+import SerializerFactory from './_internals/serializer';
+
+const { serialize, deserialize } = SerializerFactory({
+  handleFactory: handleFactory,
+  send: send,
+});
 
 /**
  * ----------------
