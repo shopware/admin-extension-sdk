@@ -1,11 +1,12 @@
 import { hasType } from '../utils';
 import EntityCollection from '../../data/_internals/EntityCollection';
 import type { SerializerFactory } from '.';
-import type { serializeFunction, deserializeFunction } from './index';
 
-const EntityCollectionSerializerFactory: SerializerFactory = () => {  
-  /* eslint-disable */
-  const serialize: serializeFunction = ({ value, customizerMethod }): any => {
+/* eslint-disable */
+const EntityCollectionSerializerFactory: SerializerFactory = () => ({
+  name: 'entity-collection',
+
+  serialize: ({ value, customizerMethod }): any => {
     if (value instanceof EntityCollection) {
       return customizerMethod({
         __type__: '__EntityCollection__',
@@ -18,9 +19,9 @@ const EntityCollectionSerializerFactory: SerializerFactory = () => {
         __aggregations__: value.aggregations,
       });
     }
-  }
-  
-  const deserialize: deserializeFunction = ({ value, customizerMethod }): any => {
+  },
+
+  deserialize: ({ value, customizerMethod }): any => {
     if (hasType('__EntityCollection__', value)) {
       return new EntityCollection(
         value.__source__,
@@ -32,12 +33,7 @@ const EntityCollectionSerializerFactory: SerializerFactory = () => {
         value.__aggregations__
       );
     }
-  }
-  
-  return {
-    name: 'entity-collection',
-    serialize,
-    deserialize,
-  };
-}
+  },
+})
+
 export default EntityCollectionSerializerFactory;

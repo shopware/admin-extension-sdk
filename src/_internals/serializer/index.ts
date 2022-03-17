@@ -6,7 +6,12 @@ import EntitySerializer from './entity-serializer';
 import EntityCollectionSerializer from './entity-collection-serializer';
 import cloneDeepWith from 'lodash/cloneDeepWith';
 
-export type customizerProperties = {
+interface SerializerDependencies {
+  send: typeof send,
+  handleFactory: typeof handleFactory,
+}
+
+interface customizerProperties {
   value: any,
   key: number | string | undefined,
   object: any | undefined,
@@ -14,22 +19,18 @@ export type customizerProperties = {
   event?: MessageEvent<string>,
   customizerMethod: (messageData: any, event?: MessageEvent<string>) => any,
 }
-
-export type serializeFunction = (customizerProperties: customizerProperties) => any;
-export type deserializeFunction = (customizerProperties: customizerProperties) => any;
-
-interface SerializerDependencies {
-  send: typeof send,
-  handleFactory: typeof handleFactory,
+interface serializer {
+  name: string,
+  serialize: (customizerProperties: customizerProperties) => any,
+  deserialize: (customizerProperties: customizerProperties) => any,
 }
 
 export type SerializerFactory = (dependencies: SerializerDependencies) => serializer;
-interface serializer {
-  name: string,
-  serialize: serializeFunction,
-  deserialize: deserializeFunction,
-}
 
+/**
+ * Collect all single serializer/deserializer. The first matching result 
+ * will be used as the customizer in cloneDeepWith
+ */
 const serializerFactories: SerializerFactory[] = [
   CriteriaSerializer,
   EntityCollectionSerializer,
@@ -37,7 +38,11 @@ const serializerFactories: SerializerFactory[] = [
   FunctionSerializer,
 ];
 
-export default function serializerFactory(dependencies: SerializerDependencies): {
+/**
+ * The main serializer factory. It returns a general serializer/deserializer which combines
+ * all single serializer
+ */
+export default function mainSerializerFactory(dependencies: SerializerDependencies): {
   getSerializers: () => serializer[],
   getSerializerByName: (name: string) => serializer | null,
   serialize: (messageData: any) => any,
@@ -56,28 +61,29 @@ export default function serializerFactory(dependencies: SerializerDependencies):
   /* eslint-disable */
   function serialize(messageData: any): any {
     return cloneDeepWith<unknown>(messageData, (value, key, object, stack) => {
-      // find first matching result
-      const serializerResults: any[] = serializers.map(serializer => {
-        return serializer.serialize({
+      // return first matching serializer result
+      for (const serializer of serializers) {
+        const result = serializer.serialize({
           value,
           key,
           object,
           stack,
           customizerMethod: serialize,
         });
-      });
 
-      // get first serializer result which is not undefined
-      return serializerResults.find(r => !!r);
+        if (result) {
+          return result;
+        };
+      }
     });
   }
 
   
   function deserialize(messageData: any, event?: MessageEvent<string>): any {
     return cloneDeepWith<unknown>(messageData, (value, key, object, stack) => {
-      // find first matching result
-      const deserializerResults: any[] = serializers.map(serializer => {
-        return serializer.deserialize({
+      // return first matching serializer result
+      for (const serializer of serializers) {
+        const result = serializer.deserialize({
           value,
           key,
           object,
@@ -85,10 +91,11 @@ export default function serializerFactory(dependencies: SerializerDependencies):
           event,
           customizerMethod: deserialize,
         });
-      });
 
-      // get first serializer result which is not undefined
-      return deserializerResults.find(r => !!r);
+        if (result) {
+          return result;
+        };
+      }
     });
   }
 
