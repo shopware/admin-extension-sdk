@@ -92,10 +92,10 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     _callbackId: callbackId,
   };
 
-  serialize(messageData);
+  const serializedData = serialize(messageData) as ShopwareMessageSendData<MESSAGE_TYPE>;
 
   // Convert message data to string for message sending
-  const message = JSON.stringify(messageData);
+  const message = JSON.stringify(serializedData);
 
   // Set value if send was resolved
   let isResolved = false;
@@ -132,7 +132,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       }
 
       // Deserialize methods etc. so that they are callable in JS
-      deserialize(shopwareResponseData, event);
+      const deserializedResponseData = deserialize(shopwareResponseData, event) as ShopwareMessageResponseData<MESSAGE_TYPE>;
 
       // Remove event so that in only execute once
       window.removeEventListener('message', callbackHandler);
@@ -142,7 +142,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
         isResolved = true;
 
         // Return the data
-        resolve(shopwareResponseData._response);
+        resolve(deserializedResponseData._response);
       }
     };
 
@@ -229,23 +229,23 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     }
 
     // Deserialize methods etc. so that they are callable in JS
-    deserialize(shopwareMessageData, event);
+    const deserializedMessageData = deserialize(shopwareMessageData, event) as ShopwareMessageSendData<MESSAGE_TYPE>;
 
     const responseValue = await Promise.resolve(method(
-      shopwareMessageData._data,
+      deserializedMessageData._data,
       { _event_: event }
     ));
 
     const responseMessage: ShopwareMessageResponseData<MESSAGE_TYPE> = {
-      _callbackId: shopwareMessageData._callbackId,
-      _type: shopwareMessageData._type,
+      _callbackId: deserializedMessageData._callbackId,
+      _type: deserializedMessageData._type,
       _response: responseValue ?? null,
     };
 
     // Replace methods etc. so that they are working in JSON format
-    serialize(responseMessage);
+    const serializedResponseMessage = serialize(responseMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
 
-    const stringifiedResponseMessage = JSON.stringify(responseMessage);
+    const stringifiedResponseMessage = JSON.stringify(serializedResponseMessage);
 
     if (event.source) {
       // If event source exists then send it back to original source

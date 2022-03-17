@@ -10,7 +10,7 @@ export interface sw_internal {
   send: typeof send,
   Criteria: typeof Criteria,
   Collection: typeof EntityCollection,
-  Entity: Entity,
+  Entity: EntityClass,
 }
 
 declare global {

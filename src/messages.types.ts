@@ -12,6 +12,7 @@ import type { actionButtonAdd } from './ui/actionButton';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
 import type EntityCollection from './data/_internals/EntityCollection';
+import type { Entity } from './data/_internals/Entity';
 import type {
   repositoryGet,
   repositorySearch,
@@ -62,6 +63,7 @@ export type ShopwareMessageTypes = {
   _subtract: _subtract,
   _criteriaTest: _criteriaTest,
   _collectionTest: _collectionTest,
+  _entityTest: _entityTest,
   _privileges: _privileges,
 }
 
@@ -110,6 +112,15 @@ export type _collectionTest = {
   },
   title: string,
   collection: EntityCollection,
+}
+
+export type _entityTest = {
+  responseType: {
+    title: string,
+    entity: Entity,
+  },
+  title: string,
+  entity: Entity,
 }
 
 export type __function__ = {
