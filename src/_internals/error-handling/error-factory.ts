@@ -2,6 +2,7 @@ import HandleError from './HandleError';
 import {hasOwnProperty} from '../utils';
 import MissingPrivilegesError from '../../privileges/missing-privileges-error';
 import {ShopwareMessageTypes} from '../../messages.types';
+import type { privilegeString } from '../../privileges/privilege-resolver';
 
 export default function createError(type: keyof ShopwareMessageTypes, e: unknown): Error {
   if (typeof e === 'string') {
@@ -17,10 +18,10 @@ export default function createError(type: keyof ShopwareMessageTypes, e: unknown
     const missingPrivilegeErrors = (e as any).response.data.errors
       .filter((error: { code: string }) => error.code === 'FRAMEWORK__MISSING_PRIVILEGE_ERROR') as { detail: string }[];
 
-    const missingPrivileges: string[] = [];
+    const missingPrivileges: privilegeString[] = [];
 
     missingPrivilegeErrors.forEach((mpe) => {
-      const data = JSON.parse(mpe.detail) as { message: string, missingPrivileges: string[]};
+      const data = JSON.parse(mpe.detail) as { message: string, missingPrivileges: privilegeString[]};
 
       missingPrivileges.push(...data.missingPrivileges);
     });

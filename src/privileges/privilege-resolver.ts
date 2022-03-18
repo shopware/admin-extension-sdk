@@ -1,6 +1,8 @@
 import { ShopwareMessageTypePrivileges } from '.';
 import { ShopwareMessageTypes } from '../messages.types';
 
+export type privilegeString = `${keyof privileges}:${string}`;
+
 export type privileges = {
     create?: Array<string>,
     read?: Array<string>,
@@ -17,7 +19,7 @@ export type extensions = {
   [key: string]: extension,
 }
 
-export function sendPrivileged(messageType: keyof ShopwareMessageTypes): Array<string> | null {
+export function sendPrivileged(messageType: keyof ShopwareMessageTypes): Array<privilegeString> | null {
   const requiredPrivileges = getRequiredPrivilegesForMessage(messageType);
   const locationPriviliges = getLocationPrivileges(window.location);
 
@@ -28,7 +30,7 @@ export function sendPrivileged(messageType: keyof ShopwareMessageTypes): Array<s
   return getMissingPrivileges(requiredPrivileges, locationPriviliges);
 }
 
-export function handlePrivileged(messageType: keyof ShopwareMessageTypes, extensions: extensions, origin: string): Array<string> | null {
+export function handlePrivileged(messageType: keyof ShopwareMessageTypes, extensions: extensions, origin: string): Array<privilegeString> | null {
   const requiredPrivileges = getRequiredPrivilegesForMessage(messageType);
   const extension = findExtensionByBaseUrl(extensions, origin);
 
@@ -58,9 +60,9 @@ function getLocationPrivileges(location: Location): privileges {
   return privileges;
 }
 
-function getMissingPrivileges(requiredPrivileges: privileges, privileges: privileges): null | Array<string> {
+function getMissingPrivileges(requiredPrivileges: privileges, privileges: privileges): null | Array<privilegeString> {
   const requiredRoles = Object.keys(requiredPrivileges) as Array<keyof privileges>;
-  const missingPriviliges: Array<string> = [];
+  const missingPriviliges: Array<privilegeString> = [];
 
   // Compare detailed priviliges of each role and add missing to stack
   requiredRoles.forEach((requiredRole) => {
@@ -74,7 +76,7 @@ function getMissingPrivileges(requiredPrivileges: privileges, privileges: privil
   return missingPriviliges.length >= 1 ? missingPriviliges : null;
 }
 
-function findExtensionByBaseUrl(extensions: extensions, baseUrl: string): extension | null {
+export function findExtensionByBaseUrl(extensions: extensions, baseUrl: string): extension | null {
   let extension = null;
   Object.values(extensions).forEach((ext) => {
     if (ext.baseUrl === baseUrl) {
