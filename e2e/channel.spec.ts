@@ -508,4 +508,58 @@ test.describe('Context tests', () => {
     expect (result.title).toEqual('Serializing mutation testing');
     expect (result.wasNotMutated).toEqual(true);
   });
+
+  test('promise rejection with string', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    await mainFrame.evaluate(() => {
+      const handle = window.sw_internal.handleFactory({});
+
+      handle('repositorySearch', () => {
+        return Promise.reject('Test Reason');
+      })
+    })
+
+    const result = await subFrame.evaluate(async () => {
+      return await window.sw_internal.send('repositorySearch', {entityName: 'product'})
+    }).catch(e => e);
+
+    expect(result instanceof Error).toBe(true);
+    expect(result.message.includes('Test Reason')).toBe(true);
+  });
+
+  test('promise rejection with error', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    await mainFrame.evaluate(() => {
+      const handle = window.sw_internal.handleFactory({});
+
+      const error = new Error();
+      // @ts-expect-error
+      error.response = {
+        data: {
+          errors: [
+            {
+              code: 'FRAMEWORK__MISSING_PRIVILEGE_ERROR',
+              detail: JSON.stringify({
+                message: 'foo',
+                missingPrivileges: ['product:read'],
+              })
+            }
+          ]
+        }
+      };
+      handle('repositorySearch', () => {
+        return Promise.reject(error);
+      })
+    })
+
+    const result = await subFrame.evaluate(async () => {
+      return await window.sw_internal.send('repositorySearch', {entityName: 'product'})
+    }).catch(e => e);
+
+    console.log(result.message);
+    expect(result instanceof Error).toBe(true);
+    expect(result.message.includes('Your app is missing the priviliges product:read for action "repositorySearch".')).toBe(true);
+  });
 })

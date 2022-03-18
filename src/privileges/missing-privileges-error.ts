@@ -1,14 +1,34 @@
 import { ShopwareMessageTypes } from '../messages.types';
 
+type type = '__MissingPrivilegesError__';
+
+interface MissingPrivilegeErrorJson {
+  __type__ : type,
+  __messageType__: string,
+  __data__: string[],
+}
+
 export default class MissingPrivilegesError extends Error {
   missingPrivileges: Array<string>;
+
+  messageType: keyof ShopwareMessageTypes;
 
   constructor(messageType: keyof ShopwareMessageTypes, missingPrivileges: Array<string>) {
     super(`Your app is missing the priviliges ${missingPrivileges.join(', ')} for action "${messageType}".`);
 
     this.missingPrivileges = missingPrivileges;
 
+    this.messageType = messageType;
+
     // Set prototype excplicitly
     Object.setPrototypeOf(this, MissingPrivilegesError.prototype);
+  }
+
+  toJSON(): MissingPrivilegeErrorJson {
+    return {
+      __type__: '__MissingPrivilegesError__',
+      __messageType__: this.messageType,
+      __data__: this.missingPrivileges,
+    };
   }
 }
