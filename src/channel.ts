@@ -5,6 +5,7 @@ import { extensions, sendPrivileged, handlePrivileged } from './privileges/privi
 import { ShopwareMessageTypePrivileges } from './privileges';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
+import createError from './_internals/error-handling/error-factory';
 
 const { serialize, deserialize } = SerializerFactory({
   handleFactory: handleFactory,
@@ -141,8 +142,17 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       if (!isResolved) {
         isResolved = true;
 
+        const response = deserializedResponseData._response;
+
+        // @ts-expect-error To not specify a possible error on every message type ignore it here.
+        if (response instanceof Error) {
+          reject(response);
+
+          return;
+        }
+
         // Return the data
-        resolve(deserializedResponseData._response);
+        resolve(response);
       }
     };
 
@@ -234,7 +244,7 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     const responseValue = await Promise.resolve(method(
       deserializedMessageData._data,
       { _event_: event }
-    ));
+    )).catch(e => createError(type, e));
 
     const responseMessage: ShopwareMessageResponseData<MESSAGE_TYPE> = {
       _callbackId: deserializedMessageData._callbackId,
