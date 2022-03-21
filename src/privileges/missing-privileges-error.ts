@@ -1,4 +1,5 @@
 import { ShopwareMessageTypes } from '../messages.types';
+import type { privilegeString } from './privilege-resolver';
 
 type type = '__MissingPrivilegesError__';
 
@@ -9,11 +10,11 @@ interface MissingPrivilegeErrorJson {
 }
 
 export default class MissingPrivilegesError extends Error {
-  missingPrivileges: Array<string>;
+  missingPrivileges: Array<privilegeString>;
 
   messageType: keyof ShopwareMessageTypes;
 
-  constructor(messageType: keyof ShopwareMessageTypes, missingPrivileges: Array<string>) {
+  constructor(messageType: keyof ShopwareMessageTypes, missingPrivileges: Array<privilegeString>) {
     super(`Your app is missing the priviliges ${missingPrivileges.join(', ')} for action "${messageType}".`);
 
     this.missingPrivileges = missingPrivileges;

@@ -29,3 +29,16 @@ export function hasType(type: string, obj: any): boolean {
 export function hasOwnProperty(obj: any, path: string): boolean {
   return has(obj, path);
 }
+
+
+export function traverseObject(this: any, traversableObject: any, processor: (parentEntry: any, key: string, value: any) => void) {
+  for (let index in traversableObject) {
+    const currentEntry = traversableObject[index];
+
+    processor.apply(this, [traversableObject, index, currentEntry]);
+
+    if (isObject(currentEntry)) {
+      traverseObject(currentEntry, processor);
+    }
+  }
+}

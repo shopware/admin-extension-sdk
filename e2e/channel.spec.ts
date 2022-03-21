@@ -500,6 +500,7 @@ test.describe('Context tests', () => {
       return {
         title: result.title,
         collection: result.collection,
+        // @ts-expect-error
         wasNotMutated: sendObject.collection.__type__ === undefined
       };
     })
@@ -558,8 +559,174 @@ test.describe('Context tests', () => {
       return await window.sw_internal.send('repositorySearch', {entityName: 'product'})
     }).catch(e => e);
 
-    console.log(result.message);
     expect(result instanceof Error).toBe(true);
     expect(result.message.includes('Your app is missing the priviliges product:read for action "repositorySearch".')).toBe(true);
+  });
+
+  test('should not handle callback with missing privileges', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    await mainFrame.evaluate(() => {
+      const handle = window.sw_internal.handleFactory({
+        foo: {
+          baseUrl: 'http://localhost:8182',
+          permissions: {
+            create: ['notification']
+          }
+        }
+      });
+
+      handle('_privileges', () => {})
+    })
+
+    const response = await subFrame.evaluate(() => {
+      return window.sw_internal.send('_privileges', {})
+        .then((response) => ({
+          response: response,
+          errorMessage: 'No error happened',
+          isMissingPrivilesErrorInstance: false,
+        }))
+        .catch((error) => ({
+          response: error,
+          errorMessage: error.toString(),
+          isMissingPrivilesErrorInstance: error instanceof window.sw_internal.MissingPrivilegesError
+        }))
+    });
+
+    expect(response.errorMessage).toEqual(`Error: Your app is missing the priviliges create:user, read:user, update:user, delete:user for action "_privileges".`);
+    expect(response.isMissingPrivilesErrorInstance).toBe(true);
+  });
+
+  test('should not accept entity data without correct privileges (create,read,update,delete)', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    await mainFrame.evaluate(() => {
+      const handle = window.sw_internal.handleFactory({
+        foo: {
+          baseUrl: 'http://localhost:8182',
+          permissions: {
+            read: ['product']
+          }
+        }
+      });
+
+      handle('_collectionTest', () => {
+        const collection = new window.sw_internal.Collection(
+          'playwright',
+          'product',
+          // @ts-expect-error
+          {},
+          new window.sw_internal.Criteria(),
+        );
+
+        collection.add(new window.sw_internal.Entity('productEntityId', 'product', {
+          name: 'Amazing T-Shirt',
+          foo: new window.sw_internal.Entity('manufacturerEntityId', 'manufacturer', {
+            name: 'Shopware AG',
+          })
+        }));
+
+        return {
+          title: 'Collection privilege test',
+          collection: collection,
+        }
+      })
+    })
+
+    const response = await subFrame.evaluate(async () => {
+      const collection = new window.sw_internal.Collection(
+        'playwright',
+        'product',
+        // @ts-expect-error
+        {},
+        new window.sw_internal.Criteria(),
+      );
+
+      collection.add(new window.sw_internal.Entity('productEntityId', 'product', {
+        name: 'Amazing SDK T-Shirt',
+        foo: new window.sw_internal.Entity('manufacturerEntityId', 'manufacturer', {
+          name: 'Best manufacturer ever',
+        })
+      }));
+
+      try {
+        const result = await window.sw_internal.send('_collectionTest', {
+          title: 'From SDK',
+          collection: collection,
+        });
+
+        return {
+          response: result,
+          errorMessage: 'No error happened',
+        }
+      } catch (error) {
+        return {
+          response: error,
+          errorMessage: error.toString(),
+          isMissingPrivilesErrorInstance: error instanceof window.sw_internal.MissingPrivilegesError
+        }
+      }
+    });
+
+    expect(response.errorMessage).toEqual(`Error: Your app is missing the priviliges create:product, delete:product, update:product, create:product, delete:product, update:product, create:manufacturer, delete:manufacturer, read:manufacturer, update:manufacturer for action "_collectionTest".`);
+    expect(response.isMissingPrivilesErrorInstance).toBe(true);
+  });
+
+  test('should not send entity data without correct privileges (read)', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    await mainFrame.evaluate(() => {
+      const handle = window.sw_internal.handleFactory({
+        foo: {
+          baseUrl: 'http://localhost:8182',
+          permissions: {
+            read: ['product']
+          }
+        }
+      });
+
+      handle('_collectionTest', () => {
+        const collection = new window.sw_internal.Collection(
+          'playwright',
+          'product',
+          // @ts-expect-error
+          {},
+          new window.sw_internal.Criteria(),
+        );
+
+        collection.add(new window.sw_internal.Entity('productEntityId', 'product', {
+          name: 'Amazing T-Shirt',
+          foo: new window.sw_internal.Entity('manufacturerEntityId', 'manufacturer', {
+            name: 'Shopware AG',
+          })
+        }));
+
+        return {
+          title: 'Collection privilege test',
+          collection: collection,
+        }
+      })
+    })
+
+    const response = await subFrame.evaluate(async () => {
+      try {
+        // @ts-expect-error
+        const result = await window.sw_internal.send('_collectionTest', {});
+
+        return {
+          response: result,
+          errorMessage: 'No error happened',
+        }
+      } catch (error) {
+        return {
+          response: error,
+          errorMessage: error.toString(),
+          isMissingPrivilesErrorInstance: error instanceof window.sw_internal.MissingPrivilegesError
+        }
+      }
+    });
+
+    expect(response.errorMessage).toEqual(`Error: Your app is missing the priviliges read:manufacturer for action "_collectionTest".`);
+    expect(response.isMissingPrivilesErrorInstance).toBe(true);
   });
 })

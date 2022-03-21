@@ -6,6 +6,7 @@ import { ShopwareMessageTypePrivileges } from './privileges';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
 import createError from './_internals/error-handling/error-factory';
+import validate from './_internals/validator/index';
 
 const { serialize, deserialize } = SerializerFactory({
   handleFactory: handleFactory,
@@ -241,10 +242,30 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     // Deserialize methods etc. so that they are callable in JS
     const deserializedMessageData = deserialize(shopwareMessageData, event) as ShopwareMessageSendData<MESSAGE_TYPE>;
 
-    const responseValue = await Promise.resolve(method(
-      deserializedMessageData._data,
-      { _event_: event }
-    )).catch(e => createError(type, e));
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    const responseValue = await Promise.resolve((() => {
+      /*
+       * Validate incoming handle messages for privileges
+       * in Entity and Entity Collection
+       */
+      const validationErrors = validate({
+        serializedData: shopwareMessageData,
+        extensions: extensions,
+        origin: event.origin,
+        type: type,
+        privilegesToCheck: ['create', 'delete', 'update', 'read'],
+      });
+
+      if (validationErrors) {
+        return validationErrors;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return method(
+        deserializedMessageData._data,
+        { _event_: event }
+      );
+    })()).catch(e => createError(type, e));
 
     const responseMessage: ShopwareMessageResponseData<MESSAGE_TYPE> = {
       _callbackId: deserializedMessageData._callbackId,
@@ -253,7 +274,26 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     };
 
     // Replace methods etc. so that they are working in JSON format
-    const serializedResponseMessage = serialize(responseMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
+    const serializedResponseMessage = ((): ShopwareMessageResponseData<MESSAGE_TYPE> => {
+      let serializedMessage = serialize(responseMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
+
+      // Validate if response value contains entity data where the app has no privileges for
+      const validationErrors = validate({
+        serializedData: serializedMessage,
+        extensions: extensions,
+        origin: event.origin,
+        privilegesToCheck: ['read'],
+        type: type,
+      });
+
+      if (validationErrors) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        serializedMessage._response = validationErrors;
+        serializedMessage = serialize(serializedMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
+      }
+
+      return serializedMessage;
+    })();
 
     const stringifiedResponseMessage = JSON.stringify(serializedResponseMessage);
 

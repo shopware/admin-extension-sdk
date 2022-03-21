@@ -2,15 +2,16 @@ import * as sw from '../../src/index';
 import { handleFactory, publish, send } from '../../src/channel';
 import Criteria from '../../src/data/Criteria';
 import EntityCollection from "../../src/data/_internals/EntityCollection";
-import EntityClass, { Entity }  from "../../src/data/_internals/Entity";
-
+import EntityClass from "../../src/data/_internals/Entity";
+import MissingPrivilegesError from '../../src/privileges/missing-privileges-error';
 export interface sw_internal {
   handleFactory: typeof handleFactory,
   publish: typeof publish,
   send: typeof send,
   Criteria: typeof Criteria,
   Collection: typeof EntityCollection,
-  Entity: Entity,
+  MissingPrivilegesError: typeof MissingPrivilegesError
+  Entity: typeof EntityClass,
 }
 
 declare global {
@@ -27,6 +28,6 @@ window.sw_internal = {
   send: send,
   Criteria: Criteria,
   Collection: EntityCollection,
-  // @ts-expect-error
   Entity: EntityClass,
+  MissingPrivilegesError: MissingPrivilegesError,
 }
