@@ -1,7 +1,7 @@
 import { send } from '../channel';
 import type Criteria from './Criteria';
 import type { ApiContext } from './_internals/EntityCollection';
-import EntityCollection from './_internals/EntityCollection';
+import type EntityCollection from './_internals/EntityCollection';
 import type { Entity } from './_internals/Entity';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

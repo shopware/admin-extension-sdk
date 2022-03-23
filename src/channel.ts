@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { ShopwareMessageTypes } from './messages.types';
+import type { ShopwareMessageTypes } from './messages.types';
 import { generateUniqueId } from './_internals/utils';
-import { extensions, sendPrivileged, handlePrivileged } from './privileges/privilege-resolver';
+import type { extensions} from './privileges/privilege-resolver';
+import { sendPrivileged, handlePrivileged } from './privileges/privilege-resolver';
 import { ShopwareMessageTypePrivileges } from './privileges';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
