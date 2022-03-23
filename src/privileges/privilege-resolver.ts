@@ -1,5 +1,5 @@
 import { ShopwareMessageTypePrivileges } from '.';
-import { ShopwareMessageTypes } from '../messages.types';
+import type { ShopwareMessageTypes } from '../messages.types';
 
 export type privilegeString = `${keyof privileges}:${string}`;
 

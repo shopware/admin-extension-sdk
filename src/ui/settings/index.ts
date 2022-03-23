@@ -1,5 +1,5 @@
 import { createSender } from '../../channel';
-import { icons } from '../../icons';
+import type { icons } from '../../icons';
 
 export const addSettingsItem = createSender('settingsItemAdd');
 
