@@ -392,10 +392,22 @@ export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(m
  */
 export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return (method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>) => {
-    return subscribe(messageType, method);
+  return (method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>, id?: string) => {
+    if (!id) {
+      return subscribe(messageType, method);
+    }
+
+    const wrapper = (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']): void => {
+      if (data.id === id) {
+        void method(data);
+      }
+    };
+
+    return subscribe(messageType, wrapper);
   };
 }
+
+const datasets = new Map<string, unknown>();
 
 /**
  * ----------------
@@ -406,18 +418,43 @@ export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes
 (async (): Promise<void> => {
   // Handle registrations at current window
   handle('__registerWindow__', (_, additionalOptions) => {
+    let source: Window | undefined;
+    let origin: string | undefined;
+
     if (additionalOptions._event_.source) {
-      const sourceWindow = additionalOptions._event_.source as Window;
-      sourceRegistry.add({
-        source: sourceWindow,
-        origin: additionalOptions._event_.origin,
-      });
+      source = additionalOptions._event_.source as Window;
+      origin = additionalOptions._event_.origin;
     } else {
-      sourceRegistry.add({
-        source: window,
-        origin: window.origin,
-      });
+      source = window;
+      origin = window.origin;
     }
+
+    sourceRegistry.add({
+      source,
+      origin,
+    });
+
+    // Register all existing datasets for apps that come to late for the "synchronous" registration
+    datasets.forEach((dataset, id ) => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      send('datasetQuery', {id, data: dataset}, source, origin).catch(() => {});
+    });
+  }, {});
+
+  // New dataset registered
+  handle('datasetRegistration', (data) => {
+    datasets.set(data.id, data.data);
+
+    publish('datasetQuery', data);
+
+    return {
+      id: data.id,
+      data: data.data,
+    };
+  }, {});
+
+  handle('datasetQuery', (data) => {
+    return datasets.get(data.id) ?? null;
   }, {});
 
   // Register at parent window
@@ -432,12 +469,14 @@ export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes
   interface Window {
     _swsdk: {
       sourceRegistry: typeof sourceRegistry,
+      datasets: typeof datasets,
     },
   }
 }
 
 window._swsdk = {
   sourceRegistry,
+  datasets,
 };
 
 /**
