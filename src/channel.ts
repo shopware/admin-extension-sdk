@@ -14,7 +14,7 @@ const { serialize, deserialize } = SerializerFactory({
   send: send,
 });
 
-type extensions = {
+export type extensions = {
   [key: string]: extension,
 }
 
