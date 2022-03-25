@@ -1,4 +1,4 @@
-# Data
+# Repository
 
 The data handling of the SDK allows you to fetch and write nearly everything in the database. The behavior matches the data handling in the main administration. The only difference is the implementation details because the data handling don't request the server directly. It communicates with the admin which handles the requests, changesets, saving and more.
 

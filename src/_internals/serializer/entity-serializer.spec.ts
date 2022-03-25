@@ -1,10 +1,10 @@
 import Entity from '../../data/_internals/Entity';
 import cloneDeep from 'lodash/cloneDeep';
 import SerializerFactory from './index';
-import { handleFactory, send } from '../../channel';
+import { handle, send } from '../../channel';
 
 const { serialize, deserialize } = SerializerFactory({
-  handleFactory: handleFactory,
+  handle: handle,
   send: send,
 })
 

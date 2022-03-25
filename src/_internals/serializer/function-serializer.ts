@@ -2,7 +2,7 @@ import type { SerializerFactory } from '.';
 import { isObject, generateUniqueId } from '../utils';
 
 /* eslint-disable */
-const FunctionSerializerFactory: SerializerFactory = ({ send, handleFactory }) => {
+const FunctionSerializerFactory: SerializerFactory = ({ send, handle }) => {
   // only available on sender side
   const methodRegistry: {
     [key: string]: (...args: any[]) => any
@@ -14,7 +14,6 @@ const FunctionSerializerFactory: SerializerFactory = ({ send, handleFactory }) =
     if (isMethodHandlerStarted) return;
     isMethodHandlerStarted = true;
 
-    const handle = handleFactory({})
     handle('__function__', async ({ args, id }) => {
       return await Promise.resolve(methodRegistry[id](...args));
     })

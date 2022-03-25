@@ -15,7 +15,7 @@ export default class MissingPrivilegesError extends Error {
   messageType: keyof ShopwareMessageTypes;
 
   constructor(messageType: keyof ShopwareMessageTypes, missingPrivileges: Array<privilegeString>) {
-    super(`Your app is missing the priviliges ${missingPrivileges.join(', ')} for action "${messageType}".`);
+    super(`Your app is missing the privileges ${missingPrivileges.join(', ')} for action "${messageType}".`);
 
     this.missingPrivileges = missingPrivileges;
 

@@ -2,10 +2,10 @@ import EntityCollection, {ApiContext} from '../../data/_internals/EntityCollecti
 import Criteria from '../../data/Criteria';
 import Entity from '../../data/_internals/Entity';
 import SerializerFactory from './index';
-import { handleFactory, send } from '../../channel';
+import { handle, send } from '../../channel';
 
 const { serialize, deserialize } = SerializerFactory({
-  handleFactory: handleFactory,
+  handle: handle,
   send: send,
 })
 

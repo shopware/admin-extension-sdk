@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import type { ShopwareMessageTypes } from './messages.types';
 import { generateUniqueId } from './_internals/utils';
-import type { extensions} from './privileges/privilege-resolver';
+import type { extension } from './privileges/privilege-resolver';
 import { sendPrivileged, handlePrivileged } from './privileges/privilege-resolver';
 import { ShopwareMessageTypePrivileges } from './privileges';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
@@ -10,9 +10,19 @@ import createError from './_internals/error-handling/error-factory';
 import validate from './_internals/validator/index';
 
 const { serialize, deserialize } = SerializerFactory({
-  handleFactory: handleFactory,
+  handle: handle,
   send: send,
 });
+
+type extensions = {
+  [key: string]: extension,
+}
+
+export let adminExtensions: extensions = {};
+
+export function setExtensions(extensions: extensions): void {
+  adminExtensions = extensions;
+}
 
 /**
  * ----------------
@@ -95,7 +105,46 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     _callbackId: callbackId,
   };
 
-  const serializedData = serialize(messageData) as ShopwareMessageSendData<MESSAGE_TYPE>;
+  let serializedData = serialize(messageData) as ShopwareMessageSendData<MESSAGE_TYPE>;
+
+  // Validate if send value contains entity data where the app has no privileges for
+  if (_origin) {
+    const validationErrors = validate({
+      serializedData: serializedData,
+      origin: _origin,
+      privilegesToCheck: ['read'],
+      type: type,
+    });
+
+    if (validationErrors) {
+      // Datasets need the id for matching the response
+      if ([
+        'datasetQuery',
+        'datasetUpdate',
+        'datasetRegistration',
+      ].includes(serializedData._type)) {
+        serializedData = serialize({
+          _type: serializedData._type,
+          _callbackId: serializedData._callbackId,
+          _data: {
+            // @ts-expect-error - We know with the includes that it has an ID
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            id: serializedData._data.id,
+            data: validationErrors,
+          },
+        }) as ShopwareMessageSendData<MESSAGE_TYPE>;
+      }
+      // Everything else can overwrite the response
+      else {
+        serializedData = serialize({
+          _type: serializedData._type,
+          _callbackId: serializedData._callbackId,
+          _data: validationErrors,
+        }) as ShopwareMessageSendData<MESSAGE_TYPE>;
+      }
+
+    }
+  }
 
   // Convert message data to string for message sending
   const message = JSON.stringify(serializedData);
@@ -195,22 +244,21 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
  * @param method This method should return the response value
  * @returns The return value is a cancel function to stop listening to the events
  */
-function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
+export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (
   type: MESSAGE_TYPE,
-  method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
-  extensions: extensions
+  method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
 )
   : () => void
 {
   const handleListener = async function(event: MessageEvent<string>): Promise<void> {
     // Message type needs privileges to be handled
     if (ShopwareMessageTypePrivileges[type] && Object.keys(ShopwareMessageTypePrivileges[type]).length) {
-      if (!extensions) {
+      if (!adminExtensions) {
         return;
       }
 
-      const missingPrivileges = handlePrivileged(type, extensions, event.origin);
+      const missingPrivileges = handlePrivileged(type, event.origin);
       if (missingPrivileges !== null) {
         return;
       }
@@ -251,7 +299,6 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
        */
       const validationErrors = validate({
         serializedData: shopwareMessageData,
-        extensions: extensions,
         origin: event.origin,
         type: type,
         privilegesToCheck: ['create', 'delete', 'update', 'read'],
@@ -281,7 +328,6 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
       // Validate if response value contains entity data where the app has no privileges for
       const validationErrors = validate({
         serializedData: serializedMessage,
-        extensions: extensions,
         origin: event.origin,
         privilegesToCheck: ['read'],
         type: type,
@@ -317,13 +363,6 @@ function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
   return ():void => window.removeEventListener('message', handleListener);
 }
 
-export function handleFactory(extensions: extensions) {
-  return <MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
-    type: MESSAGE_TYPE,
-    method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
-  ): () => void => handle(type, method, extensions);
-}
-
 export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
@@ -341,7 +380,7 @@ export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>
 ): () => void {
-  return handle(type, method, {});
+  return handle(type, method);
 }
 
 /**
@@ -382,7 +421,7 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
-    return handle(messageType, method, {});
+    return handle(messageType, method);
   };
 }
 
@@ -439,7 +478,7 @@ const datasets = new Map<string, unknown>();
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       send('datasetQuery', {id, data: dataset}, source, origin).catch(() => {});
     });
-  }, {});
+  });
 
   // New dataset registered
   handle('datasetRegistration', (data) => {
@@ -451,11 +490,11 @@ const datasets = new Map<string, unknown>();
       id: data.id,
       data: data.data,
     };
-  }, {});
+  });
 
   handle('datasetQuery', (data) => {
     return datasets.get(data.id) ?? null;
-  }, {});
+  });
 
   // Register at parent window
   await send('__registerWindow__', {});

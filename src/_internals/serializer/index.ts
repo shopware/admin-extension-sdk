@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { send, handleFactory } from '../../channel';
+import type { send, handle } from '../../channel';
 import FunctionSerializer from './function-serializer';
 import CriteriaSerializer from './criteria-serializer';
 import EntitySerializer from './entity-serializer';
@@ -10,7 +10,7 @@ import MissingPrivilegesErrorSerializer from './missing-priviliges-error-seriali
 
 interface SerializerDependencies {
   send: typeof send,
-  handleFactory: typeof handleFactory,
+  handle: typeof handle,
 }
 
 interface customizerProperties {

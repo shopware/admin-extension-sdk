@@ -1,5 +1,6 @@
 import { ShopwareMessageTypePrivileges } from '.';
 import type { ShopwareMessageTypes } from '../messages.types';
+import { adminExtensions } from '../channel';
 
 export type privilegeString = `${keyof privileges}:${string}`;
 
@@ -15,10 +16,6 @@ export type extension = {
   permissions: privileges,
 }
 
-export type extensions = {
-  [key: string]: extension,
-}
-
 export function sendPrivileged(messageType: keyof ShopwareMessageTypes): Array<privilegeString> | null {
   const requiredPrivileges = getRequiredPrivilegesForMessage(messageType);
   const locationPriviliges = getLocationPrivileges(window.location);
@@ -30,9 +27,9 @@ export function sendPrivileged(messageType: keyof ShopwareMessageTypes): Array<p
   return getMissingPrivileges(requiredPrivileges, locationPriviliges);
 }
 
-export function handlePrivileged(messageType: keyof ShopwareMessageTypes, extensions: extensions, origin: string): Array<privilegeString> | null {
+export function handlePrivileged(messageType: keyof ShopwareMessageTypes, origin: string): Array<privilegeString> | null {
   const requiredPrivileges = getRequiredPrivilegesForMessage(messageType);
-  const extension = findExtensionByBaseUrl(extensions, origin);
+  const extension = findExtensionByBaseUrl(origin);
 
   if (!extension) {
     return null;
@@ -55,9 +52,7 @@ function getLocationPrivileges(location: Location): privileges {
     return {};
   }
 
-  const privileges = JSON.parse(privilegeString) as privileges;
-
-  return privileges;
+  return JSON.parse(privilegeString) as privileges;
 }
 
 function getMissingPrivileges(requiredPrivileges: privileges, privileges: privileges): null | Array<privilegeString> {
@@ -76,13 +71,7 @@ function getMissingPrivileges(requiredPrivileges: privileges, privileges: privil
   return missingPriviliges.length >= 1 ? missingPriviliges : null;
 }
 
-export function findExtensionByBaseUrl(extensions: extensions, baseUrl: string): extension | null {
-  let extension = null;
-  Object.values(extensions).forEach((ext) => {
-    if (ext.baseUrl === baseUrl) {
-      extension = ext;
-    }
-  });
-
-  return extension;
+export function findExtensionByBaseUrl(baseUrl: string): extension | undefined {
+  return Object.values(adminExtensions)
+    .find((ext) => ext.baseUrl === baseUrl);
 }
