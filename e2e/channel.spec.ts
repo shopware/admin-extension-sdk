@@ -730,3 +730,92 @@ test.describe('Context tests', () => {
     expect(response.isMissingPrivilesErrorInstance).toBe(true);
   });
 })
+
+test.describe('data handling', () => {
+  test('dataset registration', async ({ page }) => {
+    const { mainFrame } = await setup({ page });
+
+    // publish dataset
+    const data = await mainFrame.evaluate(async () => {
+      await window.sw.data.register({
+        id: 'e2e-test',
+        data: 'test-string',
+      });
+
+      return Object.fromEntries(window._swsdk.datasets);
+    })
+
+    expect(data.hasOwnProperty('e2e-test')).toBe(true);
+    expect(data['e2e-test']).toBe('test-string');
+  });
+
+  test('dataset subscriber', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // subscribe to dataset publish
+    await subFrame.evaluate(async () => {
+      return await window.sw.data.get('e2e-test', (data) => {
+        // @ts-expect-error
+        window.result = { data: data.data };
+      });
+    })
+
+    // publish dataset
+    await mainFrame.evaluate(async () => {
+      await window.sw.data.register({
+        id: 'e2e-test',
+        data: 'test-string',
+      });
+    })
+
+    // get receiving value
+    const { data } = await subFrame.evaluate(() => {
+      // @ts-expect-error
+      return window.result;
+    })
+
+    // check if receiving value matches
+    expect(data).toBe('test-string');
+  });
+
+  test('dataset update', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // publish dataset and subscribe for changes
+    const data = await mainFrame.evaluate(async () => {
+      await window.sw.data.register({
+        id: 'e2e-test',
+        data: 'test-string',
+      });
+
+      window.sw.data.updateSubscriber(
+        'e2e-test',
+        (data) => {
+          // @ts-expect-error
+          window.result = data.data;
+        }
+      );
+
+      return Object.fromEntries(window._swsdk.datasets);
+    })
+
+    expect(data.hasOwnProperty('e2e-test')).toBe(true);
+    expect(data['e2e-test']).toBe('test-string');
+
+    // update value from subframe
+    await subFrame.evaluate(async () => {
+      await window.sw.data.update({
+        id: 'e2e-test',
+        data: 'updated-string',
+      });
+    });
+
+    // get updated value in main frame
+    const result = await mainFrame.evaluate(() => {
+      // @ts-expect-error
+      return window.result;
+    })
+
+    expect(result).toBe('updated-string');
+  });
+})

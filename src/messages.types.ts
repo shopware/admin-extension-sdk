@@ -11,6 +11,7 @@ import type { uiModalOpen, uiModalClose } from './ui/modal/index';
 import type { actionButtonAdd } from './ui/actionButton';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
+import type { datasetRegistration, datasetQuery, datasetUpdate } from './data';
 import type EntityCollection from './data/_internals/EntityCollection';
 import type { Entity } from './data/_internals/Entity';
 import type {
@@ -57,6 +58,9 @@ export type ShopwareMessageTypes = {
   repositorySaveAll: repositorySaveAll,
   repositoryDelete: repositoryDelete,
   repositoryCreate: repositoryCreate,
+  datasetRegistration: datasetRegistration,
+  datasetQuery: datasetQuery,
+  datasetUpdate: datasetUpdate,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
