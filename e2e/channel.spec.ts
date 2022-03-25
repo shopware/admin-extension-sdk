@@ -47,9 +47,7 @@ test.describe('Main communication test', () => {
 
     // respond to multiply with value 42
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('_multiply', () => {
+      window.sw_internal.handle('_multiply', () => {
         return 42;
       })
     })
@@ -70,9 +68,7 @@ test.describe('Main communication test', () => {
 
     // respond to multiply with value 42
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('_multiply', ({ firstNumber, secondNumber }) => {
+      window.sw_internal.handle('_multiply', ({ firstNumber, secondNumber }) => {
         return firstNumber * secondNumber;
       })
     })
@@ -96,9 +92,7 @@ test.describe('Main communication test', () => {
 
     // handle the methods from incoming events
     await mainFrame.evaluate(async () => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('notificationDispatch', ({ actions }) => {
+      window.sw_internal.handle('notificationDispatch', ({ actions }) => {
         if (!actions) return;
 
         actions.forEach(({ method }) => {
@@ -156,9 +150,7 @@ test.describe('Main communication test', () => {
 
     // handle the methods from incoming events
     await mainFrame.evaluate(async () => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('notificationDispatch', () => {
+      window.sw_internal.handle('notificationDispatch', () => {
         // Do nothing with the incoming message
       })
     })
@@ -212,9 +204,7 @@ test.describe('Context tests', () => {
 
     // create handler in main window
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('contextLanguage', () => {
+      window.sw_internal.handle('contextLanguage', () => {
         return {
           languageId: 'LANGUAGE_ID',
           systemLanguageId: 'SYSTEM_LANGUAGE_ID'
@@ -261,15 +251,15 @@ test.describe('Context tests', () => {
     expect(languageId).toBe('EXAMPLE_LANGUAGE_ID');
     expect(systemLanguageId).toBe('EXAMPLE_SYSTEM_LANGUAGE_ID');
   });
+});
 
+test.describe('Serializing tests', () => {
   test('send criteria to iFrame', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });
 
     // handle incoming criteria
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('_criteriaTest', ({ title, myCriteria }) => {
+      window.sw_internal.handle('_criteriaTest', ({ title, myCriteria }) => {
         // check if myCriteria is a real Criteria object
         if (!(myCriteria instanceof window.sw_internal.Criteria)) {
           return {
@@ -311,9 +301,7 @@ test.describe('Context tests', () => {
 
     // handle incoming collection
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('_collectionTest', ({ title, collection}) => {
+      window.sw_internal.handle('_collectionTest', ({ title, collection}) => {
         // check if collection is a real collection object
         if (!(collection instanceof window.sw_internal.Collection)) {
           return {
@@ -397,9 +385,7 @@ test.describe('Context tests', () => {
 
     // handle incoming collection
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('_entityTest', ({ title, entity}) => {
+      window.sw_internal.handle('_entityTest', ({ title, entity}) => {
         // check if entity is a real entity
         if (!entity || typeof entity.getDraft !== 'function') {
           return {
@@ -470,9 +456,7 @@ test.describe('Context tests', () => {
 
     // handle incoming criteria
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('_collectionTest', ({ title, collection}) => {
+      window.sw_internal.handle('_collectionTest', ({ title, collection}) => {
         return { title, collection };
       })
     })
@@ -509,14 +493,14 @@ test.describe('Context tests', () => {
     expect (result.title).toEqual('Serializing mutation testing');
     expect (result.wasNotMutated).toEqual(true);
   });
+});
 
+test.describe('Privilege tests', () => {
   test('promise rejection with string', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });
 
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({});
-
-      handle('repositorySearch', () => {
+      window.sw_internal.handle('repositorySearch', () => {
         return Promise.reject('Test Reason');
       })
     })
@@ -533,8 +517,6 @@ test.describe('Context tests', () => {
     const { mainFrame, subFrame } = await setup({ page });
 
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({});
-
       const error = new Error();
       // @ts-expect-error
       error.response = {
@@ -550,7 +532,8 @@ test.describe('Context tests', () => {
           ]
         }
       };
-      handle('repositorySearch', () => {
+
+      window.sw_internal.handle('repositorySearch', () => {
         return Promise.reject(error);
       })
     })
@@ -560,14 +543,14 @@ test.describe('Context tests', () => {
     }).catch(e => e);
 
     expect(result instanceof Error).toBe(true);
-    expect(result.message.includes('Your app is missing the priviliges product:read for action "repositorySearch".')).toBe(true);
+    expect(result.message.includes('Your app is missing the privileges product:read for action "repositorySearch".')).toBe(true);
   });
 
   test('should not handle callback with missing privileges', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });
 
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({
+      window.sw_internal.setExtensions({
         foo: {
           baseUrl: 'http://localhost:8182',
           permissions: {
@@ -576,7 +559,7 @@ test.describe('Context tests', () => {
         }
       });
 
-      handle('_privileges', () => {})
+      window.sw_internal.handle('_privileges', () => {})
     })
 
     const response = await subFrame.evaluate(() => {
@@ -593,7 +576,7 @@ test.describe('Context tests', () => {
         }))
     });
 
-    expect(response.errorMessage).toEqual(`Error: Your app is missing the priviliges create:user, read:user, update:user, delete:user for action "_privileges".`);
+    expect(response.errorMessage).toEqual(`Error: Your app is missing the privileges create:user, read:user, update:user, delete:user for action "_privileges".`);
     expect(response.isMissingPrivilesErrorInstance).toBe(true);
   });
 
@@ -601,7 +584,7 @@ test.describe('Context tests', () => {
     const { mainFrame, subFrame } = await setup({ page });
 
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({
+      window.sw_internal.setExtensions({
         foo: {
           baseUrl: 'http://localhost:8182',
           permissions: {
@@ -610,7 +593,7 @@ test.describe('Context tests', () => {
         }
       });
 
-      handle('_collectionTest', () => {
+      window.sw_internal.handle('_collectionTest', () => {
         const collection = new window.sw_internal.Collection(
           'playwright',
           'product',
@@ -668,7 +651,7 @@ test.describe('Context tests', () => {
       }
     });
 
-    expect(response.errorMessage).toEqual(`Error: Your app is missing the priviliges create:product, delete:product, update:product, create:product, delete:product, update:product, create:manufacturer, delete:manufacturer, read:manufacturer, update:manufacturer for action "_collectionTest".`);
+    expect(response.errorMessage).toEqual(`Error: Your app is missing the privileges create:product, delete:product, update:product, create:product, delete:product, update:product, create:manufacturer, delete:manufacturer, read:manufacturer, update:manufacturer for action "_collectionTest".`);
     expect(response.isMissingPrivilesErrorInstance).toBe(true);
   });
 
@@ -676,7 +659,7 @@ test.describe('Context tests', () => {
     const { mainFrame, subFrame } = await setup({ page });
 
     await mainFrame.evaluate(() => {
-      const handle = window.sw_internal.handleFactory({
+      window.sw_internal.setExtensions({
         foo: {
           baseUrl: 'http://localhost:8182',
           permissions: {
@@ -685,7 +668,7 @@ test.describe('Context tests', () => {
         }
       });
 
-      handle('_collectionTest', () => {
+      window.sw_internal.handle('_collectionTest', () => {
         const collection = new window.sw_internal.Collection(
           'playwright',
           'product',
@@ -726,8 +709,107 @@ test.describe('Context tests', () => {
       }
     });
 
-    expect(response.errorMessage).toEqual(`Error: Your app is missing the priviliges read:manufacturer for action "_collectionTest".`);
+    expect(response.errorMessage).toEqual(`Error: Your app is missing the privileges read:manufacturer for action "_collectionTest".`);
     expect(response.isMissingPrivilesErrorInstance).toBe(true);
+  });
+
+  test('should not send entity data without correct privileges in data handling (read)', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // subscribe to dataset publish
+    await subFrame.evaluate(async () => {
+      await window.sw.data.get('e2e-test', (data) => {
+        // @ts-expect-error
+        window.result = { data: data.data };
+      });
+    })
+
+    // publish dataset
+    await mainFrame.evaluate(async () => {
+      window.sw_internal.setExtensions({
+        foo: {
+          baseUrl: 'http://localhost:8182',
+          permissions: {
+            read: ['manufacturer']
+          }
+        }
+      });
+
+      const exampleProduct = new window.sw_internal.Entity('exampleProductEntityId', 'product', {
+        name: 'T-Shirt',
+        description: 'An awesome T-Shirt'
+      });
+
+      await window.sw.data.register({
+        id: 'e2e-test',
+        data: exampleProduct,
+      });
+    })
+
+    // get receiving value
+    const result = await subFrame.evaluate(() => {
+      return {
+        // @ts-expect-error
+        isError: window.result.data instanceof window.sw_internal.MissingPrivilegesError,
+        // @ts-expect-error
+        errorText: window.result.data.toString(),
+      };
+    })
+
+    // check if receiving value matches
+    expect(result.isError).toBe(true);
+    expect(result.errorText).toBe('Error: Your app is missing the privileges read:product for action "datasetQuery".');
+  });
+
+  test('should send entity data with correct privileges in data handling (read)', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // subscribe to dataset publish
+    await subFrame.evaluate(async () => {
+      await window.sw.data.get('e2e-test', (data) => {
+        // @ts-expect-error
+        window.result = { data: data.data };
+      });
+    })
+
+    // publish dataset
+    await mainFrame.evaluate(async () => {
+      window.sw_internal.setExtensions({
+        foo: {
+          baseUrl: 'http://localhost:8182',
+          permissions: {
+            read: ['product']
+          }
+        }
+      });
+
+      const exampleProduct = new window.sw_internal.Entity('exampleProductEntityId', 'product', {
+        name: 'T-Shirt',
+        description: 'An awesome T-Shirt'
+      });
+
+      await window.sw.data.register({
+        id: 'e2e-test',
+        data: exampleProduct,
+      });
+    })
+
+    // get receiving value
+    const result = await subFrame.evaluate(() => {
+      return {
+        // @ts-expect-error
+        isError: window.result.data instanceof window.sw_internal.MissingPrivilegesError,
+        // @ts-expect-error
+        data: window.result.data,
+      };
+    })
+
+    // check if receiving value matches
+    expect(result.isError).toBe(false);
+    expect(result.data).toEqual({
+      name: 'T-Shirt',
+      description: 'An awesome T-Shirt'
+    });
   });
 })
 

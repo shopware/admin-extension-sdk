@@ -1,9 +1,9 @@
 import Criteria from "../../data/Criteria";
 import SerializerFactory from './index';
-import { handleFactory, send } from '../../channel';
+import { handle, send } from '../../channel';
 
 const { serialize, deserialize } = SerializerFactory({
-  handleFactory: handleFactory,
+  handle: handle,
   send: send,
 })
 

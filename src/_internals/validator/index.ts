@@ -1,27 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { extensions, privilegeString } from '../../privileges/privilege-resolver';
-import { findExtensionByBaseUrl } from '../../privileges/privilege-resolver';
+import type { privilegeString } from '../../privileges/privilege-resolver';
 import type { privileges } from '../../privileges/privilege-resolver';
+import type { ShopwareMessageTypes } from '../../messages.types';
+import { findExtensionByBaseUrl } from '../../privileges/privilege-resolver';
 import { traverseObject } from '../utils';
 import MissingPrivilegesError from '../../privileges/missing-privileges-error';
-import type { ShopwareMessageTypes } from '../../messages.types';
 
 export default function validate({
   serializedData,
-  extensions,
   origin,
   type,
   privilegesToCheck = [],
 }: {
   serializedData: any,
-  extensions: extensions,
   origin: string,
   type: keyof ShopwareMessageTypes,
   privilegesToCheck: (keyof privileges)[],
 }): Error|null {
-  const extension = findExtensionByBaseUrl(extensions, origin);
+  const extension = findExtensionByBaseUrl(origin);
 
   if (!extension) {
     return null;

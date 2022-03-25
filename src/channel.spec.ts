@@ -1,15 +1,18 @@
 import flushPromises from 'flush-promises';
-import { send, handleFactory, createSender, createHandler, subscribe, publish } from './channel';
+import { send, handle, createSender, createHandler, subscribe, publish, setExtensions } from './channel';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
 
 // Channel send timout + 1000
 jest.setTimeout(8000);
 
 describe('Test the channel bridge from iFrame to admin', () => {
-  const defaultHandle = handleFactory({});
+  beforeEach(() => {
+    // reset extensions
+    setExtensions({});
+  })
 
   it('should send "reload" command to the admin', (done) => {
-    const removeListener = defaultHandle('windowReload', (result) => {
+    const removeListener = handle('windowReload', (result) => {
       expect(result).toEqual({});
 
       removeListener();
@@ -20,7 +23,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
   });
 
   it('should send "reload" command to the admin also without options', (done) => {
-    const removeListener = defaultHandle('windowReload', (result) => {
+    const removeListener = handle('windowReload', (result) => {
       expect(result).toEqual({});
 
       removeListener();
@@ -35,7 +38,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
   it('should get value back from admin', async () => {
     const PAGE_TITLE = 'Awesome page title';
 
-    const removeListener = defaultHandle('getPageTitle', () => {
+    const removeListener = handle('getPageTitle', () => {
       return PAGE_TITLE;
     })
 
@@ -188,7 +191,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
 
   it('should not call handle callback with missing extensions', () => {
     const callback = jest.fn();
-    const removeHandle = defaultHandle('_privileges', callback)
+    const removeHandle = handle('_privileges', callback)
 
     // Simulate a postMessage call from an iFrame
     window.dispatchEvent(new Event('message'))
@@ -201,7 +204,8 @@ describe('Test the channel bridge from iFrame to admin', () => {
   it('should not call handle callback with missing privileges', () => {
     const url = 'http://example.com';
     const callback = jest.fn();
-    const handle = handleFactory({foo: {baseUrl: url, permissions: {create: ['notification']}}});
+    // change the extensions for this test
+    setExtensions({});
     const removeHandle = handle('_privileges', callback, )
 
     const event = new Event('message');
