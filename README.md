@@ -1,8 +1,3 @@
-# Warning:
-### This repository is still under development and should not be used yet.
- 
---------
-
 # Admin Extension SDK
 [![Tests](https://github.com/shopware/admin-extension-sdk/actions/workflows/tests.yml/badge.svg)](https://github.com/shopware/admin-extension-sdk/actions/workflows/tests.yml)
 [![NPM Package](https://img.shields.io/npm/v/@shopware-ag/admin-extension-sdk)](https://www.npmjs.com/package/@shopware-ag/admin-extension-sdk)
