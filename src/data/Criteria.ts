@@ -132,6 +132,7 @@ interface Sorting {
     field: string,
     order: 'ASC'|'DESC',
     naturalSorting: boolean,
+    type?: string,
 }
 type GroupField = string;
 interface RequestParams {
@@ -604,6 +605,16 @@ export default class Criteria {
    */
   static naturalSorting(field: string, order:Sorting['order'] = 'ASC'): Sorting {
     return { field, order, naturalSorting: true };
+  }
+
+  /**
+   * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\CountSorting.
+   * Allows to sort the documents by counting associations via the provided field
+   *
+   * Sql representation: `ORDER BY COUNT({field}) {order}`
+   */
+  static countSorting(field: string, order:Sorting['order'] = 'ASC'): Sorting {
+    return { field, order, naturalSorting: false, type: 'count' };
   }
 
   /**
