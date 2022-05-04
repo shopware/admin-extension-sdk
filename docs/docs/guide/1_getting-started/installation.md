@@ -16,7 +16,21 @@ You need to have an working [app](https://developer.shopware.com/docs/guides/plu
 You need to create a HTML page with an JS file for your app. This page can be located anywhere, but it needs to be accessible from an URL.
 For development purposes you can create a [local server](https://github.com/tapio/live-server) which will be [exposed publicly](https://ngrok.com/).
 
-Then you need to add the `<base-app-url>` field to the `<admin>` section of the [manifest](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide#manifest-file) file. This field should contain the public URL of your app.
+Then you need to add the `<base-app-url>` field to the `<admin>` section of the [manifest](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide#manifest-file) file. This field should contain the public URL of your app. Let's assume your app HTML page is served under `http://localhost/my-example-app.html`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/Framework/App/Manifest/Schema/manifest-1.0.xsd">
+    <meta>
+        <name>MyExampleApp</name>
+        <!-- App meta data... -->
+    </meta>
+    <admin>
+        <!-- Insert your app page URL here -->
+        <base-app-url>http://localhost/my-example-app.html</base-app-url>
+    </admin>
+</manifest>
+```
 
 In your new HTML file you need inject a JS file. This file can use the Admin Extension SDK via CDN or if you want to use a build tools then you
 can use the NPM package.
