@@ -31,6 +31,8 @@ In case that doesn't work take a look at the list [here](https://github.com/shop
 #### Example
 ![Settings item example](./assets/add-settings-item-example.png)
 ```ts
+import { location, ui } from '@shopware-ag/admin-extension-sdk';
+
 // General commands
 if (location.is(location.MAIN_HIDDEN)) {
     // Add the settings item to the plugins tab

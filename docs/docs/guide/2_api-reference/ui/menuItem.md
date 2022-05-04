@@ -26,6 +26,8 @@ ui.menu.addMenuItem({
 #### Example
 ![Menu item example](./assets/add-menu-item-example.png)
 ```ts
+import { location, ui } from '@shopware-ag/admin-extension-sdk';
+
 // General commands
 if (location.is(sw.location.MAIN_HIDDEN)) {
     // Add the menu item to the catalogue module

@@ -10,6 +10,31 @@ sw.data.repository('your_entity_name`)
 
 With this repository you can search for data, save it, delete it, create it or check for changes.
 
+
+### Permissions
+For every action on the repository, your app will need the matching permissions.
+Permissions are set in the app manifest file and are grouped by action.
+For actions you can choose between `create`, `read`, `update` and `delete`.
+Remember everytime you adjust the permissions in your manifest you need to increase the app version and update it.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/Framework/App/Manifest/Schema/manifest-1.0.xsd">
+
+    <!-- ... -->
+
+    <permissions>
+        <create>product</create>
+        <read>product</read>
+        <update>product</update>
+        <delete>product</delete>
+    </permissions>
+</manifest>
+
+```
+
 ### Criteria
 
 For requesting data you need to create a Criteria class which contains all information for the request:
