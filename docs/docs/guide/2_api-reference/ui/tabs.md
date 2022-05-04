@@ -8,6 +8,8 @@ will be generated automatically.
 
 #### Usage:  
 ```ts
+import { ui } from '@shopware-ag/admin-extension-sdk';
+
 ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
     label: 'Example tab',
     componentSectionId: 'example-product-detail-tab-content'
@@ -23,6 +25,8 @@ ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
 #### Example
 ![Tab item example](./assets/add-tab-item-example.png)
 ```ts
+import { ui, location } from '@shopware-ag/admin-extension-sdk';
+
 // For general commands
 if (location.is(location.MAIN_HIDDEN)) {
     // Add tab bar item
@@ -43,7 +47,7 @@ if (location.is(location.MAIN_HIDDEN)) {
 }
 
 // Render custom view of the component
-location.is('my-example-product-view-tab-card') {
+if (location.is('my-example-product-view-tab-card')) {
     document.body.innerHTML = '
         <h1>Hello in the example card</h1>
         <button onClick="sw.notification.dispatch({ title: 'Foo', message: 'bar' })">
