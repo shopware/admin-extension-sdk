@@ -7,7 +7,9 @@ Add a new component to a component section.
 
 #### Usage:  
 ```ts
-sw.ui.componentSection.add({
+import { ui } from '@shopware-ag/admin-extension-sdk';
+
+ui.componentSection.add({
     component: 'the-component', // Choose the component which you want to render at the componet section
     positionId: 'the-position-id-of-the-component-section', // Select the positionId where you want to render the component
     props: {
@@ -37,6 +39,8 @@ This method does not have a return value.
 
 #### Usage:
 ```js
+import { ui } from '@shopware-ag/admin-extension-sdk';
+
 ui.componentSection.add({
     component: 'card',
     positionId: 'sw-product-properties__before',

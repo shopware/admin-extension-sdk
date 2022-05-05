@@ -22,6 +22,8 @@ ui.mainModule.addMainModule({
 #### Example
 ![Main module example](./assets/add-main-module-example.png)
 ```ts
+import { location, ui } from '@shopware-ag/admin-extension-sdk';
+
 // General commands
 if (location.is(location.MAIN_HIDDEN)) {
     // Add the main module
