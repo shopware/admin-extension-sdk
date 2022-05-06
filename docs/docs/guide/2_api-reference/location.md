@@ -1,5 +1,7 @@
 # Location
 
+## Prerequisites
+We recommend you read the [concept](../4_concepts/locations.md) of locations first.
 ## Location checks
 
 ### Check the current location id
