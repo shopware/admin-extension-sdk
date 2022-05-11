@@ -154,6 +154,19 @@ interface RequestParams {
     'total-count-mode'?: TotalCountMode,
 }
 
+let defaultPage: null|number = 1;
+let defaultLimit: null|number = null;
+
+export function setDefaultValues(options: { page?: number|null, limit?: number|null}): void {
+  if (options.page) {
+    defaultPage = options.page;
+  }
+
+  if (options.limit) {
+    defaultLimit = options.limit;
+  }
+}
+
 export default class Criteria {
   private page: number | null;
 
@@ -185,7 +198,7 @@ export default class Criteria {
 
   private includes: Include | null;
 
-  constructor(page: number|null = 1, limit: number|null = 25) {
+  constructor(page: number|null = defaultPage, limit: number|null = defaultLimit) {
     this.page = page;
     this.limit = limit;
     this.term = null;

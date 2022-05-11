@@ -25,7 +25,7 @@ describe('Criteria Serializer', () => {
         __type__: '__Criteria__',
         data: {
           page: 1,
-          limit: 25,
+          limit: null,
           term: null,
           filters: [],
           ids: [],
@@ -164,7 +164,7 @@ describe('Criteria Serializer', () => {
         __type__: '__Criteria__',
         data: {
           page: 1,
-          limit: 25,
+          limit: null,
           term: 'Hello world',
           filters: [
             {
