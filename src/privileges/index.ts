@@ -27,7 +27,7 @@ export const ShopwareMessageTypePrivileges: Record<string, privileges> = {
   actionButtonAdd: {},
   actionExecute: {},
   datasetRegistration: {},
-  datasetQuery: {},
+  datasetSubscribe: {},
   datasetUpdate: {},
   __function__: {},
   __registerWindow__: {},

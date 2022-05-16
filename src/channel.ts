@@ -119,9 +119,10 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     if (validationErrors) {
       // Datasets need the id for matching the response
       if ([
-        'datasetQuery',
+        'datasetSubscribe',
         'datasetUpdate',
         'datasetRegistration',
+        'datasetGet',
       ].includes(serializedData._type)) {
         serializedData = serialize({
           _type: serializedData._type,
@@ -476,7 +477,7 @@ const datasets = new Map<string, unknown>();
     // Register all existing datasets for apps that come to late for the "synchronous" registration
     datasets.forEach((dataset, id ) => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      send('datasetQuery', {id, data: dataset}, source, origin).catch(() => {});
+      send('datasetSubscribe', {id, data: dataset}, source, origin).catch(() => {});
     });
   });
 
@@ -484,7 +485,7 @@ const datasets = new Map<string, unknown>();
   handle('datasetRegistration', (data) => {
     datasets.set(data.id, data.data);
 
-    publish('datasetQuery', data);
+    publish('datasetSubscribe', data);
 
     return {
       id: data.id,
@@ -492,7 +493,7 @@ const datasets = new Map<string, unknown>();
     };
   });
 
-  handle('datasetQuery', (data) => {
+  handle('datasetSubscribe', (data) => {
     return datasets.get(data.id) ?? null;
   });
 

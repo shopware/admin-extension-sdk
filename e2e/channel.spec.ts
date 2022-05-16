@@ -718,7 +718,7 @@ test.describe('Privilege tests', () => {
 
     // subscribe to dataset publish
     await subFrame.evaluate(async () => {
-      await window.sw.data.get('e2e-test', (data) => {
+      await window.sw.data.subscribe('e2e-test', (data) => {
         // @ts-expect-error
         window.result = { data: data.data };
       });
@@ -758,7 +758,7 @@ test.describe('Privilege tests', () => {
 
     // check if receiving value matches
     expect(result.isError).toBe(true);
-    expect(result.errorText).toBe('Error: Your app is missing the privileges read:product for action "datasetQuery".');
+    expect(result.errorText).toBe('Error: Your app is missing the privileges read:product for action "datasetSubscribe".');
   });
 
   test('should send entity data with correct privileges in data handling (read)', async ({ page }) => {
@@ -766,7 +766,7 @@ test.describe('Privilege tests', () => {
 
     // subscribe to dataset publish
     await subFrame.evaluate(async () => {
-      await window.sw.data.get('e2e-test', (data) => {
+      await window.sw.data.subscribe('e2e-test', (data) => {
         // @ts-expect-error
         window.result = { data: data.data };
       });
@@ -836,7 +836,7 @@ test.describe('data handling', () => {
 
     // subscribe to dataset publish
     await subFrame.evaluate(async () => {
-      return await window.sw.data.get('e2e-test', (data) => {
+      return await window.sw.data.subscribe('e2e-test', (data) => {
         // @ts-expect-error
         window.result = { data: data.data };
       });
@@ -899,5 +899,26 @@ test.describe('data handling', () => {
     })
 
     expect(result).toBe('updated-string');
+  });
+
+  test('dataset get', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // Simulate handle of get
+    await mainFrame.evaluate(async () => {
+      window.sw.data.handleGet((data) => {
+        return 'test-string';
+      });
+    })
+
+    // Get dataset
+    const data = await subFrame.evaluate(async () => {
+      return await window.sw.data.get('e2e-test').then((data) => {
+        return data;
+      });
+    })
+
+    // check if receiving value matches
+    expect(data).toBe('test-string');
   });
 })
