@@ -8,6 +8,7 @@ export const subscribeLocale = createSubscriber('contextLocale');
 export const getCurrency = createSender('contextCurrency', {});
 export const getShopwareVersion = createSender('contextShopwareVersion', {});
 export const getAppInformation = createSender('contextAppInformation', {});
+export const getModuleInformation = createSender('contextModuleInformation', {});
 
 /**
  * Get the current content language
@@ -54,12 +55,26 @@ export type contextShopwareVersion = {
 }
 
 /**
- * Get the current Shopware version
+ * Get the current app information
  */
 export type contextAppInformation = {
   responseType: {
     name: string,
     version: string,
     type: 'app'|'plugin',
+  },
+}
+
+/**
+ * Get all registered module information for the extension
+ */
+export type contextModuleInformation = {
+  responseType: {
+    modules: Array<{
+      displaySearchBar: boolean,
+      heading: string,
+      id: string,
+      locationId: string,
+    }>,
   },
 }
