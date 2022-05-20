@@ -1,6 +1,6 @@
 import type { notificationDispatch } from './notification/index';
-import type { windowRedirect, windowReload } from './window/index';
-import type { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation } from './context/index';
+import type { windowRedirect, windowReload, windowRouterPush } from './window/index';
+import type { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation, contextModuleInformation } from './context/index';
 import type { uiComponentSectionRenderer } from './ui/componentSection/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
 import type { locationUpdateHeight } from './location/index';
@@ -32,6 +32,7 @@ import type {
 export type ShopwareMessageTypes = {
   notificationDispatch: notificationDispatch,
   windowRedirect: windowRedirect,
+  windowRouterPush: windowRouterPush,
   windowReload: windowReload,
   contextLanguage: contextLanguage,
   contextEnvironment: contextEnvironment,
@@ -39,6 +40,7 @@ export type ShopwareMessageTypes = {
   contextCurrency: contextCurrency,
   contextShopwareVersion: contextShopwareVersion,
   contextAppInformation: contextAppInformation,
+  contextModuleInformation: contextModuleInformation,
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,

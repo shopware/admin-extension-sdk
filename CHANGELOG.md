@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 20.05.2022
+
+### Added
+
+- Added `context.getModuleInformation`
+- Added `window.routerPush`
+
 ## [2.0.0] - 16.05.2022
 
 ### Changed

@@ -213,3 +213,51 @@ Promise<{ name: string ; version: string ; type: 'app' | 'plugin' }>
   type: 'app'
 }
 ```
+
+## Module informatio
+
+### Get module information
+Get information about all registered modules. These modules are created by adding new menu items, setting items, etc.
+
+The ID can be used to change the current route to the module.
+
+#### Usage:  
+```ts
+const { modules } = await sw.context.getModuleInformation();
+
+sw.window.routerPush({
+  name: 'sw.extension.sdk.index',
+  params: {
+    id: modules[0].id // get the ID of the wanted module
+  }
+})
+```
+
+#### Parameters
+No parameters needed.
+
+#### Return value:
+```ts
+Promise<{
+  modules: Array<{
+    displaySearchBar: boolean,
+    heading: string,
+    id: string,
+    locationId: string
+  }>
+}}>
+```
+
+#### Example value:
+```ts
+{
+  modules: [
+    {
+      displaySearchBar: true,
+      heading: 'My module',
+      id: 'sd5aasfsdfas',
+      locationId: 'my-location-id'
+    }
+  ]
+}
+```
