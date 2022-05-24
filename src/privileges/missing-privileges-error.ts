@@ -21,7 +21,7 @@ export default class MissingPrivilegesError extends Error {
 
     this.messageType = messageType;
 
-    // Set prototype excplicitly
+    // Set prototype explicitly
     Object.setPrototypeOf(this, MissingPrivilegesError.prototype);
   }
 

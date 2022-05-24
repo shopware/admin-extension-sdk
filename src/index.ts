@@ -3,6 +3,7 @@ import * as notification from './notification';
 import * as context from './context';
 import * as componentSection from './ui/componentSection';
 import tabs from './ui/tabs';
+import * as cms from './ui/cms';
 import * as location from './location';
 import * as menu from './ui/menu';
 import * as settings from './ui/settings';
@@ -34,6 +35,7 @@ export {
   notification,
   context,
   ui,
+  cms,
   location,
   app,
   data,
