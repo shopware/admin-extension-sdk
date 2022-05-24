@@ -18,6 +18,7 @@ export const ShopwareMessageTypePrivileges: Record<string, privileges> = {
   getPageTitle: {},
   uiComponentSectionRenderer: {},
   uiTabsAddTabItem: {},
+  cmsRegisterElement: {},
   locationUpdateHeight: {},
   menuItemAdd: {},
   settingsItemAdd: {},

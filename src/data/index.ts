@@ -69,7 +69,7 @@ export type datasetGet = {
 
   id: string,
 
-  data: unknown,
+  data?: unknown,
 }
 
 const Classes: {
