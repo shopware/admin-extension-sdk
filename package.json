@@ -1,9 +1,9 @@
 {
   "name": "@shopware-ag/admin-extension-sdk",
   "license": "MIT",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "repository": "git://github.com/shopware/admin-extension-sdk.git",
-  "description": "The SDK for App iframes to communicate with the Shopware Adminstration",
+  "description": "The SDK for App iframes to communicate with the Shopware Administration",
   "keywords": [
     "iframe",
     "shopware",
