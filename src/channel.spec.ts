@@ -183,7 +183,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
 
   it('should reject send with missing privileges', () => {
     send('_privileges', {}).catch(e => {
-      const expectedError = new MissingPrivilegesError('_privileges', ['create:user', 'read:user', 'update:user', 'delete:user']);
+      const expectedError = new MissingPrivilegesError('_privileges', ['additional:not_entity_related', 'create:user', 'read:user', 'update:user', 'delete:user']);
 
       expect(e.message).toEqual(expectedError.message)
     })

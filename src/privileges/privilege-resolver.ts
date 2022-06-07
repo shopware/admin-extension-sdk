@@ -5,10 +5,11 @@ import { adminExtensions } from '../channel';
 export type privilegeString = `${keyof privileges}:${string}`;
 
 export type privileges = {
-    create?: Array<string>,
-    read?: Array<string>,
-    update?: Array<string>,
-    delete?: Array<string>,
+  additional?: Array<string>,
+  create?: Array<string>,
+  read?: Array<string>,
+  update?: Array<string>,
+  delete?: Array<string>,
 }
 
 export type extension = {
@@ -18,13 +19,13 @@ export type extension = {
 
 export function sendPrivileged(messageType: keyof ShopwareMessageTypes): Array<privilegeString> | null {
   const requiredPrivileges = getRequiredPrivilegesForMessage(messageType);
-  const locationPriviliges = getLocationPrivileges(window.location);
+  const locationPrivileges = getLocationPrivileges(window.location);
 
   if (!requiredPrivileges || Object.keys(requiredPrivileges).length <= 0) {
     return null;
   }
 
-  return getMissingPrivileges(requiredPrivileges, locationPriviliges);
+  return getMissingPrivileges(requiredPrivileges, locationPrivileges);
 }
 
 export function handlePrivileged(messageType: keyof ShopwareMessageTypes, origin: string): Array<privilegeString> | null {
@@ -40,7 +41,7 @@ export function handlePrivileged(messageType: keyof ShopwareMessageTypes, origin
 
 function getRequiredPrivilegesForMessage<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE): typeof ShopwareMessageTypePrivileges[MESSAGE_TYPE]
 function getRequiredPrivilegesForMessage(messageType: string): privileges
-function getRequiredPrivilegesForMessage<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE | string): typeof ShopwareMessageTypePrivileges[MESSAGE_TYPE] | privileges  {
+function getRequiredPrivilegesForMessage<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE | string): typeof ShopwareMessageTypePrivileges[MESSAGE_TYPE] | privileges {
   return ShopwareMessageTypePrivileges[messageType] ?? {};
 }
 
