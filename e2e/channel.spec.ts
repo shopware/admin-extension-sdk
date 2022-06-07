@@ -576,7 +576,7 @@ test.describe('Privilege tests', () => {
         }))
     });
 
-    expect(response.errorMessage).toEqual(`Error: Your app is missing the privileges create:user, read:user, update:user, delete:user for action "_privileges".`);
+    expect(response.errorMessage).toEqual(`Error: Your app is missing the privileges additional:not_entity_related, create:user, read:user, update:user, delete:user for action "_privileges".`);
     expect(response.isMissingPrivilesErrorInstance).toBe(true);
   });
 
