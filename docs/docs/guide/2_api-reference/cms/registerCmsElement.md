@@ -1,3 +1,5 @@
+# Important: This feature is currently not implemented yet and will be released soon
+
 # Register CMS element
 
 With `cms.registerCmsElement` you can register CMS elements to use in the Shopping Experiences Module.
