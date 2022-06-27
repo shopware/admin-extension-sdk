@@ -14,7 +14,7 @@ Furthermore you should have [Shopware](https://github.com/shopware/platform) set
 To make use of the Extension API plugin for the Vue dev tools start the watcher of the administration:
 
 ```bash
-$ composer run watch:admin
+$ ./psh.phar administration:watch
 ```
 
 ## Vue dev tool plugin
