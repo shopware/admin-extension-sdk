@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] - 27.06.2022
+
+### Added
+
+- Added `ui.paymentOverviewCard`
+
 ## [2.1.0] - 20.05.2022
 
 ### Added

@@ -8,6 +8,7 @@ import * as location from './location';
 import * as menu from './ui/menu';
 import * as settings from './ui/settings';
 import * as mainModule from './ui/mainModule';
+import * as module from './ui/module';
 import * as modal from './ui/modal';
 import * as actionButton from './ui/actionButton';
 import * as webhook from './app/action';
@@ -23,6 +24,7 @@ const ui = {
   menu,
   settings,
   mainModule,
+  module,
   modal,
   actionButton,
 };
