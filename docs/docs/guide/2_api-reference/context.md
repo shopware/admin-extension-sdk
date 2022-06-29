@@ -214,7 +214,7 @@ Promise<{ name: string ; version: string ; type: 'app' | 'plugin' }>
 }
 ```
 
-## Module informatio
+## Module information
 
 ### Get module information
 Get information about all registered modules. These modules are created by adding new menu items, setting items, etc.
