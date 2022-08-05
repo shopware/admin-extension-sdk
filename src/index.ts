@@ -11,6 +11,7 @@ import * as mainModule from './ui/mainModule';
 import * as module from './ui/module';
 import * as modal from './ui/modal';
 import * as actionButton from './ui/actionButton';
+import * as snippet from './ui/snippet';
 import * as webhook from './app/action';
 import * as data from './data';
 
@@ -27,6 +28,7 @@ const ui = {
   module,
   modal,
   actionButton,
+  snippet,
 };
 
 /**
