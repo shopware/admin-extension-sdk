@@ -61,3 +61,60 @@ location.startAutoResizer();
 ## Avoiding scrollbars
 If you render custom locations it is useful to disable the scroll behavior in your view. Otherwise scrollbars are visible
 which aren't needed in most cases. To avoid this you can add the css property `overflow: hidden;` to the `body` element.
+
+## For existing plugin migrations: render Vue components instead of iFrames
+In some cases you just want to use specific features from the SDK and some features from the existing plugin system which works with Twig and Component overriding. In this case you can do some things with the SDK but render components from the Shopware Component Factory instead of iFrames.
+
+To do this you need to register the component in the existing plugin system:
+
+```js
+Shopware.Component.register('your-component-name', {
+  // your component
+})
+```
+
+Now if you want to render the component in a location you need to add the name of the component to the current location. This can be done with the `sdkLocation` store:
+```js
+Shopware.State.commit('sdkLocation/addLocation', {
+    locationId: 'your-location-id',
+    componentName: 'your-component-name'
+})
+```
+
+With this feature you can create mix the usage of the SDK and the existing plugin system. A complete example could be looking like this. It creates a new tab item in the product detail page, renders a card with the componentSection renderer and inside the card it renders the location. But instead of the traditional location it renders a Vue component which was registered in the Shopware Component Factory.
+
+```js
+// in a normal plugin js file without a HTML file
+import { ui, location } from '@shopware-ag/admin-extension-sdk';
+
+if (!location.isIframe()) {
+  const myLocationId = 'my-example-location-id';
+
+  // Create a new tab entry
+  ui.tabs('sw-product-detail').addTabItem({
+      label: 'Example tab',
+      componentSectionId: 'example-product-detail-tab-content'
+  })
+
+  // Add a new card to the tab content which renders a location
+  ui.componentSection.add({
+      component: 'card',
+      positionId: 'example-product-detail-tab-content',
+      props: {
+          title: 'Component section example',
+          locationId: myLocationId
+      }
+  })
+
+  // Register your component which should be rendered inside the location
+  Shopware.Component.register('your-component-name', {
+    // your component
+  })
+
+  // Add the component name to the specific location
+  Shopware.State.commit('sdkLocation/addLocation', {
+      locationId: myLocationId,
+      componentName: 'your-component-name'
+  })
+}
+```
