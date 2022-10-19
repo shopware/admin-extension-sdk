@@ -1,6 +1,6 @@
 # Register CMS element
 
-## Important: This feature is currently not implemented yet and will be released soon
+> Available since Shopware v6.4.17.0
 
 With `cms.registerCmsElement` you can register CMS elements to use in the Shopping Experiences Module.
 More information on how to develop CMS elements can be found in [this guide](https://developer.shopware.com/docs/guides/plugins/plugins/content/cms/add-cms-element).
