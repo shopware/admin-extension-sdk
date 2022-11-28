@@ -5,7 +5,11 @@ More information on how to find the unique identifiers can be found in [this gui
 
 #### Usage:  
 ```ts
-data.get('sw-product-detail__product').then((data) => {
+data.get(
+    {
+        id: 'sw-product-detail__product',
+    },
+).then((data) => {
     console.log(data);
 });
 ```
@@ -13,4 +17,4 @@ data.get('sw-product-detail__product').then((data) => {
 #### Parameters
 | Name                 | Required | Description                                                                                           |
 | :------------------- | :------- | :---------------------------------------------------------------------------------------------------- |
-| `id`                 | true     | The unique id of the dataset you want to receive                                                      |
+| `options`            | true     | Options containing the unique `id`                                                                    |
