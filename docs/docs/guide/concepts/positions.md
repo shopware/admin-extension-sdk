@@ -16,4 +16,4 @@ It is impossible to create a list of all potential position Id's. And they would
 
 Just open the plugin in the Devtools (It is available directly when you open the Administration). Then you can see all positions at the current administration view which are available for extending. If you click at one position Id you get more information about it. Like the property in the Admin-Extension-SDK so that you directly know what functionality this position has.
 
-In summary: the Devtool plugin provides a visual way to see which parts can be extended and what are the positionIDs for the extension position. You can find a detailed guide in the tooling section of this documentation: [Vue Devtools](../3_tooling/vue-devtools.md)
+In summary: the Devtool plugin provides a visual way to see which parts can be extended and what are the positionIDs for the extension position. You can find a detailed guide in the tooling section of this documentation: [Vue Devtools](../tooling/vue-devtools.md)

@@ -5,7 +5,20 @@ slug: "/guide/"
 sidebar_label: "Introduction"
 sidebar_position: 0.5
 custom_edit_url: null
+
 ---
+
+# Admin Extension SDK
+for Shopware 6 apps and plugins
+
+## Easy to use
+You don't need to have knowledge about the internal of the Shopware 6 admin. The SDK hides the complicated stuff behind beautiful API.
+
+## Many capabilities
+Throwing notifications, extending the current UI and much more. The SDK provides a ton of extension for your ideas and solutions.
+
+## Lightweight
+The whole library is completely tree-shakable, dependency-free and every functionality can be imported granularly so that your bundle stays small and fast.
 
 # Introduction
 
@@ -21,7 +34,7 @@ It contains helper functions to communicate with the Administration, execute act
 - 💙  **Developer experience:** have a great development experience right from the start. And it will become better and better in the future.
 - 🪶  **Lightweight:** the whole library is completely tree-shakable and dependency-free. Every functionality can be imported granularly to keep your bundle as small and fast as possible.
 
-Go to [Installation](./1_getting-started/installation.md) to get started. Or check out the quick start guide:
+Go to [Installation](getting-started/installation.md) to get started. Or check out the quick start guide:
 
 ## Quick start
 

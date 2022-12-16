@@ -1,7 +1,7 @@
 # Subscribe
 
 With `data.subscribe` you can subscribe to dataset changes. The callback will be called every time, the dataset with the matching id is changed. 
-More information on how to find the unique identifiers can be found in [this guide](../../5_internals/datahandling.md).
+More information on how to find the unique identifiers can be found in [this guide](../../internals/datahandling.md).
 
 #### Usage:  
 ```ts

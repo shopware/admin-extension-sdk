@@ -1,7 +1,7 @@
 # Location
 
 ## Prerequisites
-We recommend you read the [concept](../4_concepts/locations.md) of locations first.
+We recommend you read the [concept](../concepts/locations.md) of locations first.
 ## Location checks
 
 ### Check the current location id
@@ -71,7 +71,7 @@ This method does not have a return value.
 
 This methods starts the auto resizer of the iFrame height.
 
-![Auto resizing example](../4_concepts/assets/auto-resizer.gif)
+![Auto resizing example](../concepts/assets/auto-resizer.gif)
 
 #### Usage:
 

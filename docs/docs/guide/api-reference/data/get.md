@@ -1,7 +1,7 @@
 # Get
 
 With `data.get` you can receive datasets from the Shopware administration.
-More information on how to find the unique identifiers can be found in [this guide](../../5_internals/datahandling.md).
+More information on how to find the unique identifiers can be found in [this guide](../../internals/datahandling.md).
 
 #### Usage:  
 ```ts
