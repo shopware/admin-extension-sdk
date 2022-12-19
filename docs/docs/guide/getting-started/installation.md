@@ -1,6 +1,8 @@
 ---
 title: "Installation"
 sidebar_position: 1
+nav:
+  position: 10
 ---
 
 # Installation

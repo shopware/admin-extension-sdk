@@ -1,0 +1,4 @@
+---
+nav:
+  title: Extending modules
+---

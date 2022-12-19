@@ -1,5 +1,7 @@
 ---
 sidebar_position: 3
+nav:
+  position: 30
 ---
 
 # Usage

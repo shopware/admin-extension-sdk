@@ -1,6 +1,9 @@
 ---
 title: "Vue dev tools"
 sidebar_position: 2
+nav:
+  position: 20
+  title: Vue Dev tools
 ---
 
 # Vue dev tools
