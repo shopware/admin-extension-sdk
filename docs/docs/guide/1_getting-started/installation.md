@@ -89,3 +89,70 @@ sw.notification.dispatch({
   message: 'This was really easy to do'
 })
 ```
+
+## Adding types for Entities (TS only)
+
+The data management inside the SDK supports complete TypeScript support. This allows complete type safety when getting
+entities, editing or saving them. Currently, you need to write the types yourself. But we are working on an auto-generated
+type definitions for the Shopware releases.
+
+For adding the types you need to create a global type definition file like `global.d.ts`. Inside this file you can
+add the types for the entities by extending the global namespace.
+
+### Using auto-generated types from Shopware
+
+This is currently not finished yet and will be released soon.
+
+### Using "any" fallback
+
+This is the easiest solution. You set the type to `any` for every entity. The downside of this is the missing type safety.
+
+```ts
+// global.d.ts
+declare namespace EntitySchema {
+    interface Entities {
+        [entityName: key]: any;
+    }
+}
+```
+
+### Using custom types
+
+This is the safest solution. You define for every needed entity every property and association. The downside of this is
+that it takes time to write the definitions.
+
+```ts
+// global.d.ts
+declare namespace EntitySchema {
+    interface Entities {
+        // using product_manufacturer as an example
+        product_manufacturer: product_manufacturer;
+        // in this case 'media', 'product' and 'product_manufacturer_translation' is also needed
+        ...
+    }
+
+    interface product_manufacturer {
+        id: string;
+        versionId: string;
+        mediaId?: string;
+        link?: string;
+        name: string;
+        description?: string;
+        customFields?: unknown;
+        /* 
+        * Entity and EntityCollection is defined in the namespace and can directly be used.
+        * The value in the generic (here 'media', 'product' and 'product_manufacturer_translation') need
+        * also to be defined in this file.
+        */ 
+        media?: Entity<'media'>;
+        products?: EntityCollection<'product'>;
+        translations: EntityCollection<'product_manufacturer_translation'>;
+        createdAt: string;
+        updatedAt?: string;
+        translated?: {name?: string, description?: string, customFields?: unknown};
+    }
+
+    // 'media', 'product' and 'product_manufacturer_translation' also needs to be added
+    ...
+}
+```

@@ -700,7 +700,7 @@ export default class Criteria {
    * @param {string} operator - and/or
    * @param {array} queries
    *
-   * @returns {Object}}
+   * @returns {Object}
    */
   static not(operator: Filters['not']['operator'], queries: SingleFilter[] = []): Filters['not'] {
     return { type: 'not', operator: operator, queries: queries };
@@ -716,7 +716,7 @@ export default class Criteria {
    * @param {string} operator - and/or
    * @param {array} queries
    *
-   * @returns {Object}}
+   * @returns {Object}
    */
   static multi(operator: Filters['multi']['operator'], queries: SingleFilter[] = []): Filters['multi'] {
     return { type: 'multi', operator, queries };

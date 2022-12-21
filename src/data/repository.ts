@@ -4,15 +4,18 @@ import type { ApiContext } from './_internals/EntityCollection';
 import type EntityCollection from './_internals/EntityCollection';
 import type { Entity } from './_internals/Entity';
 
+type Entities = EntitySchema.Entities;
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default (entityName: string) => ({
-  search: (criteria: Criteria, context?: ApiContext): Promise<EntityCollection | null> => {
+export default <EntityName extends keyof Entities>(entityName: EntityName) => ({
+  search: (criteria: Criteria, context?: ApiContext): Promise<EntityCollection<EntityName> | null> => {
     return send('repositorySearch', { entityName, context, criteria });
   },
-  get: (id: string, context?: ApiContext, criteria?: Criteria): Promise<Entity | null> => {
+  get: (id: string, context?: ApiContext, criteria?: Criteria): Promise<Entity<EntityName> | null> => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return send('repositoryGet', { entityName, id, context, criteria });
   },
-  save: (entity: Entity, context?: ApiContext): Promise<void | null> => {
+  save: (entity: Entity<EntityName>, context?: ApiContext): Promise<void | null> => {
     return send('repositorySave', { entityName, entity, context });
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,74 +23,75 @@ export default (entityName: string) => ({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     return send('repositoryClone', { entityName, entityId, context, behavior });
   },
-  hasChanges: (entity: Entity): Promise<boolean | null> => {
+  hasChanges: (entity: Entity<EntityName>): Promise<boolean | null> => {
     return send('repositoryHasChanges', { entityName, entity });
   },
-  saveAll: (entities: EntityCollection, context?: ApiContext): Promise<unknown | null> => {
+  saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext): Promise<unknown | null> => {
     return send('repositorySaveAll', { entityName, entities, context });
   },
   delete: (entityId: string, context?: ApiContext): Promise<void | null> => {
     return send('repositoryDelete', { entityName, entityId, context });
   },
-  create: (context?: ApiContext, entityId?: string): Promise<Entity | null> => {
+  create: (context?: ApiContext, entityId?: string): Promise<Entity<EntityName> | null> => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return send('repositoryCreate', { entityName, entityId, context });
   },
 });
 
-export type repositoryGet = {
-  responseType: Entity | null,
-  entityName: string,
+export type repositoryGet<EntityName extends keyof Entities> = {
+  responseType: Entity<EntityName> | null,
+  entityName: EntityName,
   id: string,
   context?: ApiContext,
   criteria?: Criteria,
 }
 
-export type repositorySearch = {
-  responseType: EntityCollection,
-  entityName: string,
+export type repositorySearch<EntityName extends keyof Entities> = {
+  responseType: EntityCollection<EntityName>,
+  entityName: EntityName,
   criteria?: Criteria,
   context?: ApiContext,
 }
 
-export type repositorySave = {
+export type repositorySave<EntityName extends keyof Entities> = {
   responseType: void,
-  entityName: string,
-  entity: Entity,
+  entityName: EntityName,
+  entity: Entity<EntityName>,
   context?: ApiContext,
 }
 
-export type repositoryClone = {
+export type repositoryClone<EntityName extends keyof Entities> = {
   responseType: unknown,
-  entityName: string,
+  entityName: EntityName,
   entityId: string,
   context?: ApiContext,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   behavior?: any,
 }
 
-export type repositoryHasChanges = {
+export type repositoryHasChanges<EntityName extends keyof Entities> = {
   responseType: boolean,
-  entityName: string,
-  entity: Entity,
+  entityName: EntityName,
+  entity: Entity<EntityName>,
 }
 
-export type repositorySaveAll = {
+export type repositorySaveAll<EntityName extends keyof Entities> = {
   responseType: void,
-  entityName: string,
-  entities: EntityCollection,
+  entityName: EntityName,
+  entities: EntityCollection<EntityName>,
   context?: ApiContext,
 }
 
-export type repositoryDelete = {
+export type repositoryDelete<EntityName extends keyof Entities> = {
   responseType: void,
-  entityName: string,
+  entityName: EntityName,
   entityId: string,
   context?: ApiContext,
 }
 
-export type repositoryCreate = {
-  responseType: Entity,
-  entityName: string,
+export type repositoryCreate<EntityName extends keyof Entities> = {
+  responseType: Entity<EntityName>,
+  entityName: EntityName,
   entityId?: string,
   context?: ApiContext,
 }

@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0] - 23.12.2022
+
+### Added
+
+- Added type safety to all repository methods and the general data handling.
+
+### Breaking Changes
+
+- Removed the `any` type as a return value from the `repository` methods
+
+### Upgrade Guide
+
+You can get back the original behavior by adding the `any` type to the global `Entities` interface. You can
+see the guide in Getting started → Installation → Adding types for Entities (TS only) → Using "any" fallback.
+
+An additional package with auto-generated types will be released soon.
+
 ## [2.3.0] - 27.06.2022
 
 ### Added

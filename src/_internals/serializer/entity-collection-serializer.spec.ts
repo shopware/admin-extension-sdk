@@ -13,6 +13,7 @@ describe('entity-collection-serializer.ts', () => {
   it('should convert collections', () => {
     const collection = new EntityCollection(
       'test',
+      // @ts-expect-error - we know that this entity does not exist
       'jest',
       {} as ApiContext,
       new Criteria(),
@@ -21,7 +22,9 @@ describe('entity-collection-serializer.ts', () => {
       ['test', 'foo']
     );
 
+    // @ts-expect-error - we know that this entity does not exist
     collection.add(new Entity('1', 'test', {}));
+    // @ts-expect-error - we know that this entity does not exist
     collection.add(new Entity('2', 'test', {}));
 
     const messageData = {
