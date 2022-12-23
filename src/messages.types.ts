@@ -31,7 +31,7 @@ import type {
  * Contains all shopware send types.
  * @internal
  */
-export type ShopwareMessageTypes = {
+export interface ShopwareMessageTypes {
   notificationDispatch: notificationDispatch,
   windowRedirect: windowRedirect,
   windowRouterPush: windowRouterPush,
@@ -56,14 +56,24 @@ export type ShopwareMessageTypes = {
   uiModalClose: uiModalClose,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
-  repositoryGet: repositoryGet,
-  repositorySearch: repositorySearch,
-  repositorySave: repositorySave,
-  repositoryClone: repositoryClone,
-  repositoryHasChanges: repositoryHasChanges,
-  repositorySaveAll: repositorySaveAll,
-  repositoryDelete: repositoryDelete,
-  repositoryCreate: repositoryCreate,
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  repositoryGet: repositoryGet<any>,
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  repositorySearch: repositorySearch<any>,
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  repositorySave: repositorySave<any>,
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  repositoryClone: repositoryClone<any>,
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  repositoryHasChanges: repositoryHasChanges<any>,
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  repositorySaveAll: repositorySaveAll<any>,
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  repositoryDelete: repositoryDelete<any>,
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  repositoryCreate: repositoryCreate<any>,
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   datasetRegistration: datasetRegistration,
   datasetSubscribe: datasetSubscribe,
   datasetUpdate: datasetUpdate,
@@ -119,19 +129,27 @@ export type _criteriaTest = {
 export type _collectionTest = {
   responseType: {
     title: string,
-    collection: EntityCollection,
+    // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    collection: EntityCollection<any>,
   },
   title: string,
-  collection: EntityCollection,
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  collection: EntityCollection<any>,
 }
 
 export type _entityTest = {
   responseType: {
     title: string,
-    entity: Entity,
+    // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    entity: Entity<any>,
   },
   title: string,
-  entity: Entity,
+  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  entity: Entity<any>,
 }
 
 export type __function__ = {

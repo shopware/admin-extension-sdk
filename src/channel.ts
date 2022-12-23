@@ -75,7 +75,7 @@ const sourceRegistry: Set<{
 /**
  * With this method you can send actions or you can request data:
  *
- * @param type Choose a type of action from the {@link send-types}
+ * @param type Choose a type of action from the send-types
  * @param data The matching data for the type
  * @returns A promise with the response data in the given responseType
  */

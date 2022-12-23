@@ -2,31 +2,33 @@ import Criteria from '../Criteria';
 import type { Entity } from './Entity';
 
 type ApiAuthToken = {
-  access: string,
-  expiry: number,
-  refresh: string,
+    access: string,
+    expiry: number,
+    refresh: string,
 }
 
 export interface ApiContext {
-  apiPath: null | string,
-  apiResourcePath: null | string,
-  assetsPath: null | string,
-  authToken: null | ApiAuthToken,
-  basePath: null | string,
-  pathInfo: null | string,
-  inheritance: null | boolean,
-  installationPath: null | string,
-  languageId: null | string,
-  language: null | {
-    name: string,
-  },
-  apiVersion: null | string,
-  liveVersionId: null | string,
-  systemLanguageId: null | string,
+    apiPath: null | string,
+    apiResourcePath: null | string,
+    assetsPath: null | string,
+    authToken: null | ApiAuthToken,
+    basePath: null | string,
+    pathInfo: null | string,
+    inheritance: null | boolean,
+    installationPath: null | string,
+    languageId: null | string,
+    language: null | {
+        name: string,
+    },
+    apiVersion: null | string,
+    liveVersionId: null | string,
+    systemLanguageId: null | string,
 }
 
-export default class EntityCollection extends Array<Entity> {
-  entity: string;
+type Entities = EntitySchema.Entities;
+
+export default class EntityCollection<EntityName extends keyof Entities> extends Array<Entity<EntityName>> {
+  entity: EntityName;
 
   source: string;
 
@@ -38,32 +40,32 @@ export default class EntityCollection extends Array<Entity> {
 
   total: number|null;
 
-  first: () => Entity|null;
+  first: () => Entity<EntityName>|null;
 
-  last: () => Entity|null;
+  last: () => Entity<EntityName>|null;
 
   remove: (id: string) => boolean;
 
   has: (id: string) => boolean;
 
-  get: (id: string) => Entity|null;
+  get: (id: string) => Entity<EntityName>|null;
 
-  getAt: (index: number) => Entity|null;
+  getAt: (index: number) => Entity<EntityName>|null;
 
   getIds: () => string[];
 
-  add: (e: Entity) => void;
+  add: (e: Entity<EntityName>) => void;
 
-  addAt: (e: Entity, indexAt: number) => void;
+  addAt: (e: Entity<EntityName>, indexAt: number) => void;
 
-  moveItem: (oldIndex: number, newIndex: number) => Entity|null;
+  moveItem: (oldIndex: number, newIndex: number) => Entity<EntityName>|null;
 
   constructor(
     source: string,
-    entityName: string,
+    entityName: EntityName,
     context: ApiContext,
     criteria: Criteria|null = null,
-    entities: Entity[] = [],
+    entities: Entity<EntityName>[] = [],
     total: number|null = null,
     aggregations: string[]|null = null,
   ) {
@@ -82,11 +84,12 @@ export default class EntityCollection extends Array<Entity> {
      * Returns the first item of the collection.
      * Returns null if the collection is empty
      */
-    this.first = function firstEntityOfCollection(): Entity|null {
+    this.first = function firstEntityOfCollection(): Entity<EntityName>|null {
       if (this.length <= 0) {
         return null;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return this[0];
     };
 
@@ -94,11 +97,12 @@ export default class EntityCollection extends Array<Entity> {
      * Returns the last item of the collection.
      * Returns null if the collection is empty.
      */
-    this.last = function lastEntityOfCollection(): Entity|null {
+    this.last = function lastEntityOfCollection(): Entity<EntityName>|null {
       if (this.length <= 0) {
         return null;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return this[this.length - 1];
     };
 
@@ -107,6 +111,7 @@ export default class EntityCollection extends Array<Entity> {
      * Returns true if the entity removed, false if the entity wasn't found
      */
     this.remove = function removeEntityFromCollection(id): boolean {
+      // @ts-expect-error - we know that every entity has an id
       const itemIndex = this.findIndex(i => i.id === id);
 
       if (itemIndex < 0) {
@@ -121,16 +126,19 @@ export default class EntityCollection extends Array<Entity> {
      * Checks if the provided id is inside the collection
      */
     this.has = function hasEntityInCollection(id: string): boolean {
+      // @ts-expect-error - we know that every entity has an id
       return this.some(i => i.id === id);
     };
 
     /**
      * Returns the entity for the provided id, null if the entity is not inside the collection
      */
-    this.get = function getEntityByIdOfCollection(id: string): Entity|null {
+    this.get = function getEntityByIdOfCollection(id: string): Entity<EntityName>|null {
+      // @ts-expect-error - we know that every entity has an id
       const item = this.find(i => i.id === id);
 
       if (typeof item !== 'undefined') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return item;
       }
       return null;
@@ -139,10 +147,11 @@ export default class EntityCollection extends Array<Entity> {
     /**
      * Returns the entity at the given index position.
      */
-    this.getAt = function getEntityAtIndexOfCollection(index: number): Entity|null {
+    this.getAt = function getEntityAtIndexOfCollection(index: number): Entity<EntityName>|null {
       const item = this[index];
 
       if (typeof item !== 'undefined') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return item;
       }
       return null;
@@ -152,20 +161,22 @@ export default class EntityCollection extends Array<Entity> {
      * Returns all ids of the internal entities
      */
     this.getIds = function getEntityIdsOfCollection(): string[] {
+      // @ts-expect-error - we know that every entity has an id
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return this.map(i => i.id);
     };
 
     /**
      * Adds a new item to the collection
      */
-    this.add = function addEntityToCollection(e: Entity): void {
+    this.add = function addEntityToCollection(e: Entity<EntityName>): void {
       this.push(e);
     };
 
     /**
      * Adds an entity to the collection at the given position.
      */
-    this.addAt = function addEntityAtIndexOfCollection(e: Entity, insertIndex: number): void {
+    this.addAt = function addEntityAtIndexOfCollection(e: Entity<EntityName>, insertIndex: number): void {
       if (typeof insertIndex === 'undefined') {
         this.add(e);
         return;
@@ -180,7 +191,7 @@ export default class EntityCollection extends Array<Entity> {
     this.moveItem = function moveEntityToNewIndexInCollection(
       oldIndex: number,
       newIndex: number|null = null,
-    ): Entity|null {
+    ): Entity<EntityName>|null {
       if (newIndex === null) {
         newIndex = this.length;
       }
@@ -190,6 +201,7 @@ export default class EntityCollection extends Array<Entity> {
       }
 
       if (newIndex === oldIndex) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return this.getAt(oldIndex);
       }
 
@@ -208,6 +220,7 @@ export default class EntityCollection extends Array<Entity> {
 
       this.splice(0, this.length, ...orderedItems);
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return movedItem;
     };
 
@@ -216,10 +229,10 @@ export default class EntityCollection extends Array<Entity> {
      */
     // @ts-expect-error Overloads Array function therefore types mismatch
     this.filter = function filterEntityCollection(
-      callback: (e: Entity, index: number) => boolean,
+      callback: (e: Entity<EntityName>, index: number) => boolean,
       scope: unknown,
-    ): EntityCollection {
-      const filtered = (Object.getPrototypeOf(this) as EntityCollection)
+    ): EntityCollection<EntityName> {
+      const filtered = (Object.getPrototypeOf(this) as EntityCollection<EntityName>)
         .filter.call(this, callback, scope);
       return new EntityCollection(
         this.source,
@@ -236,7 +249,9 @@ export default class EntityCollection extends Array<Entity> {
   /**
    * Returns a new collection from given one with
    */
-  static fromCollection(collection: EntityCollection): EntityCollection {
+  static fromCollection<StaticEntityName extends keyof Entities>(
+    collection: EntityCollection<StaticEntityName>,
+  ): EntityCollection<StaticEntityName> {
     return new EntityCollection(
       collection.source,
       collection.entity,

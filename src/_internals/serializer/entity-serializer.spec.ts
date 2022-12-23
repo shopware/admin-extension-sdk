@@ -19,16 +19,18 @@ describe('entity-serializer.ts', () => {
       },
     };
 
-    const association = new Entity('bar', 'jest-association', {...cloneDeep(originValues)});
+    // @ts-expect-error - we know that this entity does not exist
+    const association = new Entity('bar', 'jest-association', {...cloneDeep(originValues)}) as any;
     association.string = 'jest-is-more-fun';
     association.number = 1337;
     association.array.push('and me');
     association.object.foo = 'buz'
 
+    // @ts-expect-error - we know that this entity does not exist
     const entity = new Entity('foo', 'jest', {
       ...cloneDeep(originValues),
       association,
-    });
+    }) as any;
     entity.string = 'jest-is-more-fun';
     entity.number = 1337;
     entity.array.push('and me');

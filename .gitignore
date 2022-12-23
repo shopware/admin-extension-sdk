@@ -16,3 +16,4 @@ playwright-test-results/
 playwright-report/
 testpageDist
 dependency-graph.png
+.vscode

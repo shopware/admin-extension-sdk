@@ -1,40 +1,44 @@
 import cloneDeep from 'lodash/cloneDeep';
 
-export interface draft  {
-  [key: string]: unknown,
-}
-
-let setterMethod = (draft: draft, property: string, value: unknown): void => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let setterMethod = (draft: Record<any, any>, property: string, value: unknown): void => {
   draft[property] = value;
 };
 
 /**
  * @internal
  */
-export function assignSetterMethod(newSetterMethod: (draft: draft, property: string, value: unknown) => void): void {
+export function assignSetterMethod(newSetterMethod: (draft: unknown, property: string, value: unknown) => void): void {
   setterMethod = newSetterMethod;
 }
 
-interface EntityOptions {
-  originData?: draft,
-  isDirty?: boolean,
-  isNew?: boolean,
+type Entities = EntitySchema.Entities;
+
+interface EntityOptions<EntityName extends keyof Entities> {
+    originData?: Entities[EntityName],
+    isDirty?: boolean,
+    isNew?: boolean,
 }
 
-class EntityClass {
+class EntityClass<EntityName extends keyof Entities> {
   id: string;
 
-  _origin: draft;
+  _origin: Entities[EntityName];
 
-  _entityName: string;
+  _entityName: EntityName;
 
-  _draft: {[key: string]: unknown};
+  _draft: Entities[EntityName];
 
   _isDirty: boolean;
 
   _isNew: boolean;
 
-  constructor(id: string, entityName: string, data: draft, options: EntityOptions = {}) {
+  constructor(
+    id: string,
+    entityName: EntityName,
+    data: Entities[EntityName],
+    options: EntityOptions<EntityName> = {},
+  ) {
     this.id = id;
     this._origin = options.originData ? cloneDeep(options.originData) : cloneDeep(data);
     this._entityName = entityName;
@@ -44,11 +48,9 @@ class EntityClass {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
 
-    // @ts-expect-error Proxy is not an instance of this class
     return new Proxy(this._draft, {
       get(_, property): unknown {
         if (property in that._draft) {
-          // @ts-expect-error Its unsure if the property exists on the this alias
           return that._draft[property];
         }
 
@@ -89,14 +91,16 @@ class EntityClass {
   /**
    * Allows access the origin entity value. The origin value contains the server values
    */
-  getOrigin(): draft {
+  getOrigin(): Entities[EntityName] {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this._origin;
   }
 
   /**
    * Allows to access the draft value. The draft value contains all local changes of the entity
    */
-  getDraft(): draft {
+  getDraft(): Entities[EntityName] {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this._draft;
   }
 
@@ -104,16 +108,29 @@ class EntityClass {
    * Allows to access the entity name. The entity name is used as unique identifier `product`, `media`, ...
    */
   getEntityName(): string {
-    return this._entityName;
+    return this._entityName as string;
   }
 }
 
-/* eslint-disable */
-type EntityType<DATA extends Record<string, unknown>> = DATA & EntityClass & Record<string, any>;
+type EntityType<EntityName extends keyof Entities> = Entities[EntityName] & EntityClass<EntityName>;
 
-const Entity = function EntityConstructor(id: string, entityName: string, data: draft, options?: EntityOptions) {
+interface EntityConstructor {
+  new<EntityName extends keyof Entities>(
+    id: string,
+    entityName: EntityName,
+    data: Entities[EntityName],
+    options?: EntityOptions<EntityName>,
+  ): EntityType<EntityName>,
+}
+
+const Entity = function Entity<EntityName extends keyof Entities>(
+  id: string,
+  entityName: EntityName,
+  data: Entities[EntityName],
+  options?: EntityOptions<EntityName>,
+) {
   return new EntityClass(id, entityName, data, options);
-} as any as { new<DATA extends draft>(id: string, entityName: string, data: DATA, options?: EntityOptions): EntityType<DATA> }
+} as unknown as EntityConstructor;
 
 export default Entity;
-export type Entity = EntityClass;
+export type { EntityType as Entity };
