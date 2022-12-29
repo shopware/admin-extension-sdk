@@ -160,6 +160,11 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
         return;
       }
 
+      // Only execute when callbackId matches
+      if (event.data.indexOf(`"_callbackId":"${callbackId}"`) === -1) {
+        return;
+      }
+
       let shopwareResponseData;
       // Try to parse the json file
       try {
@@ -171,11 +176,6 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 
       // Check if messageData is valid
       if (!isMessageResponseData<MESSAGE_TYPE>(shopwareResponseData)) {
-        return;
-      }
-
-      // Only execute when callbackId matches
-      if (shopwareResponseData._callbackId !== callbackId) {
         return;
       }
 
@@ -269,6 +269,11 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
       return;
     }
 
+    // Check if messageData type matches the type argument
+    if (event.data.indexOf(`"_type":"${type}"`) === -1) {
+      return;
+    }
+
     let shopwareMessageData;
 
     // Try to parse the json file
@@ -281,11 +286,6 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 
     // Check if messageData is valid
     if (!isMessageData<MESSAGE_TYPE>(shopwareMessageData)) {
-      return;
-    }
-
-    // Check if messageData type matches the type argument
-    if (shopwareMessageData._type !== type) {
       return;
     }
 

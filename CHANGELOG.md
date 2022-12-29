@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.1] - 29.12.2022
+
+### Changed
+
+- Improved general performance of the channel communication by improving the early return method for stopping the execution
+
 ## [3.0.0] - 23.12.2022
 
 ### Added
