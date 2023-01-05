@@ -25,7 +25,6 @@ const EntityCollectionSerializerFactory: SerializerFactory = () => ({
     if (hasType('__EntityCollection__', value)) {
       return new EntityCollection(
         value.__source__,
-        // @ts-expect-error - we know that this property exists in the deserialized object. If not, it will fail
         value.__entityName__,
         value.__context__,
         customizerMethod(value.__criteria__),

@@ -93,15 +93,26 @@ sw.notification.dispatch({
 ## Adding types for Entities (TS only)
 
 The data management inside the SDK supports complete TypeScript support. This allows complete type safety when getting
-entities, editing or saving them. Currently, you need to write the types yourself. But we are working on an auto-generated
-type definitions for the Shopware releases.
+entities, editing or saving them.
 
 For adding the types you need to create a global type definition file like `global.d.ts`. Inside this file you can
 add the types for the entities by extending the global namespace.
 
 ### Using auto-generated types from Shopware
+This is the easiest solution. Just install the correct type definition for the matching shopware version:
 
-This is currently not finished yet and will be released soon.
+`npm install @shopware-ag/entity-schema-types@5.0.0`
+
+The version number should match the Shopware version number without the `6.` in the beginning. Examples:  
+
+`Shopware 6.5.0.0` → `@shopware-ag/entity-schema-types@5.0.0`
+`Shopware 6.5.1.2` → `@shopware-ag/entity-schema-types@5.1.2`
+`Shopware 6.6.3.1` → `@shopware-ag/entity-schema-types@6.3.1`
+
+```ts
+// global.d.ts
+import '@shopware-ag/entity-schema-types';
+```
 
 ### Using "any" fallback
 
@@ -111,7 +122,7 @@ This is the easiest solution. You set the type to `any` for every entity. The do
 // global.d.ts
 declare namespace EntitySchema {
     interface Entities {
-        [entityName: key]: any;
+        [entityName: string]: any;
     }
 }
 ```

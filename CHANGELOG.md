@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.2] - 05.01.2023
+
+### Bugfix
+
+- Added two placeholder entities to the global `EntitySchema.Entities` types.
+  This avoids the automatic conversion of an empty interface to the type `never`
+
 ## [3.0.1] - 29.12.2022
 
 ### Changed

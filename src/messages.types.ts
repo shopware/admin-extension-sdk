@@ -57,21 +57,13 @@ export interface ShopwareMessageTypes {
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   repositoryGet: repositoryGet<any>,
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   repositorySearch: repositorySearch<any>,
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   repositorySave: repositorySave<any>,
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   repositoryClone: repositoryClone<any>,
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   repositoryHasChanges: repositoryHasChanges<any>,
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   repositorySaveAll: repositorySaveAll<any>,
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   repositoryDelete: repositoryDelete<any>,
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   repositoryCreate: repositoryCreate<any>,
   /* eslint-enable @typescript-eslint/no-explicit-any */
   datasetRegistration: datasetRegistration,
@@ -129,12 +121,10 @@ export type _criteriaTest = {
 export type _collectionTest = {
   responseType: {
     title: string,
-    // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     collection: EntityCollection<any>,
   },
   title: string,
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   collection: EntityCollection<any>,
 }
@@ -142,12 +132,10 @@ export type _collectionTest = {
 export type _entityTest = {
   responseType: {
     title: string,
-    // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     entity: Entity<any>,
   },
   title: string,
-  // @ts-expect-error - we need any as placeholder. Type values will be set by the direct functions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   entity: Entity<any>,
 }

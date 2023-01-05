@@ -111,7 +111,6 @@ export default class EntityCollection<EntityName extends keyof Entities> extends
      * Returns true if the entity removed, false if the entity wasn't found
      */
     this.remove = function removeEntityFromCollection(id): boolean {
-      // @ts-expect-error - we know that every entity has an id
       const itemIndex = this.findIndex(i => i.id === id);
 
       if (itemIndex < 0) {
@@ -126,7 +125,6 @@ export default class EntityCollection<EntityName extends keyof Entities> extends
      * Checks if the provided id is inside the collection
      */
     this.has = function hasEntityInCollection(id: string): boolean {
-      // @ts-expect-error - we know that every entity has an id
       return this.some(i => i.id === id);
     };
 
@@ -134,7 +132,6 @@ export default class EntityCollection<EntityName extends keyof Entities> extends
      * Returns the entity for the provided id, null if the entity is not inside the collection
      */
     this.get = function getEntityByIdOfCollection(id: string): Entity<EntityName>|null {
-      // @ts-expect-error - we know that every entity has an id
       const item = this.find(i => i.id === id);
 
       if (typeof item !== 'undefined') {
@@ -161,7 +158,6 @@ export default class EntityCollection<EntityName extends keyof Entities> extends
      * Returns all ids of the internal entities
      */
     this.getIds = function getEntityIdsOfCollection(): string[] {
-      // @ts-expect-error - we know that every entity has an id
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return this.map(i => i.id);
     };
