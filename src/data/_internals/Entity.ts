@@ -48,9 +48,11 @@ class EntityClass<EntityName extends keyof Entities> {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
 
+    // @ts-expect-error - the proxy contains the draft and the entity class
     return new Proxy(this._draft, {
       get(_, property): unknown {
         if (property in that._draft) {
+          // @ts-expect-error - the proxy contains the draft and the entity class
           return that._draft[property];
         }
 

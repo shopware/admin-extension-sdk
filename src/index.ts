@@ -58,6 +58,16 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     export interface Entities {
       /* This will be extended by the entity-schema */
+      private_example_entity: private_example_entity,
+      private_example_entity_two: private_example_entity_two,
+    }
+
+    interface private_example_entity {
+      id: string,
+    }
+
+    interface private_example_entity_two {
+      id: string,
     }
   }
 }
