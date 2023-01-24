@@ -1,0 +1,9 @@
+build-end:
+  copy-additional-assets:
+    - api-reference/assets
+    - api-reference/ui/assets
+    - concepts/assets
+    - getting-started/assets
+    - internals/assets
+    - tooling/assets
+sidebar: true
