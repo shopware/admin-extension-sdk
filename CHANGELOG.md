@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.3] - 25.01.2023
+- Added the method `location.get` for getting the actual location ID inside the app
+
 ## [3.0.2] - 05.01.2023
 
 ### Bugfix

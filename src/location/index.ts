@@ -6,6 +6,10 @@ export const is = (location: string): boolean => {
   return getLocationId() === location;
 };
 
+export const get = (): string => {
+  return getLocationId() ?? '';
+};
+
 export const isIframe = (): boolean => {
   return window !== window.parent;
 };

@@ -24,6 +24,19 @@ if (sw.location.is('my-location-id')) {
 #### Return value:
 Returns a boolean. It is `true` if the location Id matches the current location.
 
+### Get the current location id
+
+Get the name of the current location ID
+
+#### Usage:
+
+```ts
+const currentLocation = sw.location.get()
+```
+
+#### Return value:
+Returns a string with the name of the current location.
+
 ### Check if current location is inside iFrame
 
 Useful for hybrid extensions which are using plugin and Extension SDK functionalities together. You can use this 
