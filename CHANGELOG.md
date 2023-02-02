@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.4] - 03.02.2023
+
+### Changed
+
+- Added language switch and smart bar buttons into main module.
+- Added `tabs` prop to component section to provide the ability to use tabs inside a card.
+
 ## [3.0.3] - 25.01.2023
 - Added the method `location.get` for getting the actual location ID inside the app
 

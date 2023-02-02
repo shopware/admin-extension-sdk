@@ -9,6 +9,7 @@ import type { locationUpdateHeight } from './location/index';
 import type { menuItemAdd } from './ui/menu';
 import type { settingsItemAdd } from './ui/settings';
 import type { mainModuleAdd } from './ui/mainModule';
+import type { smartBarButtonAdd } from './ui/mainModule';
 import type { uiModalOpen, uiModalClose } from './ui/modal/index';
 import type { actionButtonAdd } from './ui/actionButton';
 import type { actionExecute } from './app/action';
@@ -52,6 +53,7 @@ export interface ShopwareMessageTypes {
   menuItemAdd: menuItemAdd,
   settingsItemAdd: settingsItemAdd,
   mainModuleAdd: mainModuleAdd,
+  smartBarButtonAdd: smartBarButtonAdd,
   uiModalOpen: uiModalOpen,
   uiModalClose: uiModalClose,
   actionButtonAdd: actionButtonAdd,

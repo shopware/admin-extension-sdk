@@ -13,11 +13,12 @@ ui.mainModule.addMainModule({
 ```
 
 #### Parameters
-| Name                 | Required | Default        | Description                                                   |
-| :------------------- | :------- | :------------- | :------------------------------------------------------------ |
-| `heading`            | true     |                | The heading displayed in your module                          |
-| `locationId`         | true     |                | The Id for the content of the module                          |
-| `displaySearchBar`   | false    | true           | Toggles the sw-page search bar on/off                         |
+| Name                    | Required | Default | Description                            |
+|:------------------------|:---------|:--------|:---------------------------------------|
+| `heading`               | true     |         | The heading displayed in your module   |
+| `locationId`            | true     |         | The Id for the content of the module   |
+| `displaySearchBar`      | false    | true    | Toggles the sw-page search bar on/off  |
+| `displayLanguageSwitch` | false    | false   | Toggles sw-page language switch on/off |
 
 #### Example
 ![Main module example](./assets/add-main-module-example.png)
@@ -31,6 +32,15 @@ if (location.is(location.MAIN_HIDDEN)) {
         heading: 'My App',
         locationId: 'main-location-id',
     });
+
+  // If you want to provide some buttons for the smart bar of your main module
+  ui.mainModule.addSmartbarButton({
+      locationId: 'main-location-id', // locationId of your main module
+      buttonId: 'test-button', // The button id
+      label: 'Click me', // The button label
+      variant: 'primary', // The button variant
+      onClickCallback: () => {}
+  });
 }
 
 // Render your custom view
