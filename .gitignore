@@ -17,3 +17,7 @@ playwright-report/
 testpageDist
 dependency-graph.png
 .vscode
+# Devenv
+.devenv*
+devenv.local.nix
+
