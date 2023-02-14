@@ -5,6 +5,7 @@ export const registerCmsElement = createSender('cmsRegisterElement', {
 });
 
 export type cmsRegisterElement = {
+    src?: string,
     responseType: void,
 
     /**
