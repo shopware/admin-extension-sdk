@@ -1,6 +1,8 @@
 import { createSender } from '../../channel';
 
-export const registerCmsElement = createSender('cmsRegisterElement');
+export const registerCmsElement = createSender('cmsRegisterElement', {
+  src: getWindowSrc() ?? undefined,
+});
 
 export type cmsRegisterElement = {
     responseType: void,
