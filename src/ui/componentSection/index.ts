@@ -29,5 +29,6 @@ interface cardComponentRender {
     title?: string,
     subtitle?: string,
     locationId: string,
+    contentPadding?: boolean,
   },
 }

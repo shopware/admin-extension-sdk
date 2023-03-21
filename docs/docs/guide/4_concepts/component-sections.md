@@ -17,7 +17,9 @@ if (location.is(location.MAIN_HIDDEN)) {
           title: 'Hello from plugin',
           subtitle: 'I am before the properties card',
           // Some components can render a custom view. In this case the extension can render custom content in the card.
-          locationId: 'my-app-card-before-properties'
+          locationId: 'my-app-card-before-properties',
+          // Add/remove padding of the card content
+          contentPadding: true,
       }
   })
 }

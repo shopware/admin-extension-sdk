@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [3.0.4] - 21.03.2023
+
+### Changed
+
+- Added `contentPadding` prop to component section to provide the ability add/remove the card content padding.
+
 ## [3.0.3] - 25.01.2023
 - Added the method `location.get` for getting the actual location ID inside the app
 
