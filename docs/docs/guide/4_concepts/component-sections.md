@@ -30,3 +30,45 @@ if (sw.location.is('my-app-card-before-properties')) {
 ```
 
 ![Component Sections screenshot example](./assets/component-sections-example.png)
+
+If you want to render tabs inside the `card` component section, we provide a way to do so:
+```js
+if (location.is(location.MAIN_HIDDEN)) {
+  // Choose a position id where you want to render a custom component
+  sw.ui.componentSection.add({
+      // The Component Sections provides different components out of the box
+      component: 'card', 
+      // Props are depending on the type of component
+      props: {
+          title: 'Hello from plugin',
+          subtitle: 'I am before the properties card',
+          // Render tabs and custom tab content with the provided location id
+          tabs: [
+              {
+                  name: 'example-tab-1',
+                  label: 'First tab', 
+                  locationId: 'example-tab-1'
+              },
+              {
+                  name: 'example-tab',
+                  label: 'Second tab',
+                  locationId: 'example-tab-2'
+              }
+          ],
+      }
+  })
+}
+
+// Render the custom UI for different tab with the location id
+if (sw.location.is('example-tab-1')) {
+  document.body.innerHTML = '<h1>My first tab</h1>';
+  document.body.style.background = 'blue';
+}
+
+if (sw.location.is('example-tab-2')) {
+  document.body.innerHTML = '<h1>My second tab</h1>';
+  document.body.style.background = 'yellow';
+}
+```
+
+![Component Sections screenshot example](./assets/component-sections-with-tabs-example.png)

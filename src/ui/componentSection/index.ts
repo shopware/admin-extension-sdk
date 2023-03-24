@@ -29,5 +29,12 @@ interface cardComponentRender {
     title?: string,
     subtitle?: string,
     locationId: string,
+    tabs: cardTabRenderer[],
   },
+}
+
+interface cardTabRenderer {
+  name: string,
+  label: string,
+  locationId: string,
 }
