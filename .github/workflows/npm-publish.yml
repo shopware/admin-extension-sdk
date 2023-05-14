@@ -6,6 +6,9 @@ jobs:
   publish:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+     contents: read
+     id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -30,3 +33,4 @@ jobs:
         with:
           token: ${{ secrets.NPM_TOKEN }}
           access: "public"
+          provenance: true
