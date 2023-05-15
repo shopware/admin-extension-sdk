@@ -6,15 +6,18 @@ jobs:
   publish:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+     contents: read
+     id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 'lts/gallium'
       - name: Retrieve the cached "node_modules" directory (if present)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: node-cache
         with:
           path: node_modules
@@ -26,7 +29,8 @@ jobs:
         run: npm run lint
       - name: build
         run: npm run build
-      - uses: JS-DevTools/npm-publish@v1
+      - uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
           access: "public"
+          provenance: true
