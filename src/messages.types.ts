@@ -1,6 +1,6 @@
 import type { notificationDispatch } from './notification/index';
 import type { windowRedirect, windowReload, windowRouterPush } from './window/index';
-import type { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation, contextModuleInformation } from './context/index';
+import type { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation, contextModuleInformation, contextUserInformation } from './context/index';
 import type { uiComponentSectionRenderer } from './ui/componentSection/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
 import type { uiModulePaymentOverviewCard } from './ui/module/payment/overviewCard';
@@ -42,6 +42,7 @@ export interface ShopwareMessageTypes {
   contextLocale: contextLocale,
   contextCurrency: contextCurrency,
   contextShopwareVersion: contextShopwareVersion,
+  contextUserInformation: contextUserInformation,
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
   getPageTitle: getPageTitle,

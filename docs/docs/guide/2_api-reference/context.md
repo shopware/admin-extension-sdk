@@ -214,6 +214,61 @@ Promise<{ name: string ; version: string ; type: 'app' | 'plugin' }>
 }
 ```
 
+## User information
+
+### Get user information
+
+Available Shopware 6.5.2.0 and newer
+
+#### Usage:  
+```ts
+const userInformation = await sw.context.getUserInformation();
+```
+
+#### Parameters
+No parameters needed.
+
+#### Return value:
+```ts
+Promise<{
+  aclRoles: Array<{
+    name: string,
+    type: string,
+    id: string,
+    privileges: Array<string>,
+  }>,
+  active: boolean,
+  admin: boolean,
+  avatarId: string,
+  email: string,
+  firstName: string,
+  id: string,
+  lastName: string,
+  localeId: string,
+  title: string,
+  type: string,
+  username: string,
+}>
+```
+
+#### Example value:
+```ts
+{
+    "aclRoles": [],
+    "active": true,
+    "admin": true,
+    "avatarId": "",
+    "email": "info@shopware.com",
+    "firstName": "",
+    "id": "e2a77f4c718d407591b4826222aa3546",
+    "lastName": "admin",
+    "localeId": "35bbb8c4305c47ec88b13ab30c0c5c5a",
+    "title": "",
+    "type": "user",
+    "username": "admin"
+}
+```
+
 ## Module information
 
 ### Get module information

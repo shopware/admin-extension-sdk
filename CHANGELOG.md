@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.7] - 25.05.2023
+
+### Added
+
+- Added `context.getUserInformation` to allow extension developer to get access to the current user
+
 ## [3.0.6] - 24.05.2023
 
 ### Bugfix
