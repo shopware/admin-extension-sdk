@@ -10,7 +10,7 @@ Add a new component to a component section.
 import { ui } from '@shopware-ag/admin-extension-sdk';
 
 ui.componentSection.add({
-    component: 'the-component', // Choose the component which you want to render at the componet section
+    component: 'the-component', // Choose the component which you want to render at the component section
     positionId: 'the-position-id-of-the-component-section', // Select the positionId where you want to render the component
     props: {
         ... // The properties are depending on the component
