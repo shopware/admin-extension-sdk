@@ -70,6 +70,14 @@ class EntityClass<EntityName extends keyof Entities> {
   }
 
   /**
+   * Identifier method for the entity class. Needed when some reactive data layer (Vue) converts the EntityClass to a
+   * plain object. With this identifier method we can (de)serialie it back to the correct entity class.
+   */
+  __identifier__(): string {
+    return 'Entity';
+  }
+
+  /**
    * Marks the entity as new. New entities will be provided as create request to the server
    */
   markAsNew(): void {

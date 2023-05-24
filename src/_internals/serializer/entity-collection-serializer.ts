@@ -7,7 +7,7 @@ const EntityCollectionSerializerFactory: SerializerFactory = () => ({
   name: 'entity-collection',
 
   serialize: ({ value, customizerMethod }): any => {
-    if (value instanceof EntityCollection) {
+    if (value instanceof EntityCollection || (value?.__identifier__ && value.__identifier__() === 'EntityCollection')) {
       return customizerMethod({
         __type__: '__EntityCollection__',
         __source__: value.source,
