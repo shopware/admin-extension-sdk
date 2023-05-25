@@ -19,6 +19,13 @@ function HomepageHeader() {
             to="/docs/guide">
             Getting started
           </Link>
+
+          <Link
+            className="button button--secondary button--lg"
+            style={{marginLeft: '16px'}}
+            to="https://github.com/shopware/admin-extension-sdk-example-app">
+            Example App
+          </Link>
         </div>
       </div>
     </header>
