@@ -7,6 +7,7 @@ export const getLocale = createSender('contextLocale', {});
 export const subscribeLocale = createSubscriber('contextLocale');
 export const getCurrency = createSender('contextCurrency', {});
 export const getShopwareVersion = createSender('contextShopwareVersion', {});
+export const getUserInformation = createSender('contextUserInformation', {});
 export const getAppInformation = createSender('contextAppInformation', {});
 export const getModuleInformation = createSender('contextModuleInformation', {});
 
@@ -62,6 +63,31 @@ export type contextAppInformation = {
     name: string,
     version: string,
     type: 'app'|'plugin',
+  },
+}
+
+/**
+ * Get the current user information
+ */
+export type contextUserInformation = {
+  responseType: {
+    aclRoles: Array<{
+      name: string,
+      type: string,
+      id: string,
+      privileges: Array<string>,
+    }>,
+    active: boolean,
+    admin: boolean,
+    avatarId: string,
+    email: string,
+    firstName: string,
+    id: string,
+    lastName: string,
+    localeId: string,
+    title: string,
+    type: string,
+    username: string,
   },
 }
 
