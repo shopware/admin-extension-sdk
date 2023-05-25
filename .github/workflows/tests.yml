@@ -66,15 +66,15 @@ jobs:
         run: npm run test
   playwright-run:
     name: Playwright Integration Tests
-    timeout-minutes: 60
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Setup Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
     - name: Retrieve the cached "node_modules" directory (if present)
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       id: node-cache
       with:
         path: node_modules

@@ -60,6 +60,8 @@ export default class EntityCollection<EntityName extends keyof Entities> extends
 
   moveItem: (oldIndex: number, newIndex: number) => Entity<EntityName>|null;
 
+  __identifier__: () => string;
+
   constructor(
     source: string,
     entityName: EntityName,
@@ -79,6 +81,14 @@ export default class EntityCollection<EntityName extends keyof Entities> extends
     this.total = total;
 
     this.push(...entities);
+
+    /**
+     * Identifier method for the EntityCollection class. Needed when some reactive data layer (Vue) converts the EntityCollection to a
+     * plain array. With this identifier method we can (de)serialie it back to the correct EntityCollection.
+     */
+    this.__identifier__ = (): string => {
+      return 'EntityCollection';
+    };
 
     /**
      * Returns the first item of the collection.

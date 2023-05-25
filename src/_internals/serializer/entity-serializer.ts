@@ -7,7 +7,7 @@ const EntitySerializerFactory: SerializerFactory = () => ({
   name: 'entity',
 
   serialize: ({ value, customizerMethod }): any => {
-    if (!isObject(value) || typeof value.getDraft !== 'function') {
+    if (!isObject(value) || typeof value.__identifier__ !== 'function' || value.__identifier__() !== 'Entity') {
       return;
     }
 

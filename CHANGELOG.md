@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.6] - 24.05.2023
+
+### Bugfix
+
+- Fixed the serialization of Entities and EntityCollections with reactive Vue objects which previously could lead to errors like e.g. "*.has is not a function"
+
 ## [3.0.4] - 03.02.2023
 
 ### Changed
