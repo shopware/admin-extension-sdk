@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.9] - 01.06.2023
+
+### Added
+
+- Added `composables.useSharedState` for maintaining persistent, shared state across several iFrames and windows
+
 ## [3.0.7] - 25.05.2023
 
 ### Added

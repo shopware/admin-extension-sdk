@@ -15,6 +15,7 @@ import * as webhook from './app/action';
 import * as data from './data';
 import type EntityCollectionType from './data/_internals/EntityCollection';
 import type { Entity as EntityType } from './data/_internals/Entity';
+import composables from './data/composables';
 
 const app = {
   webhook,
@@ -43,6 +44,7 @@ export {
   location,
   app,
   data,
+  composables,
 };
 
 /**
