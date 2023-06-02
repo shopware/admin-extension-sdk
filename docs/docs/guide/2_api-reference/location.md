@@ -113,3 +113,46 @@ No parameters needed.
 
 #### Return value:
 This method does not have a return value.
+
+## URL changes inside your app
+
+Important: You can track and emit your URL changes only inside your own main module or settings page.
+
+### Update URL
+
+Send the current URL of your iFrame to the administration. When the user reloads the whole page your iFrame will get the
+last page you sent to the administration.
+
+#### Usage:
+
+```ts
+const currentUrl = window.location.href;
+
+sw.location.updateUrl(new URL(currentUrl))
+```
+
+#### Parameters:
+| Name            | Required | Default | Description                           |
+| :-------------- | :------- | :------ | :------------------------------------ |
+| First parameter | true     |         | An URL object which contains your URL |
+
+### Start automatic URL updates
+
+To avoid manually sending URL changes you can use this helper methods. It sends automatically changes in your URL to the
+administration.
+
+#### Usage:
+
+```ts
+sw.location.startAutoUrlUpdater();
+```
+
+### Stop automatic URL updates
+
+If you had started an automatic URL updater before then you can stop it by calling this method.
+
+#### Usage:
+
+```ts
+sw.location.stopAutoUrlUpdater();
+```

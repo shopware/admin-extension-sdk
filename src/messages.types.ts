@@ -5,7 +5,7 @@ import type { uiComponentSectionRenderer } from './ui/componentSection/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
 import type { uiModulePaymentOverviewCard } from './ui/module/payment/overviewCard';
 import type { cmsRegisterElement } from './ui/cms';
-import type { locationUpdateHeight } from './location/index';
+import type { locationUpdateHeight, locationUpdateUrl } from './location/index';
 import type { menuItemAdd } from './ui/menu';
 import type { settingsItemAdd } from './ui/settings';
 import type { mainModuleAdd } from './ui/mainModule';
@@ -51,6 +51,7 @@ export interface ShopwareMessageTypes {
   uiModulePaymentOverviewCard: uiModulePaymentOverviewCard,
   cmsRegisterElement: cmsRegisterElement,
   locationUpdateHeight: locationUpdateHeight,
+  locationUpdateUrl: locationUpdateUrl,
   menuItemAdd: menuItemAdd,
   settingsItemAdd: settingsItemAdd,
   mainModuleAdd: mainModuleAdd,

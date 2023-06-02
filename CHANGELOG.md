@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.10] - 06.06.2023
+
+### Added
+
+- Added `location.updateUrl`, `location.startAutoUrlUpdater` and `location.stopAutoUrlUpdater` to allow extension developer to update the URL of the iframe so that even after reload the correct sub-route inside the iFrame gets opened
+
 ## [3.0.9] - 01.06.2023
 
 ### Added
