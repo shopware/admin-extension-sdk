@@ -218,7 +218,9 @@ Promise<{ name: string ; version: string ; type: 'app' | 'plugin' }>
 
 ### Get user information
 
-Available Shopware 6.5.2.0 and newer
+:::caution
+Do not use this feature yet. It is not implemented in a Shopware release yet.
+:::
 
 #### Usage:  
 ```ts

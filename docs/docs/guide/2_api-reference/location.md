@@ -116,6 +116,10 @@ This method does not have a return value.
 
 ## URL changes inside your app
 
+:::caution
+Do not use this feature yet. It is not implemented in a Shopware release yet.
+:::
+
 Important: You can track and emit your URL changes only inside your own main module or settings page.
 
 ### Update URL
