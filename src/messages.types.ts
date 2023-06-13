@@ -14,7 +14,7 @@ import type { uiModalOpen, uiModalClose } from './ui/modal/index';
 import type { actionButtonAdd } from './ui/actionButton';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
-import type { datasetRegistration, datasetUpdate, datasetGet, datasetSubscribe } from './data';
+import type { datasetRegistration, datasetUpdate, datasetGet, datasetSubscribe, datasetSubscribeRegistration } from './data';
 import type EntityCollection from './data/_internals/EntityCollection';
 import type { Entity } from './data/_internals/Entity';
 import type {
@@ -72,6 +72,7 @@ export interface ShopwareMessageTypes {
   /* eslint-enable @typescript-eslint/no-explicit-any */
   datasetRegistration: datasetRegistration,
   datasetSubscribe: datasetSubscribe,
+  datasetSubscribeRegistration: datasetSubscribeRegistration,
   datasetUpdate: datasetUpdate,
   datasetGet: datasetGet,
   __function__: __function__,
@@ -153,4 +154,6 @@ export type __function__ = {
 
 export type __registerWindow__ = {
   responseType: void,
+
+  sdkVersion: string,
 }

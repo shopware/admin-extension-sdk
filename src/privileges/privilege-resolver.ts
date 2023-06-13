@@ -73,6 +73,16 @@ function getMissingPrivileges(requiredPrivileges: privileges, privileges: privil
 }
 
 export function findExtensionByBaseUrl(baseUrl: string): extension | undefined {
+  if (typeof baseUrl !== 'string') {
+    return undefined;
+  }
+
+  const comparedBaseUrl = new URL(baseUrl);
+
   return Object.values(adminExtensions)
-    .find((ext) => ext.baseUrl === baseUrl);
+    .find((ext) => {
+      const extensionBaseUrl = new URL(ext.baseUrl);
+      
+      return extensionBaseUrl.hostname === comparedBaseUrl.hostname;
+    });
 }

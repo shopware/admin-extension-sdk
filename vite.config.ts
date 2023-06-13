@@ -9,7 +9,7 @@ module.exports = defineConfig(({ command, mode }) => {
     return {
       root: resolve(__dirname, './e2e/testpage'),
       plugins: [
-        tsconfigPaths()
+        tsconfigPaths(),
       ],
       build: {
         outDir: resolve(__dirname, 'testpageDist'),

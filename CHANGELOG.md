@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.11] - 06.06.2023
+
+## Fixed
+- Fixed permission handling for `data.get` and `data.subscribe`
+
+### Added
+
+- Added `selectors` to `data.get` and `data.subscribe` to allow extension developer to reduce the payload and minimize the needed privileges
+
 ## [3.0.10] - 06.06.2023
 
 ### Added
