@@ -8,6 +8,11 @@ import MissingPrivilegesError from './privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
 import createError from './_internals/error-handling/error-factory';
 import validate from './_internals/validator/index';
+import type { datasetRegistration } from './data';
+import { selectData } from './data/_internals/selectData';
+import sdkVersion from './_internals/sdkVersion';
+
+const packageVersion = sdkVersion as string;
 
 const { serialize, deserialize } = SerializerFactory({
   handle: handle,
@@ -18,10 +23,18 @@ export type extensions = {
   [key: string]: extension,
 }
 
-export let adminExtensions: extensions = {};
+export const adminExtensions: extensions = {};
 
 export function setExtensions(extensions: extensions): void {
-  adminExtensions = extensions;
+  Object.entries(extensions).forEach(([key, value]) => {
+    // @ts-expect-error = we fill up the values later
+    adminExtensions[key] = {};
+
+    Object.entries(value).forEach(([valueKey, valueContent]) => {
+      // @ts-expect-error = we defined the key beforehand
+      adminExtensions[key][valueKey] = valueContent;
+    });
+  });
 }
 
 /**
@@ -62,6 +75,14 @@ export type ShopwareMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessa
  * ----------------
  */
 const sourceRegistry: Set<{
+  source: Window,
+  origin: string,
+  sdkVersion: string|undefined,
+}> = new Set();
+
+const subscriberRegistry: Set<{
+  id: string,
+  selectors: string[] | undefined,
   source: Window,
   origin: string,
 }> = new Set();
@@ -367,10 +388,19 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
+  sources: {
+    source: Window,
+    origin: string,
+    sdkVersion: string | undefined,
+  }[] = [...sourceRegistry].map(({source, origin, sdkVersion}) => ({
+    source,
+    origin,
+    sdkVersion,
+  }))
 )
 :void
 {
-  [...sourceRegistry].forEach(({source, origin}) => {
+  sources.forEach(({ source, origin }) => {
     // Disable error handling because not every window need to react to the data
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     return send(type, data, source, origin).catch(() => {});
@@ -421,7 +451,9 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  */
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return (method: (data: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
+  return (method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: {
+    _event_: MessageEvent<string>,
+  }) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
     return handle(messageType, method);
   };
 }
@@ -457,7 +489,7 @@ const datasets = new Map<string, unknown>();
 
 (async (): Promise<void> => {
   // Handle registrations at current window
-  handle('__registerWindow__', (_, additionalOptions) => {
+  handle('__registerWindow__', ({ sdkVersion }, additionalOptions) => {
     let source: Window | undefined;
     let origin: string | undefined;
 
@@ -472,34 +504,81 @@ const datasets = new Map<string, unknown>();
     sourceRegistry.add({
       source,
       origin,
-    });
-
-    // Register all existing datasets for apps that come to late for the "synchronous" registration
-    datasets.forEach((dataset, id ) => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      send('datasetSubscribe', {id, data: dataset}, source, origin).catch(() => {});
+      sdkVersion,
     });
   });
 
-  // New dataset registered
-  handle('datasetRegistration', (data) => {
-    datasets.set(data.id, data.data);
-
-    publish('datasetSubscribe', data);
-
-    return {
+  handle('datasetSubscribeRegistration', (data, { _event_ }) => {
+    let source: Window | undefined;
+    let origin: string | undefined;
+  
+    if (_event_.source) {
+      source = _event_.source as Window;
+      origin = _event_.origin;
+    } else {
+      source = window;
+      origin = window.origin;
+    }
+  
+    subscriberRegistry.add({
       id: data.id,
-      data: data.data,
-    };
-  });
+      source: source,
+      origin: origin,
+      selectors: data.selectors,
+    });
 
-  handle('datasetSubscribe', (data) => {
-    return datasets.get(data.id) ?? null;
+    // When initial data exists directly send it to the subscriber
+    const dataset = datasets.get(data.id);
+
+    if (dataset) {
+      const selectedData = selectData(dataset, data.selectors, 'datasetSubscribe', origin);
+
+      if (selectedData instanceof MissingPrivilegesError) {
+        console.error(selectedData);
+        return;
+      }
+
+      void send('datasetSubscribe', {
+        id: data.id,
+        data: selectedData,
+        selectors: data.selectors,
+      }, source, origin);
+    }
   });
 
   // Register at parent window
-  await send('__registerWindow__', {});
+  await send('__registerWindow__', {
+    sdkVersion: packageVersion,
+  });
 })().catch((e) => console.error(e));
+
+// New dataset registered
+export async function processDataRegistration(data: Omit<datasetRegistration, 'responseType'>): Promise<void> {
+  datasets.set(data.id, data.data);
+
+  // Only publish whole data to sources that don't have a sdkVersion (for backwards compatibility)
+  publish('datasetSubscribe', data, [
+    ...[...sourceRegistry].filter(({ sdkVersion }) => !sdkVersion),
+  ]);
+
+  // Publish selected data to sources that are inside the subscriberRegistry
+  subscriberRegistry.forEach(({ id, selectors, source, origin }) => {
+    if (id !== data.id) {
+      return;
+    }
+
+    const selectedData = selectData(data.data, selectors, 'datasetSubscribe', origin);
+
+    if (selectedData instanceof MissingPrivilegesError) {
+      console.error(selectedData);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    send('datasetSubscribe', { id, data: selectedData, selectors }, source, origin).catch(() => {});
+  });
+
+  return Promise.resolve();
+}
 
 /**
  * Add utils to global window object for
@@ -509,14 +588,18 @@ const datasets = new Map<string, unknown>();
   interface Window {
     _swsdk: {
       sourceRegistry: typeof sourceRegistry,
+      subscriberRegistry: typeof subscriberRegistry,
       datasets: typeof datasets,
+      adminExtensions: typeof adminExtensions,
     },
   }
 }
 
 window._swsdk = {
   sourceRegistry,
+  subscriberRegistry,
   datasets,
+  adminExtensions,
 };
 
 /**

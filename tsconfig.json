@@ -13,7 +13,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "outDir": "./lib",
-    "declaration": true
+    "declaration": true,
+    "allowJs": true
   },
   "include": ["src"]
 }

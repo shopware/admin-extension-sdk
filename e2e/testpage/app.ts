@@ -33,3 +33,16 @@ window.sw_internal = {
   Entity: EntityClass,
   MissingPrivilegesError: MissingPrivilegesError,
 }
+
+
+window.sw_internal.setExtensions({
+  example: {
+    baseUrl: 'http://localhost:8182',
+    permissions: {
+      create: ['test', 'foo', 'product'],
+      update: ['test', 'foo', 'product'],
+      delete: ['test', 'foo', 'product'],
+      read: ['test', 'foo', 'product'],
+    }
+  },
+});

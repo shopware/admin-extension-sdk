@@ -1,11 +1,56 @@
 import flushPromises from 'flush-promises';
-import { send, handle, createSender, createHandler, subscribe, publish, setExtensions } from './channel';
+import type {
+  send as sendType,
+  handle as handleType,
+  createSender as createSenderType,
+  createHandler as createHandlerType,
+  subscribe as subscribeType,
+  publish as publishType,
+  setExtensions as setExtensionsType,
+} from './channel';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
 
 // Channel send timout + 1000
 jest.setTimeout(8000);
 
+let send: typeof sendType;
+let handle: typeof handleType;
+let createSender: typeof createSenderType;
+let createHandler: typeof createHandlerType;
+let subscribe: typeof subscribeType;
+let publish: typeof publishType;
+let setExtensions: typeof setExtensionsType;
+
 describe('Test the channel bridge from iFrame to admin', () => {
+  beforeAll(async () => {
+    window.addEventListener('message', (event: MessageEvent) => {
+      if (event.origin === '') {
+        event.stopImmediatePropagation();
+        const eventWithOrigin: MessageEvent = new MessageEvent('message', {
+          data: event.data,
+          origin: window.location.href,
+        });
+        window.dispatchEvent(eventWithOrigin);
+      }
+    });
+
+    const channel = await import('./channel');
+    send = channel.send;
+    handle = channel.handle;
+    createSender = channel.createSender;
+    createHandler = channel.createHandler;
+    subscribe = channel.subscribe;
+    publish = channel.publish;
+    setExtensions = channel.setExtensions;
+
+    setExtensions({
+      'test-extension': {
+        baseUrl: 'http://localhost',
+        permissions: {},
+      },
+    });
+  });
+
   beforeEach(() => {
     // reset extensions
     setExtensions({});

@@ -22,6 +22,7 @@ export default function validate({
   const extension = findExtensionByBaseUrl(origin);
 
   if (!extension) {
+    console.warn(`No extension found for origin ${origin}`);
     return null;
   }
 
@@ -32,11 +33,17 @@ export default function validate({
     if (key === '__type__' && ['__EntityCollection__', '__Entity__'].includes(value as string)) {
       const entityName = parentEntry.__entityName__ as string;
 
+      if (!entityName) {
+        return;
+      }
+
       [...privilegesToCheck].sort().forEach(privilege => {
         const permissionsForPrivilege = extension.permissions[privilege];
         if (
-          !permissionsForPrivilege ||
-          !permissionsForPrivilege.includes(entityName)
+          (!permissionsForPrivilege ||
+          !permissionsForPrivilege.includes(entityName))
+          &&
+          !privilegeErrors.includes(`${privilege}:${entityName}`)
         ) {
           privilegeErrors.push(`${privilege}:${entityName}`);
         }

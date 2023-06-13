@@ -1,4 +1,4 @@
-import { useSharedState } from './useSharedState';
+import type { useSharedState as useSharedStateType } from './useSharedState';
 import { BroadcastChannel } from 'worker_threads';
 import Vue from 'vue';
 import flushPromises from 'flush-promises';
@@ -6,6 +6,8 @@ import localforage from 'localforage';
 
 Vue.config.devtools = false;
 Vue.config.productionTip = false;
+
+let useSharedState: typeof useSharedStateType;
 
 function mockLoadComposableInApp(composable: () => any) {
   let result: any;
@@ -28,6 +30,29 @@ describe('useSharedState composable', () => {
     name: 'adminExtensionSDK',
     storeName: 'persistentSharedValueStore',
   });
+
+  beforeAll(async () => {
+    window.addEventListener('message', (event: MessageEvent) => {
+      if (event.origin === '') {
+        event.stopImmediatePropagation();
+        const eventWithOrigin: MessageEvent = new MessageEvent('message', {
+          data: event.data,
+          origin: window.location.href,
+        });
+        window.dispatchEvent(eventWithOrigin);
+      }
+    });
+    
+    useSharedState =  await (await import('./useSharedState')).useSharedState;
+    const setExtensions = await (await import('../../channel')).setExtensions;
+
+    setExtensions({
+      'test-extension': {
+        baseUrl: 'http://localhost',
+        permissions: {},
+      },
+    });
+  })
 
   beforeEach(async () => {
     // @ts-expect-error - Mocking BroadcastChannel

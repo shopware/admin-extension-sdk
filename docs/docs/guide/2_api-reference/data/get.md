@@ -8,16 +8,15 @@ such as when opening a page, you won't receive any data. In these cases, it's be
 
 #### Usage:  
 ```ts
-data.get(
-    {
-        id: 'sw-product-detail__product',
-    },
-).then((data) => {
+data.get({
+    id: 'sw-product-detail__product',
+    selectors: ['name', 'manufacturer.name'],
+}).then((data) => {
     console.log(data);
 });
 ```
 
 #### Parameters
-| Name                 | Required | Description                                                                                           |
-| :------------------- | :------- | :---------------------------------------------------------------------------------------------------- |
-| `options`            | true     | Options containing the unique `id`                                                                    |
+| Name      | Required | Description                                                                                                |
+| :-------- | :------- | :--------------------------------------------------------------------------------------------------------- |
+| `options` | true     | Options containing the unique `id` and optional `selectors` for minimizing the payload and needed privileges |

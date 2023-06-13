@@ -585,7 +585,7 @@ test.describe('Privilege tests', () => {
 
     await mainFrame.evaluate(() => {
       window.sw_internal.setExtensions({
-        foo: {
+        example: {
           baseUrl: 'http://localhost:8182',
           permissions: {
             read: ['product']
@@ -651,7 +651,7 @@ test.describe('Privilege tests', () => {
       }
     });
 
-    expect(response.errorMessage).toEqual(`Error: Your app is missing the privileges create:product, delete:product, update:product, create:product, delete:product, update:product, create:manufacturer, delete:manufacturer, read:manufacturer, update:manufacturer for action "_collectionTest".`);
+    expect(response.errorMessage).toEqual(`Error: Your app is missing the privileges create:product, delete:product, update:product, create:manufacturer, delete:manufacturer, read:manufacturer, update:manufacturer for action "_collectionTest".`);
     expect(response.isMissingPrivilesErrorInstance).toBe(true);
   });
 
@@ -660,7 +660,7 @@ test.describe('Privilege tests', () => {
 
     await mainFrame.evaluate(() => {
       window.sw_internal.setExtensions({
-        foo: {
+        example: {
           baseUrl: 'http://localhost:8182',
           permissions: {
             read: ['product']
@@ -727,7 +727,7 @@ test.describe('Privilege tests', () => {
     // publish dataset
     await mainFrame.evaluate(async () => {
       window.sw_internal.setExtensions({
-        foo: {
+        example: {
           baseUrl: 'http://localhost:8182',
           permissions: {
             read: ['manufacturer']
@@ -775,7 +775,7 @@ test.describe('Privilege tests', () => {
     // publish dataset
     await mainFrame.evaluate(async () => {
       window.sw_internal.setExtensions({
-        foo: {
+        example: {
           baseUrl: 'http://localhost:8182',
           permissions: {
             read: ['product']
@@ -831,7 +831,7 @@ test.describe('data handling', () => {
     expect(data['e2e-test']).toBe('test-string');
   });
 
-  test('dataset subscriber', async ({ page }) => {
+  test('dataset subscriber without selector', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });
 
     // subscribe to dataset publish
@@ -858,6 +858,42 @@ test.describe('data handling', () => {
 
     // check if receiving value matches
     expect(data).toBe('test-string');
+  });
+
+  test('dataset subscriber with selector', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({ page });
+
+    // subscribe to dataset publish
+    await subFrame.evaluate(async () => {
+      return await window.sw.data.subscribe('product_detail', (data) => {
+        // @ts-expect-error
+        window.result = { data: data.data };
+      }, {
+        selectors: ['name']
+      });
+    })
+
+    // publish dataset
+    await mainFrame.evaluate(async () => {
+      await window.sw.data.register({
+        id: 'product_detail',
+        data: {
+          name: 'T-Shirt',
+          description: 'An awesome T-Shirt'
+        },
+      });
+    })
+
+    // get receiving value
+    const { data } = await subFrame.evaluate(() => {
+      // @ts-expect-error
+      return window.result;
+    })
+
+    // check if receiving value matches
+    expect(data).toEqual({
+      name: 'T-Shirt',
+    });
   });
 
   test('dataset update', async ({ page }) => {
