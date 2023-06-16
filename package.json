@@ -20,6 +20,24 @@
   "main": "./umd/index.js",
   "module": "./es/index.js",
   "exports": {
+    "./es/location": {
+      "import": "./es/location/index.js"
+    },
+    "./es/data/Criteria": {
+      "import": "./es/data/Criteria.js"
+    },
+    "./es/channel": {
+      "import": "./es/channel.js"
+    },
+    "./es/data/_internals/Entity": {
+      "import": "./es/data/_internals/Entity.js"
+    },
+    "./es/data/_internals/EntityCollection": {
+      "import": "./es/data/_internals/EntityCollection.js"
+    },
+    "./es/data": {
+      "import": "./es/data/index.js"
+    },
     ".": {
       "import": "./es/index.js",
       "require": "./umd/index.js"
