@@ -77,6 +77,10 @@ export function findExtensionByBaseUrl(baseUrl: string): extension | undefined {
     return undefined;
   }
 
+  if (baseUrl === '') {
+    return undefined;
+  }
+
   const comparedBaseUrl = new URL(baseUrl);
 
   /*

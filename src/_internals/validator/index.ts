@@ -19,6 +19,10 @@ export default function validate({
   type: keyof ShopwareMessageTypes,
   privilegesToCheck: (keyof privileges)[],
 }): Error|null {
+  if (origin === undefined) {
+    return null;
+  }
+
   const extension = findExtensionByBaseUrl(origin);
 
   if (!extension) {

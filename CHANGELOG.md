@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.13] - 21.07.2023
+
+## Fixed
+- Fixed invalid URL type error
+
 ## [3.0.12] - 21.07.2023
 
 ## Fixed
