@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.0.11] - 06.06.2023
+## [3.0.12] - 21.07.2023
+
+## Fixed
+- Fixed permission handling for plugin usage with same origin
+
+## [3.0.11] - 20.07.2023
 
 ## Fixed
 - Fixed permission handling for `data.get` and `data.subscribe`

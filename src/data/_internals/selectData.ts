@@ -51,8 +51,14 @@ export function selectData(
           const permissionsForPrivilege = extension?.permissions[privilege];
 
           if (
-            !permissionsForPrivilege ||
-            !permissionsForPrivilege.includes(entityName)
+            (
+              !permissionsForPrivilege ||
+              !permissionsForPrivilege.includes(entityName)
+            )
+            &&
+            !permissionErrors.includes(`${privilege}:${entityName}`)
+            &&
+            !permissionsForPrivilege?.includes('*')
           ) {
             permissionErrors.push(`${privilege}:${entityName}`);
           }
@@ -67,6 +73,11 @@ export function selectData(
 
       return acc;
     }, {});
+
+  if (!extension) {
+    console.warn(`No extension found for origin "${origin ?? ''}"`);
+    return selectedData;
+  }
 
   if (permissionErrors.length) {
     return new MissingPrivilegesError(messageType, permissionErrors);
