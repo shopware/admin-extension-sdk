@@ -40,7 +40,6 @@ const CriteriaSerializer: SerializerFactory = () => ({
         // @ts-expect-error
         serializedData.associations.forEach((association) => {
           // Associations need also to be deserialized
-          // @ts-expect-error
           deserializedCriteria.associations.push(customizerMethod(association));
         });
         // @ts-expect-error
