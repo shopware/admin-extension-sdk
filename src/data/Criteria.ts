@@ -169,35 +169,35 @@ export function setDefaultValues(options: { page?: number|null, limit?: number|n
 }
 
 export default class Criteria {
-  private page: number | null;
+  page: number | null;
 
-  private limit: number | null;
+  limit: number | null;
 
-  private term: string | null;
+  term: string | null;
 
-  private filters: SingleFilter[];
+  filters: SingleFilter[];
 
-  private ids: string[];
+  ids: string[];
 
-  private queries: Query[];
+  queries: Query[];
 
-  private associations: Association[];
+  associations: Association[];
 
-  private postFilter: SingleFilter[];
+  postFilter: SingleFilter[];
 
-  private sortings: Sorting[];
+  sortings: Sorting[];
 
-  private aggregations: Aggregation[];
+  aggregations: Aggregation[];
 
-  private grouping: string[];
+  grouping: string[];
 
-  private fields: string[];
+  fields: string[];
 
-  private groupFields: GroupField[];
+  groupFields: GroupField[];
 
-  private totalCountMode: TotalCountMode | null;
+  totalCountMode: TotalCountMode | null;
 
-  private includes: Include | null;
+  includes: Include | null;
 
   constructor(page: number|null = defaultPage, limit: number|null = defaultLimit) {
     this.page = page;
