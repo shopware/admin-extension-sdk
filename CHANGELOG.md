@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.15] - 05.10.2023
+
+## Removed
+
+- Removed client side permission validation based on Entities and EntityCollections
+
 ## [3.0.13] - 21.07.2023
 
 ## Fixed

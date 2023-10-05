@@ -7,7 +7,6 @@ import { ShopwareMessageTypePrivileges } from './privileges';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
 import createError from './_internals/error-handling/error-factory';
-import validate from './_internals/validator/index';
 import type { datasetRegistration } from './data';
 import { selectData } from './data/_internals/selectData';
 import sdkVersion from './_internals/sdkVersion';
@@ -126,47 +125,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     _callbackId: callbackId,
   };
 
-  let serializedData = serialize(messageData) as ShopwareMessageSendData<MESSAGE_TYPE>;
-
-  // Validate if send value contains entity data where the app has no privileges for
-  if (_origin) {
-    const validationErrors = validate({
-      serializedData: serializedData,
-      origin: _origin,
-      privilegesToCheck: ['read'],
-      type: type,
-    });
-
-    if (validationErrors) {
-      // Datasets need the id for matching the response
-      if ([
-        'datasetSubscribe',
-        'datasetUpdate',
-        'datasetRegistration',
-        'datasetGet',
-      ].includes(serializedData._type)) {
-        serializedData = serialize({
-          _type: serializedData._type,
-          _callbackId: serializedData._callbackId,
-          _data: {
-            // @ts-expect-error - We know with the includes that it has an ID
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            id: serializedData._data.id,
-            data: validationErrors,
-          },
-        }) as ShopwareMessageSendData<MESSAGE_TYPE>;
-      }
-      // Everything else can overwrite the response
-      else {
-        serializedData = serialize({
-          _type: serializedData._type,
-          _callbackId: serializedData._callbackId,
-          _data: validationErrors,
-        }) as ShopwareMessageSendData<MESSAGE_TYPE>;
-      }
-
-    }
-  }
+  const serializedData = serialize(messageData) as ShopwareMessageSendData<MESSAGE_TYPE>;
 
   // Convert message data to string for message sending
   const message = JSON.stringify(serializedData);
@@ -315,21 +274,6 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const responseValue = await Promise.resolve((() => {
-      /*
-       * Validate incoming handle messages for privileges
-       * in Entity and Entity Collection
-       */
-      const validationErrors = validate({
-        serializedData: shopwareMessageData,
-        origin: event.origin,
-        type: type,
-        privilegesToCheck: ['create', 'delete', 'update', 'read'],
-      });
-
-      if (validationErrors) {
-        return validationErrors;
-      }
-
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return method(
         deserializedMessageData._data,
@@ -345,23 +289,7 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 
     // Replace methods etc. so that they are working in JSON format
     const serializedResponseMessage = ((): ShopwareMessageResponseData<MESSAGE_TYPE> => {
-      let serializedMessage = serialize(responseMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
-
-      // Validate if response value contains entity data where the app has no privileges for
-      const validationErrors = validate({
-        serializedData: serializedMessage,
-        origin: event.origin,
-        privilegesToCheck: ['read'],
-        type: type,
-      });
-
-      if (validationErrors) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        serializedMessage._response = validationErrors;
-        serializedMessage = serialize(serializedMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
-      }
-
-      return serializedMessage;
+      return serialize(responseMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
     })();
 
     const stringifiedResponseMessage = JSON.stringify(serializedResponseMessage);
