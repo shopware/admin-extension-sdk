@@ -1,7 +1,7 @@
 {
   "name": "@shopware-ag/admin-extension-sdk",
   "license": "MIT",
-  "version": "3.0.15",
+  "version": "3.0.16",
   "repository": "git://github.com/shopware/admin-extension-sdk.git",
   "description": "The SDK for App iframes to communicate with the Shopware Administration",
   "keywords": [
@@ -20,6 +20,38 @@
   "main": "./umd/index.js",
   "module": "./es/index.js",
   "exports": {
+    "./es/channel": {
+      "import": "./es/channel.js",
+      "require": "./umd/channel.js"
+    },
+    "./es/data": {
+      "import": "./es/data/index.js",
+      "require": "./umd/data/index.js"
+    },
+    "./es/location": {
+      "import": "./es/location/index.js",
+      "require": "./umd/location/index.js"
+    },
+    "./es/privileges/missing-privileges-error": {
+      "import": "./es/privileges/missing-privileges-error.js",
+      "require": "./umd/privileges/missing-privileges-error.js"
+    },
+    "./es/data/_internals/selectData": {
+      "import": "./es/data/_internals/selectData.js",
+      "require": "./umd/data/_internals/selectData.js"
+    },
+    "./es/data/Criteria": {
+      "import": "./es/data/Criteria.js",
+      "require": "./umd/data/Criteria.js"
+    },
+    "./es/data/_internals/Entity": {
+      "import": "./es/data/_internals/Entity.js",
+      "require": "./umd/data/_internals/Entity.js"
+    },
+    "./es/data/_internals/EntityCollection": {
+      "import": "./es/data/_internals/EntityCollection.js",
+      "require": "./umd/data/_internals/EntityCollection.js"
+    },
     ".": {
       "import": "./es/index.js",
       "require": "./umd/index.js"
