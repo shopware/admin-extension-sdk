@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.15] - 09.10.2023
+
+## Changed
+- Changed `handle` of `channel.ts` to only validate dataset collections and entities 
+
 ## [3.0.13] - 21.07.2023
 
 ## Fixed
