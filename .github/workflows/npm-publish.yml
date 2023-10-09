@@ -4,11 +4,9 @@ on: push
 
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main'
+    # if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    permissions:
-     contents: read
-     id-token: write
+    permissions: write-all
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -36,7 +34,7 @@ jobs:
           access: "public"
           provenance: true
       - name: Create Release
-        if: steps.publish.outputs.type != 'none'
+        if: ${{ steps.publish.outputs.type }}
         id: create_release
         uses: actions/create-release@v1
         env:
