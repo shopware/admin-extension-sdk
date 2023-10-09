@@ -315,6 +315,22 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const responseValue = await Promise.resolve((() => {
+      const responseValidationTypes = [
+        'datasetSubscribe',
+        'datasetGet',
+        'datasetUpdate',
+        // Test value
+        '_collectionTest',
+      ];
+
+      if (!responseValidationTypes.includes(type)) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return method(
+          deserializedMessageData._data,
+          { _event_: event }
+        );
+      }
+
       /*
        * Validate incoming handle messages for privileges
        * in Entity and Entity Collection
@@ -346,6 +362,16 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     // Replace methods etc. so that they are working in JSON format
     const serializedResponseMessage = ((): ShopwareMessageResponseData<MESSAGE_TYPE> => {
       let serializedMessage = serialize(responseMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
+      const messageValidationTypes = [
+        'datasetSubscribe',
+        'datasetGet',
+        // Test value
+        '_collectionTest',
+      ];
+
+      if (!messageValidationTypes.includes(type)) {
+        return serializedMessage;
+      }
 
       // Validate if response value contains entity data where the app has no privileges for
       const validationErrors = validate({
