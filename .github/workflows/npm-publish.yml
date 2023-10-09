@@ -1,49 +1,57 @@
 name: Publish to NPM
 
-on: push
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    permissions:
-     contents: read
-     id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - name: Retrieve the cached "node_modules" directory (if present)
-        uses: actions/cache@v3
-        id: node-cache
-        with:
-          path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-      - name: Install dependencies (if the cached directory was not found)
-        if: steps.node-cache.outputs.cache-hit != 'true'
+          cache: 'npm'
+
+      - name: Install dependencies
         run: npm ci
-      - name: lint
+
+      - name: Lint
         run: npm run lint
-      - name: build
+
+      - name: Build
         run: npm run build
-      - id: publish
+
+      - name: Get version
+        run: |
+            echo "PACKAGE_VERSION=$(jq ".version" package.json -r)" >> $GITHUB_ENV
+
+      - name: Check that the tag exists
+        uses: mukunku/tag-exists-action@v1.4.0
+        id: checkTag
+        with:
+            tag: ${{ env.PACKAGE_VERSION }}
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to NPM
         uses: JS-DevTools/npm-publish@v2
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          access: "public"
+          access: 'public'
           provenance: true
-      - name: Create Release
-        if: steps.publish.outputs.type != 'none'
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create a GitHub release
+        if: steps.checkTag.outputs.exists != 'true'
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ steps.publish.outputs.version }}
-          release_name: Release ${{ steps.publish.outputs.version }}
-          body: ${{ steps.publish.outputs.version }}
-          draft: false
-          prerelease: false
+          tag: ${{ env.PACKAGE_VERSION }}
