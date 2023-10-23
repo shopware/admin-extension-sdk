@@ -5,7 +5,7 @@ The data handling of the SDK allows you to fetch and write nearly everything in 
 The data handling implements the repository pattern. You can create a repository for an entity simply like this:
 
 ```ts
-sw.data.repository('your_entity_name`)
+sw.data.repository('your_entity_name')
 ```
 
 With this repository you can search for data, save it, delete it, create it or check for changes.
