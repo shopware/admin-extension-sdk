@@ -11,8 +11,8 @@ such as when opening a page, you won't receive any data. In these cases, it's be
 data.get({
     id: 'sw-product-detail__product',
     selectors: ['name', 'manufacturer.name'],
-}).then((data) => {
-    console.log(data);
+}).then((product) => {
+    console.log(product);
 });
 ```
 
