@@ -13,10 +13,10 @@ You need to have an working [app](https://developer.shopware.com/docs/guides/plu
 
 ### App:
 
-You need to create a HTML page with an JS file for your app. This page can be located anywhere, but it needs to be accessible from an URL.
-For development purposes you can create a [local server](https://github.com/tapio/live-server) which will be [exposed publicly](https://ngrok.com/).
+You need to create a HTML page with an JS file for your app. This page needs to be served by your app-server as it needs to be accesible via URL.
+For development purposes you can use [App server sdk](https://github.com/FriendsOfShopware/app-server-sdk-js).
 
-Then you need to add the `<base-app-url>` field to the `<admin>` section of the [manifest](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide#manifest-file) file. This field should contain the public URL of your app. Let's assume your app HTML page is served under `http://localhost/my-example-app.html`:
+Once you got the registration/ handshake working you need to add the `<base-app-url>` field to the `<admin>` section of the [manifest](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide#manifest-file) file. This field should contain the public URL of your app. Let's assume your app HTML page is served under `http://localhost/my-example-app.html`:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -25,6 +25,12 @@ Then you need to add the `<base-app-url>` field to the `<admin>` section of the 
         <name>MyExampleApp</name>
         <!-- App meta data... -->
     </meta>
+
+    <setup>
+        <registrationUrl>http://link-to-your-local-app-server/register</registrationUrl>
+        <secret>S3cr3tf0re$t</secret>
+    </setup>
+
     <admin>
         <!-- Insert your app page URL here -->
         <base-app-url>http://localhost/my-example-app.html</base-app-url>
