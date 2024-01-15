@@ -2,6 +2,12 @@
 [![Tests](https://github.com/shopware/admin-extension-sdk/actions/workflows/tests.yml/badge.svg)](https://github.com/shopware/admin-extension-sdk/actions/workflows/tests.yml)
 [![NPM Package](https://img.shields.io/npm/v/@shopware-ag/admin-extension-sdk)](https://www.npmjs.com/package/@shopware-ag/admin-extension-sdk)
 
+## DEPRECATION WARNING
+
+> ⚠️ This repository is considered deprecated and will be archived in March 2024. For the new version of this tool please go to [meteor-admin-sdk](https://github.com/shopware/meteor-admin-sdk).
+
+## Old Description
+
 The `admin-extension-sdk` is a JavaScript library for all [Shopware 6](https://github.com/shopware/platform) App and Plugin developer which want an easy way to extend and customize the administration.
 
 [See Documentation](https://shopware.github.io/admin-extension-sdk/)
