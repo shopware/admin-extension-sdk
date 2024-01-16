@@ -1,7 +1,5 @@
 import { createSender } from '../../channel';
 
-export const registerCmsElement = createSender('cmsRegisterElement');
-
 export type cmsRegisterElement = {
     responseType: void,
 
@@ -27,4 +25,27 @@ export type cmsRegisterElement = {
     defaultConfig: {
         [key: string]: unknown,
     },
+};
+
+export const registerCmsElement = createSender('cmsRegisterElement');
+
+export const isCmsLocation = (name: string, type: 'preview' | 'component' | 'config'): { isLocation: false } | {isLocation: true, dataSetId: string} => {
+  const params = new URLSearchParams(window.location.search);
+  
+  const locationId = params.get('location-id');
+  if (!locationId) {
+    return { isLocation: false };
+  }
+  
+  const locationParts = locationId.split('-');
+  
+  const [elementName, elementType, id] = locationParts;
+  if (elementName !== name || elementType !== type  || !id) {
+    return { isLocation: false };
+  }
+  
+  return {
+    isLocation: true,
+    dataSetId: `${elementName}__${type}-${id}`,
+  };
 };
